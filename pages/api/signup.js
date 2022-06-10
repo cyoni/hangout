@@ -2,6 +2,7 @@
 import dbFind from "../../lib/dbFind";
 import clientPromise from "../../lib/mongodb";
 import randomString from "../../lib/randomString";
+import { generateAccessToken } from "../../lib/jwtUtils";
 
 async function findUser(db, { email }) {
   console.log("email: ", email);
@@ -31,9 +32,19 @@ async function signup(req) {
       return { error: true, message: "user exists" };
     }
 
-    await addUser(db, req.body);
+    // await addUser(db, req.body);
 
-    return { isSuccess: true };
+    // generate JWT:
+    const token = generateAccessToken({ userId: 12345 });
+
+    window.localStorage.setItem(
+      "user",
+      JSON.stringify({ userId, token })
+    );
+
+    // send JWT to user:
+
+    return { isSuccess: true, jwt: token };
   } catch (error) {
     console.log("error", error.message);
     return { error: true, message: error.message };
@@ -43,7 +54,6 @@ async function signup(req) {
 export default async function handler(req, res) {
   const body = req.body;
   const result = await signup(req);
-  if (result?.isSuccess)
-    res.status(200).json({ signup: `${JSON.stringify(body)}` });
+  if (result?.isSuccess) res.status(200).json(result);
   else res.status(400).json(result);
 }

@@ -5,28 +5,8 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker, DesktopDatePicker } from "@mui/x-date-pickers";
 import TextField from "@mui/material/TextField";
-import { Stack } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const data = {
-    dates: e.target.dates.value,
-    city: e.target.city.value,
-    description: e.target.description.value,
-  };
-  const JSONdata = JSON.stringify(data);
-  const endpoint = "api/publishTravelling";
-  const options = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSONdata,
-  };
-  const response = await fetch(endpoint, options);
-  const result = await response.json();
-  console.log("response", result); // if OK redirect
-};
 
 export default function Travelling() {
   const [destinations, setDestinations] = useState([]);
@@ -34,17 +14,55 @@ export default function Travelling() {
   const [city, setCity] = useState("");
   const [description, setDescription] = useState("");
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const data = {
+      startDate: startDate,
+      endDate: endDate,
+      city: e.target.city.value,
+      description: e.target.description.value,
+    };
+    const JSONdata = JSON.stringify(destinations);
+    console.log("JSONdata", JSONdata)
+    const endpoint = "api/publishTravelling";
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSONdata,
+    };
+    const response = await fetch(endpoint, options);
+    const result = await response.json();
+    console.log("response", result); // if OK redirect
+  };
+
+  const convertDate = (date) => {
+    if (date === null) return null;
+    return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
+  };
+
   const handlePlusClick = (e) => {
     e.preventDefault();
+    console.log("startDate", startDate);
     const newData = [
       ...destinations,
-      { id: randomString(10), date, city, description },
+      {
+        id: randomString(10),
+        startDate: convertDate(startDate),
+        endDate: convertDate(endDate),
+        city,
+        description,
+      },
     ];
     console.log(newData);
     setDestinations(newData);
     setDate("");
     setCity("");
     setDescription("");
+
+    setStartDate(endDate);
+    setEndDate(null);
   };
 
   const [showPopup, setShowPopup] = useState(false);
@@ -59,10 +77,9 @@ export default function Travelling() {
     setDestinations(newData);
   };
 
-  const [value, setValue] = useState(new Date("2014-08-18T21:11:54"));
-  const handleChange = (newValue) => {
-    setValue(newValue);
-  };
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
   return (
     <div>
       {showPopup && (
@@ -74,7 +91,7 @@ export default function Travelling() {
         </div>
       )}
 
-      <h1>Post your future travel now</h1>
+      <h1>Where are you going to travel?</h1>
 
       {destinations.length > 0 && (
         <div>
@@ -82,10 +99,12 @@ export default function Travelling() {
             return (
               <div key={i}>
                 <h5>
-                  {i + 1}: {item.city} (10/5-15/5)
+                  {i + 1}: {item.city} ({item.startDate}
+                  {item.endDate !== null && <>-{item.endDate}</>})
                 </h5>
-                <div>Date: {item.date}</div>
-                <div>Description: {item.description}</div>
+                {item.description !== "" && (
+                  <div>Description: {item.description}</div>
+                )}
                 <a href="#" onClick={() => handleEdit(item.id)}>
                   Edit
                 </a>{" "}
@@ -101,31 +120,7 @@ export default function Travelling() {
 
       <form onSubmit={handleSubmit} method="post">
         <div className={styles.form_group}>
-          <p>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <Stack spacing={3}>
-                <DesktopDatePicker
-                  label="Date desktop"
-                  inputFormat="MM/dd/yyyy"
-                  value={value}
-                  onChange={handleChange}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </Stack>
-            </LocalizationProvider>
-          </p>
-
-          <label htmlFor="dates">Dates:</label>
-          <input
-            type="text"
-            className="form-control"
-            name="dates"
-            id="dates"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
-
-          <label htmlFor="cities">City:</label>
+          <label htmlFor="cities">City / Place:</label>
           <input
             type="text"
             className="form-control"
@@ -134,6 +129,30 @@ export default function Travelling() {
             value={city}
             onChange={(e) => setCity(e.target.value)}
           />
+          <div className={styles.datePickers}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DesktopDatePicker
+                label="Start date"
+                inputFormat="dd/MM/yyyy"
+                value={startDate}
+                onChange={(newValue) => {
+                  setStartDate(newValue);
+                  setEndDate(newValue);
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DesktopDatePicker
+                label="End date"
+                inputFormat="dd/MM/yyyy"
+                value={endDate}
+                onChange={(newValue) => setEndDate(newValue)}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+          </div>
 
           <label htmlFor="description">Description:</label>
           <textarea

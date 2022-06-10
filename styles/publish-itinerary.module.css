@@ -28,3 +28,9 @@
   margin: auto;
   background: white;
 }
+
+.datePickers{
+  margin-top: 1rem;
+  display: flex;
+  gap: 2rem;
+}

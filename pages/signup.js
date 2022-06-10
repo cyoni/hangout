@@ -29,12 +29,12 @@ export default function Signup() {
       <h1>Sign up</h1>
       <form onSubmit={handleSubmit} method="post">
         <div>
-          <label htmlFor="name">Name:</label>
+          <label htmlFor="name">Name</label>
           <input type="text" className="form-control" name="name" id="name" />
 
-          <label htmlFor="email">Email:</label>
+          <label htmlFor="email">Email</label>
           <input type="text" className="form-control" name="email" id="email" />
-          <label htmlFor="dates">Password:</label>
+          <label htmlFor="dates">Password</label>
           <input
             type="password"
             className="form-control"
@@ -42,7 +42,7 @@ export default function Signup() {
             id="password"
           />
 
-          <label htmlFor="city">City:</label>
+          <label htmlFor="city">City</label>
           <input
             type="text"
             className="form-control"
@@ -50,7 +50,7 @@ export default function Signup() {
             id="city"
           />
 
-          <label htmlFor="country">Country:</label>
+          <label htmlFor="country">Country</label>
           <input
             type="text"
             className="form-control"

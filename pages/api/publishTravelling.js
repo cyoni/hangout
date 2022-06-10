@@ -5,11 +5,11 @@ async function addHangout(params) {
   try {
     const client = await clientPromise;
     const db = client.db();
-    
-    const data = { userId: 12345, ...params };
+
+    const data = [{ userId: "12345", itinerary: [...params] }];
     await db
       .collection("future_travelling")
-      .insertOne(JSON.parse(JSON.stringify(data)));
+      .insertMany(JSON.parse(JSON.stringify(data)));
     return true;
   } catch (error) {
     console.log("error", error.message);
