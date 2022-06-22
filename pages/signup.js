@@ -1,14 +1,23 @@
 import styles from "../styles/signup.module.css";
+import { PlacesAutocomplete } from "../lib/PlacesAutoComplete";
+import {useState} from "react"
 
 export default function Signup() {
+  const [placeId, setPlaceId] = useState(null);
+  const getDataFromAutoComplete = (data) => {
+    console.log("got data:", data);
+    if (data && data["place_id"]) {
+      setPlaceId(data["place_id"])
+    }
+  };
+  const types = ["locality"];
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = {
       name: e.target.name.value,
       email: e.target.email.value,
       password: e.target.password.value,
-      city: e.target.city.value,
-      country: e.target.country.value,
+      placeId: placeId,
     };
     const JSONdata = JSON.stringify(data);
     const endpoint = "api/signup";
@@ -42,20 +51,10 @@ export default function Signup() {
             id="password"
           />
 
-          <label htmlFor="city">City</label>
-          <input
-            type="text"
-            className="form-control"
-            name="city"
-            id="city"
-          />
-
-          <label htmlFor="country">Country</label>
-          <input
-            type="text"
-            className="form-control"
-            name="country"
-            id="country"
+          <label>City</label>
+          <PlacesAutocomplete
+            types={types}
+            sendDataToParent={getDataFromAutoComplete}
           />
 
           <button type="submit" className="btn btn-primary">

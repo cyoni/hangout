@@ -10,7 +10,7 @@ export default function Login() {
     const data = {
       email: e.target.email.value,
       password: e.target.password.value,
-    };
+    }
 
     const JSONdata = JSON.stringify(data);
     const endpoint = "api/login";
@@ -32,9 +32,11 @@ export default function Login() {
         "user",
         JSON.stringify({ userId: result.userId, token: result.token })
       );
+      router.push("/");
     }
-
-    router.push("/");
+    else {
+      console.log("could not login in, try again")
+    }
   };
 
   return (

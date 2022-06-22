@@ -7,23 +7,27 @@ import { DatePicker, DesktopDatePicker } from "@mui/x-date-pickers";
 import TextField from "@mui/material/TextField";
 import { Button, Stack } from "@mui/material";
 
-
-export default function Travelling() {
-  const [destinations, setDestinations] = useState([]);
-  const [date, setDate] = useState("");
-  const [city, setCity] = useState("");
+export default function Travelling({ city, state, country, connectedUser }) {
+  console.log("connectedUser",connectedUser)
   const [description, setDescription] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const data = {
+      userId: connectedUser.userId,
+      jwt: connectedUser.jwt,
       startDate: startDate,
       endDate: endDate,
-      city: e.target.city.value,
+      country,
+      state,
+      city,
       description: e.target.description.value,
     };
-    const JSONdata = JSON.stringify(destinations);
-    console.log("JSONdata", JSONdata)
+
+    const JSONdata = JSON.stringify(data);
+
+    console.log("JSONdata", JSONdata);
     const endpoint = "api/publishTravelling";
     const options = {
       method: "POST",
@@ -42,91 +46,22 @@ export default function Travelling() {
     return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
   };
 
-  const handlePlusClick = (e) => {
-    e.preventDefault();
-    console.log("startDate", startDate);
-    const newData = [
-      ...destinations,
-      {
-        id: randomString(10),
-        startDate: convertDate(startDate),
-        endDate: convertDate(endDate),
-        city,
-        description,
-      },
-    ];
-    console.log(newData);
-    setDestinations(newData);
-    setDate("");
-    setCity("");
-    setDescription("");
-
-    setStartDate(endDate);
-    setEndDate(null);
-  };
-
-  const [showPopup, setShowPopup] = useState(false);
-
-  const handleEdit = (id) => {
-    setShowPopup(true);
-  };
-  const handleRemove = (id) => {
-    console.log(id);
-    console.log(destinations);
-    const newData = destinations.filter((x) => x.id !== id);
-    setDestinations(newData);
-  };
-
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
   return (
     <div>
-      {showPopup && (
-        <div className={styles.popup}>
-          <div className={styles.popup_inner}>
-            <h1>sdfsdf</h1>
-            <button onClick={() => setShowPopup(!showPopup)}>close</button>
-          </div>
-        </div>
-      )}
-
       <h1>Where are you going to travel?</h1>
-
-      {destinations.length > 0 && (
-        <div>
-          {destinations.map((item, i) => {
-            return (
-              <div key={i}>
-                <h5>
-                  {i + 1}: {item.city} ({item.startDate}
-                  {item.endDate !== null && <>-{item.endDate}</>})
-                </h5>
-                {item.description !== "" && (
-                  <div>Description: {item.description}</div>
-                )}
-                <a href="#" onClick={() => handleEdit(item.id)}>
-                  Edit
-                </a>{" "}
-                |{" "}
-                <a href="#" onClick={() => handleRemove(item.id)}>
-                  Remove
-                </a>
-              </div>
-            );
-          })}
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} method="post">
         <div className={styles.form_group}>
-          <label htmlFor="cities">City / Place:</label>
+          <label htmlFor="cities">City:</label>
           <input
             type="text"
             className="form-control"
             name="city"
             id="city"
-            value={city}
+            value={`${city}, ${state}, ${country}`}
             onChange={(e) => setCity(e.target.value)}
           />
           <div className={styles.datePickers}>
@@ -163,18 +98,25 @@ export default function Travelling() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           ></textarea>
-
-          <div>
-            <button className="btn btn-primary" onClick={handlePlusClick}>
-              +
-            </button>
-          </div>
-
-          <button type="submit" className="btn btn-primary">
+          <Button type="submit" className="btn btn-primary">
             Publish
-          </button>
+          </Button>
         </div>
       </form>
     </div>
   );
+}
+
+export async function getServerSideProps(context) {
+  try {
+    const { country, state, city } = context.query;
+    return {
+      props: { country, state, city },
+    };
+  } catch (e) {
+    console.error(e);
+    return {
+      props: { country: null, state: null, city: null },
+    };
+  }
 }

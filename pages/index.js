@@ -1,15 +1,28 @@
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
-import { getAllTravelling, getAllHangouts } from "../lib/travel";
+import styles from "../styles/Home.module.scss";
+import { getAllTravellingFromLocation } from "../lib/travel";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
-export default function Home({ travelling, hangouts }) {
+export default function Home({ travelling, hangouts, connectedUser }) {
+  const [location, setLocation] = useState(null);
+  useEffect(() => {
+    if (connectedUser && connectedUser.user.userId !== undefined) {
+      console.log("connectedUser#####", connectedUser.userId);
+
+      // get city
+      fetch(`api/profile?userId=${connectedUser.user.userId}&path=profileInfo`)
+        .then((response) => response.json())
+        .then((res) => setLocation(res.data));
+    }
+  }, [connectedUser]);
+
   const router = useRouter();
   console.log("hangouts", hangouts);
   const handleTravelRoute = (userId) => {
-    router.push(`/intro?userId=${userId}`);
+    return `/intro?userId=${userId}`;
   };
   console.log("travelling", travelling);
 
@@ -20,63 +33,28 @@ export default function Home({ travelling, hangouts }) {
       </Head>
 
       <main className={styles.main}>
-        <div className="hangouts">
-          <div className={styles.travellingContainer}>
-            <h1>Hangouts</h1>
-            <div className={styles.travellingSection}>
-              {hangouts &&
-                hangouts.length > 0 &&
-                hangouts.map((x, i) => {
-                  return (
-                    <div
-                      className={styles.travellingBox}
-                      onClick={() => handleTravelRoute(x.userId)}
-                      key={1 + i * 99}
-                    >
+        <Link
+          href={`publish-itinerary?city=${location?.city}&state=${location?.state}&country=${location?.country}`}
+        >
+          Publish future travel
+        </Link>
+        <p>Location: {location?.formatted_address}</p>
+        <div className={styles.travellingContainer}>
+          <h1>Upcoming</h1>
+          <div className={styles.travellingSection}>
+            {travelling &&
+              travelling.length > 0 &&
+              travelling.map((item, i) => {
+                return (
+                  <a key={i} href={handleTravelRoute(item.userId)}>
+                    <div className={styles.travellingBox}>
                       {/* profile image */}
+                      <div className={styles.name}>{item.name}</div>
                       <div className={styles.upcoming.profileImage}>
                         {
                           <Image
                             className={styles.profileImage}
-                            src={x.picture}
-                            alt="pic"
-                            width={150}
-                            height={150}
-                          />
-                        }
-                      </div>
-                      {/* city */}
-                      <div className="city">
-                        Is in <b>{x.city}</b>
-                      </div>
-                      {/* country */}
-                      <div className={styles.upcoming.item}>Country: USA</div>
-                      <div className="text-success">3 mins ago</div>
-                    </div>
-                  );
-                })}
-            </div>
-            <div className={styles.more}>
-              <Link href="/more-hangouts">More</Link>
-            </div>
-          </div>
-          <div className={styles.travellingContainer}>
-            <h1>Upcoming</h1>
-            <div className={styles.travellingSection}>
-              {travelling &&
-                travelling.length > 0 &&
-                travelling.map((x, i) => {
-                  return (
-                    <div
-                      className={styles.travellingBox}
-                      onClick={() => handleTravelRoute(x.userId)}
-                    >
-                      {/* profile image */}
-                      <div className={styles.upcoming.profileImage}>
-                        {
-                          <Image
-                            className={styles.profileImage}
-                            src={x.picture}
+                            src={item.picture}
                             alt="pic"
                             width={150}
                             height={150}
@@ -85,18 +63,22 @@ export default function Home({ travelling, hangouts }) {
                       </div>
                       {/* dates */}
                       <div className={styles.upcoming.item}>
-                        {x.itinerary[0].startDate}-
-                        {x.itinerary[x.itinerary.length - 1].endDate}
+                        {item.startDate} - {item.endDate}
+                        {/* country */}
+                        {item.location?.country && (
+                          <div className={styles.upcoming.item}>
+                            Country: {item.location.country}
+                          </div>
+                        )}
+                        <div>{item.description}</div>
                       </div>
-                      {/* country */}
-                      <div className={styles.upcoming.item}>Country: USA</div>
                     </div>
-                  );
-                })}
-            </div>
-            <div className={styles.more}>
-              <Link href="/more-travels">More</Link>
-            </div>
+                  </a>
+                );
+              })}
+          </div>
+          <div className={styles.more}>
+            <Link href="/more-travels">More</Link>
           </div>
         </div>
         <div></div>
@@ -107,15 +89,19 @@ export default function Home({ travelling, hangouts }) {
 
 export async function getServerSideProps(context) {
   try {
-    const travelling = await getAllTravelling();
-    const hangouts = await getAllHangouts();
+    const travelling = await getAllTravellingFromLocation(
+      "United States",
+      "California",
+      "Los Angeles"
+    );
+    // const hangouts = await getAllHangouts();
     return {
-      props: { travelling, hangouts },
+      props: { travelling },
     };
   } catch (e) {
     console.error(e);
     return {
-      props: { travelling, hangouts: [] },
+      props: { travelling: [] },
     };
   }
 }

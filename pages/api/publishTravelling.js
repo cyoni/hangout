@@ -1,25 +1,41 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import clientPromise from "../../lib/mongodb";
+import { isUserVarified } from "../../lib/jwtUtils";
 
-async function addHangout(params) {
+async function addTravel(params) {
   try {
     const client = await clientPromise;
     const db = client.db();
 
-    const data = [{ userId: "12345", itinerary: [...params] }];
-    await db
-      .collection("future_travelling")
-      .insertMany(JSON.parse(JSON.stringify(data)));
-    return true;
+    // varify user
+    const userAuth = isUserVarified(params.jwt);
+    console.log("userAuth", userAuth.isSuccess);
+
+    const dataToDb = {
+      userId,
+      startDate,
+      endDate,
+      country,
+      state,
+      city,
+      description,
+    } = params;
+
+    if (userAuth?.isSuccess) {
+      const data = [{ ...dataToDb }];
+      await db
+        .collection("future_travelling")
+        .insertMany(JSON.parse(JSON.stringify(data)));
+      return { isSuccess: true, message: "post has been published!" };
+    }
+    return { isSuccess: false, message: "auth error." };
   } catch (error) {
-    console.log("error", error.message);
-    return false; // return {error: true, message: err.message}
+    return { isSuccess: false, message: error.message };
   }
 }
 
 export default async function handler(req, res) {
-  const body = req.body;
-  const result = await addHangout(req.body);
-  if (result) res.status(200).json({ data: `${JSON.stringify(body)}` });
-  else res.status(400);
+  const result = await addTravel(req.body);
+  if (result.isSuccess) res.status(200).json(result);
+  else res.status(400).json(result);
 }
