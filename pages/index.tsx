@@ -1,30 +1,42 @@
-import Head from "next/head";
-import styles from "../styles/Home.module.scss";
-import { getAllTravellingFromLocation } from "../lib/travel";
-import Link from "next/link";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import Head from "next/head"
+import styles from "../styles/Home.module.scss"
+import { getAllTravellingFromLocation } from "../lib/travel"
+import Link from "next/link"
+import Image from "next/image"
+import { useRouter } from "next/router"
+import { useEffect, useRef, useState } from "react"
+import { PrismaClient } from "@prisma/client"
 
 export default function Home({ travelling, hangouts, connectedUser }) {
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState(null)
+  const autoCompleteLocationRef = useRef(null)
+  const [xxx, setXXX] = useState("")
+
+  const getLocation = (xxx) => {
+    if (xxx) {
+      const result = fetch(`api/locationAutocomplete?location=${xxx}`)
+        .then((response) => response.json())
+        .then((res) => console.log("result", res))
+    }
+  }
+
   useEffect(() => {
     if (connectedUser && connectedUser.user.userId !== undefined) {
-      console.log("connectedUser#####", connectedUser.userId);
+      console.log("connectedUser#####", connectedUser.userId)
 
       // get city
       fetch(`api/profile?userId=${connectedUser.user.userId}&path=profileInfo`)
         .then((response) => response.json())
-        .then((res) => setLocation(res.data));
+        .then((res) => setLocation(res.data))
     }
-  }, [connectedUser]);
+  }, [connectedUser])
 
-  const router = useRouter();
-  console.log("hangouts", hangouts);
+  const router = useRouter()
+  console.log("hangouts", hangouts)
   const handleTravelRoute = (userId) => {
-    return `/intro?userId=${userId}`;
-  };
-  console.log("travelling", travelling);
+    return `/intro?userId=${userId}`
+  }
+  console.log("travelling", travelling)
 
   return (
     <div>
@@ -38,8 +50,18 @@ export default function Home({ travelling, hangouts, connectedUser }) {
         >
           Publish future travel
         </Link>
-        <p>Location: {location?.formatted_address}</p>
+        <p className="">Location:</p>
         <div className={styles.travellingContainer}>
+          query countries:{" "}
+          <input
+            onChange={(e) => {
+           
+              getLocation(e.target.value)
+            }}
+         
+            className="border"
+            type="text"
+          />
           <h1>Upcoming</h1>
           <div className={styles.travellingSection}>
             {travelling &&
@@ -74,34 +96,42 @@ export default function Home({ travelling, hangouts, connectedUser }) {
                       </div>
                     </div>
                   </a>
-                );
+                )
               })}
           </div>
           <div className={styles.more}>
-            <Link href="/more-travels">More</Link>
+            <Link
+              href={`/more-travels?country=${location?.country}&state=${location?.state}&city=${location?.city}`}
+            >
+              More
+            </Link>
           </div>
         </div>
         <div></div>
       </main>
     </div>
-  );
+  )
 }
 
 export async function getServerSideProps(context) {
+  // const prisma = new PrismaClient()
+  // const users = await prisma.$queryRaw`SELECT * FROM countries WHERE id = 106`
+
+  // console.log("aaaaaaaaaaaaaaaaaaaaa", users)
+
   try {
     const travelling = await getAllTravellingFromLocation(
       "United States",
       "California",
       "Los Angeles"
-    );
-    // const hangouts = await getAllHangouts();
+    )
     return {
       props: { travelling },
-    };
+    }
   } catch (e) {
-    console.error(e);
+    console.error(e)
     return {
       props: { travelling: [] },
-    };
+    }
   }
 }

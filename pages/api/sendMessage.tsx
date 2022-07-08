@@ -1,0 +1,39 @@
+import clientPromise from "../../lib/mongodb"
+import { isUserVarified } from "../../lib/jwtUtils"
+
+async function SendMessage(params) {
+  try {
+    const client = await clientPromise
+    const db = client.db()
+
+    // varify user
+    const userAuth = isUserVarified(params.jwt)
+    console.log("userAuth", userAuth.isSuccess)
+
+    const dataToDb = {
+      senderId: params.senderId,
+      receiverId: params.receiverId,
+      message: params.message,
+    } 
+
+    console.log("dataToDb", dataToDb)
+
+    if (userAuth?.isSuccess) {
+      const data = [{ ...dataToDb }]
+      await db
+        .collection("messages")
+        .insertMany(JSON.parse(JSON.stringify(data)))
+      return { isSuccess: true, message: "message has been sent!" }
+    }
+    return { isSuccess: false, message: "auth error." }
+  } catch (error) {
+    return { isSuccess: false, message: error.message }
+  }
+}
+
+export default async function handler(req, res) {
+  const body = req.body
+  const result = await SendMessage(req.body)
+  if (result) res.status(200).json({ data: `${JSON.stringify(body)}` })
+  else res.status(400)
+}

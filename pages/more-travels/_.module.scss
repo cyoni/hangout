@@ -1,0 +1,12 @@
+.travellingBox{
+    display: flex;
+    gap: 1rem;
+    margin-top: 3rem;
+
+    .buttons{
+        >button{
+            margin-left:0.5rem;
+
+        }
+    }
+}
