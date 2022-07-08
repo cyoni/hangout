@@ -4,6 +4,13 @@ import LocationAutoComplete from "../components/LocationAutoComplete"
 
 export default function Signup() {
   const [placeId, setPlaceId] = useState(null)
+  const [location, setLocation] = useState(null) 
+
+  const handleSelect = (location) => {
+    setLocation(location)
+    console.log("Got location", location)
+  }
+
   const getDataFromAutoComplete = (data) => {
     console.log("got data:", data)
     if (data && data["place_id"]) {
@@ -70,12 +77,14 @@ export default function Signup() {
         </div>
         <div className="flex flex-col">
           <label>City</label>
-          <LocationAutoComplete className="my-2 rounded-full border p-2 text-gray-400 outline-none" />
+          <LocationAutoComplete className="rounded-full border p-2 text-gray-400 outline-none" toggleFunction={handleSelect} />
         </div>
 
         <button
           type="submit"
-          className="mt-5 rounded-full bg-blue-600 px-2 py-1 text-lg font-medium text-white"
+          className="mt-5 rounded-full bg-blue-600 px-2 py-1 
+          text-lg font-medium text-white
+          hover:opacity-80"
         >
           Sign up
         </button>

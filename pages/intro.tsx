@@ -1,6 +1,5 @@
 import { getTravelContent } from "../lib/travel"
 import Script from "next/script"
-import { Button } from "@mui/material"
 import Image from "next/image"
 
 export default function travel({ usr }) {
@@ -11,7 +10,7 @@ export default function travel({ usr }) {
       {usr ? (
         <>
           <div className="intro">
-            <Button variant="contained">Send a message</Button>
+           {/*  <Button variant="contained">Send a message</Button> */}
             <h1>{usr.profile.name}</h1>
             <div>{usr.profile.location.formatted_address}</div>
             <Image

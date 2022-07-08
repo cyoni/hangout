@@ -130,39 +130,39 @@ function MyApp({ Component, pageProps }) {
         strategy="beforeInteractive"
       ></Script>
 
-      <header className="mx-auto flex max-w-[90%] justify-between border-b text-gray-700 shadow-md p-2">
-        <h1>
-          <div className="logo">
+      <header className="p-2 pb-3 shadow-md">
+        <div className="mx-auto flex max-w-[90%] justify-between items-center  text-gray-700">
+          <h1>
+            <div className="logo">
+              <Link href="/">
+                <a className="text-3xl font-medium">Hangouts</a>
+              </Link>
+            </div>
+          </h1>
+          <div>location: xx</div>
+          <div className="flex space-x-2">
             <Link href="/">
-              <a className="text-3xl font-medium">Hangouts</a>
+              <a className="link">Home</a>
+            </Link>
+            <Link href="login">
+              <a className="link">Login</a>
+            </Link>
+            <Link href="signup">
+              <a className="link">Sign up</a>
+            </Link>
+            <Link href="publish-hangout">
+              <a className="link">Publish hangout</a>
             </Link>
           </div>
-        </h1>
-        <div>
-          location: xx
+          {connectedUser?.user?.name && (
+            <>
+              <div>hello {connectedUser.user.name}</div>{" "}
+              <Link href="/logout">log out</Link>
+            </>
+          )}
         </div>
-        <div className="flex space-x-2">
-          <Link href="/">
-            <a className="link">Home</a>
-          </Link>
-          <Link href="login">
-            <a className="link">Login</a>
-          </Link>
-          <Link href="signup">
-            <a className="link">Sign up</a>
-          </Link>
-          <Link href="publish-hangout">
-            <a className="link">Publish hangout</a>
-          </Link>
-        </div>
-        {connectedUser?.user?.name && (
-          <>
-            <div>hello {connectedUser.user.name}</div>{" "}
-            <Link href="/logout">log out</Link>
-          </>
-        )}
       </header>
-      <main className="max-w-[90%] mx-auto">
+      <main className="mx-auto max-w-[90%]">
         <Component {...pageProps} connectedUser={connectedUser} />
       </main>
       <footer className="footer">footer</footer>
