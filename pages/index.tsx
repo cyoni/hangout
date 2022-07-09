@@ -22,12 +22,8 @@ export default function Home({ travelling, hangouts, connectedUser }) {
 
   useEffect(() => {
     if (connectedUser && connectedUser.user.userId !== undefined) {
-      console.log("connectedUser#####", connectedUser.userId)
-
-      // get city
-      fetch(`api/profile?userId=${connectedUser.user.userId}&path=profileInfo`)
-        .then((response) => response.json())
-        .then((res) => setLocation(res.data))
+      
+     
     }
   }, [connectedUser])
 
@@ -44,7 +40,7 @@ export default function Home({ travelling, hangouts, connectedUser }) {
         <title>Hangout</title>
       </Head>
 
-      <main className={styles.main}>
+      <main className="mx-auto w-[80%]">
         <Link
           href={`publish-itinerary?city=${location?.city}&state=${location?.state}&country=${location?.country}`}
         >

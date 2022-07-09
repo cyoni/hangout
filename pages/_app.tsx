@@ -12,79 +12,9 @@ import usePlacesAutocomplete, {
   getLatLng,
 } from "use-places-autocomplete"
 import useOnclickOutside from "react-cool-onclickoutside"
-
-const PlacesAutocomplete = ({ handleClick }) => {
-  const {
-    ready,
-    value,
-    suggestions: { status, data },
-    setValue,
-    clearSuggestions,
-  } = usePlacesAutocomplete({
-    requestOptions: {
-      /* Define search scope here */
-      types: ["locality", "country"],
-    },
-    debounce: 300,
-  })
-  const ref = useOnclickOutside(() => {
-    // When user clicks outside of the component, we can dismiss
-    // the searched suggestions by calling this method
-    clearSuggestions()
-  })
-
-  const handleInput = (e) => {
-    // Update the keyword of the input element
-    setValue(e.target.value)
-  }
-
-  const handleSelect =
-    ({ place_id, description }) =>
-    () => {
-      // When user selects a place, we can replace the keyword without request data from API
-      // by setting the second parameter to "false"
-      console.log("description", description)
-      setValue(description, false)
-      clearSuggestions()
-
-      if (handleClick) handleClick(description)
-
-      // Get latitude and longitude via utility functions
-      // getGeocode({ placeId: place_id }).then((results) => {
-      //   console.log("results", results);
-      //   const { lat, lng } = getLatLng(results[0]);
-      //   console.log("📍 Coordinates: ", { lat, lng });
-      // });
-    }
-
-  const renderSuggestions = () =>
-    data.map((suggestion) => {
-      console.log("suggestion", suggestion)
-      const {
-        place_id,
-        structured_formatting: { main_text, secondary_text },
-      } = suggestion
-
-      return (
-        <li key={place_id} onClick={handleSelect(suggestion)}>
-          <strong>{main_text}</strong> <small>{secondary_text}</small>
-        </li>
-      )
-    })
-
-  return (
-    <div ref={ref}>
-      <input
-        value={value}
-        onChange={handleInput}
-        disabled={!ready}
-        placeholder="Where are you going?"
-      />
-      {/* We can use the "status" to decide whether we should display the dropdown or not */}
-      {status === "OK" && <ul>{renderSuggestions()}</ul>}
-    </div>
-  )
-}
+import Menubar from "../components/Menubar"
+import RightMenuBar from "../components/RightMenuBar"
+import Footer from "../components/Footer"
 
 function MyApp({ Component, pageProps }) {
   // const x = process.env.ACCESS_TOKEN_SECRET;
@@ -103,11 +33,11 @@ function MyApp({ Component, pageProps }) {
     else return null
   }
 
-  const [connectedUser, setConnectedUser] = useState("")
+  const [connectedUser, setConnectedUser] = useState<jwt>(null)
 
   useEffect(() => {
-    setIsGooglePlacesReady(true)
     const localUser = localStorage("user")
+    console.log("localUser", localUser)
     if (localUser) {
       const varifiedUser = isUserVarified(localUser.token)
       console.log("varifiedUser", varifiedUser)
@@ -116,8 +46,6 @@ function MyApp({ Component, pageProps }) {
       }
     }
   }, [])
-
-  const [isGooglePlacesReady, setIsGooglePlacesReady] = useState(false)
 
   return (
     <>
@@ -129,43 +57,38 @@ function MyApp({ Component, pageProps }) {
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA2bqs8mGOMr9IT9Z6bs8FvgbmkiSTWSbU&libraries=places"
         strategy="beforeInteractive"
       ></Script>
-
-      <header className="p-2 pb-3 shadow-md">
-        <div className="mx-auto flex max-w-[90%] justify-between items-center  text-gray-700">
-          <h1>
-            <div className="logo">
-              <Link href="/">
-                <a className="text-3xl font-medium">Hangouts</a>
-              </Link>
-            </div>
-          </h1>
-          <div>location: xx</div>
-          <div className="flex space-x-2">
-            <Link href="/">
-              <a className="link">Home</a>
-            </Link>
-            <Link href="login">
-              <a className="link">Login</a>
-            </Link>
-            <Link href="signup">
-              <a className="link">Sign up</a>
-            </Link>
-            <Link href="publish-hangout">
-              <a className="link">Publish hangout</a>
-            </Link>
+      <div className="w-[80%] mx-auto">
+        <header className="p-2 pb-3 border-b border-gray-100">
+          <div className="mx-auto flex items-center justify-between  text-gray-700">
+            <h1>
+              <div className="logo">
+                <Link href="/">
+                  <a className="text-3xl font-medium">Hangouts</a>
+                </Link>
+              </div>
+            </h1>
+            <div>location: {connectedUser?.user.place}</div>
+            {connectedUser?.user?.name && (
+              <>
+                <div>hello {connectedUser.user.name}</div>{" "}
+                <Link href="/logout">log out</Link>
+              </>
+            )}
           </div>
-          {connectedUser?.user?.name && (
-            <>
-              <div>hello {connectedUser.user.name}</div>{" "}
-              <Link href="/logout">log out</Link>
-            </>
-          )}
+        </header>
+
+        <div className="grid grid-cols-9">
+          <Menubar />
+
+          <main className="col-span-7 p-5">
+            <Component {...pageProps} connectedUser={connectedUser} />
+          </main>
+
+          <RightMenuBar />
         </div>
-      </header>
-      <main className="mx-auto max-w-[90%]">
-        <Component {...pageProps} connectedUser={connectedUser} />
-      </main>
-      <footer className="footer">footer</footer>
+
+        <Footer />
+      </div>
     </>
   )
 }

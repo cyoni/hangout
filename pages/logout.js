@@ -6,7 +6,7 @@ export default function Logout() {
   const router = useRouter();
   useEffect(() => {
     window.localStorage.removeItem("user");
-    router.push("/");
+    window.location = "/"
   }, []);
   return <div>Logging you out...</div>;
 }
