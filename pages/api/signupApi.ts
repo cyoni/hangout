@@ -33,7 +33,7 @@ async function queryPlace(
   provinceId: string,
   countryId: string
 ) {
-  const city: city[] = await prisma.$queryRaw`SELECT * FROM cities WHERE 
+  const city: City[] = await prisma.$queryRaw`SELECT * FROM cities WHERE 
     id = ${cityId} 
     AND state_id = ${provinceId} 
     AND country_id = ${countryId}`

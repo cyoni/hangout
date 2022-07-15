@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next"
 import { prisma } from "../../prisma"
 
 type Response = {
-  cities: city[]
+  cities: City[]
 }
 
 const getSafeString = (input: string): string => {
@@ -17,7 +17,7 @@ const getSafeString = (input: string): string => {
 async function queryLocation(input) {
   const safeString = getSafeString(input)
   if (!safeString) return null
-  const cities: city[] = await prisma.$queryRawUnsafe(
+  const cities: City[] = await prisma.$queryRawUnsafe(
     `SELECT city.name as city, 
     city.id as city_id,
     country.id as country_id,

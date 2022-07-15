@@ -5,7 +5,7 @@ import { useRouter } from "next/router"
 
 export default function Signup() {
   const [placeId, setPlaceId] = useState(null)
-  const [place, setPlace] = useState<city>(null)
+  const [place, setPlace] = useState<City>(null)
   const router = useRouter()
 
   const handleSelect = (place) => {
@@ -97,9 +97,7 @@ export default function Signup() {
 
         <button
           type="submit"
-          className="mt-6 rounded-full bg-blue-600 px-2 py-1 
-          text-lg font-medium text-white
-          hover:opacity-80"
+          className="mt-6 btn"
         >
           Sign up
         </button>

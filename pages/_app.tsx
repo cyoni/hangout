@@ -15,6 +15,8 @@ import useOnclickOutside from "react-cool-onclickoutside"
 import Menubar from "../components/Menubar"
 import RightMenuBar from "../components/RightMenuBar"
 import Footer from "../components/Footer"
+import Layout from "../components/Layout"
+import Header from "../components/Header"
 
 function MyApp({ Component, pageProps }) {
   // const x = process.env.ACCESS_TOKEN_SECRET;
@@ -33,7 +35,7 @@ function MyApp({ Component, pageProps }) {
     else return null
   }
 
-  const [connectedUser, setConnectedUser] = useState<jwt>(null)
+  const [connectedUser, setConnectedUser] = useState<JWT>(null)
 
   useEffect(() => {
     const localUser = localStorage("user")
@@ -47,8 +49,10 @@ function MyApp({ Component, pageProps }) {
     }
   }, [])
 
+  /* TODO - Replace connectedUser with nextAuth */
+
   return (
-    <>
+    <div>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
@@ -57,39 +61,25 @@ function MyApp({ Component, pageProps }) {
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA2bqs8mGOMr9IT9Z6bs8FvgbmkiSTWSbU&libraries=places"
         strategy="beforeInteractive"
       ></Script>
-      <div className="w-[80%] mx-auto">
-        <header className="p-2 pb-3 border-b border-gray-100">
-          <div className="mx-auto flex items-center justify-between  text-gray-700">
-            <h1>
-              <div className="logo">
-                <Link href="/">
-                  <a className="text-3xl font-medium">Hangouts</a>
-                </Link>
-              </div>
-            </h1>
-            <div>location: {connectedUser?.user.place}</div>
-            {connectedUser?.user?.name && (
-              <>
-                <div>hello {connectedUser.user.name}</div>{" "}
-                <Link href="/logout">log out</Link>
-              </>
-            )}
-          </div>
-        </header>
 
-        <div className="grid grid-cols-9">
-          <Menubar />
+      <Header connectedUser={connectedUser} />
+      
+      <div className="">
+        <div className="">
+          
 
-          <main className="col-span-7 p-5">
-            <Component {...pageProps} connectedUser={connectedUser} />
-          </main>
+          <Layout
+            Component={Component}
+            pageProps={pageProps}
+            connectedUser={connectedUser}
+          />
 
-          <RightMenuBar />
+          
         </div>
 
         <Footer />
       </div>
-    </>
+    </div>
   )
 }
 

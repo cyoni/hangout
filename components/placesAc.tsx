@@ -7,7 +7,7 @@ interface Props {
 }
 
 function LocationAutoComplete({ className, onChange, toggleFunction }: Props) {
-  const [places, setPlace] = useState<city[]>(null)
+  const [places, setPlace] = useState<City[]>(null)
   const [lastInputWithResults, setLastInputWithResults] = useState<string>(null)
   const inputRef = useRef(null)
 
@@ -23,24 +23,26 @@ function LocationAutoComplete({ className, onChange, toggleFunction }: Props) {
     clearLocations()
   }
 
-  const parseLocation = (place: city) => {
+  const parseLocation = (place: City) => {
     return `${place.city}, ${place.province}, ${place.country}`
   }
 
   const renderLocations = () => {
     return (
-      <ul className="rounded-md p-1 shadow-lg">
-        {places?.map((place) => (
-          <li
-            key={place.city_id}
-            onClick={() => handleClick(place)}
-            className={`cursor-pointer rounded-md border-b px-2 
+      <div className="relative">
+        <ul className="absolute bg-white z-10 top-[-5px] rounded-md p-1 shadow-lg">
+          {places?.map((place) => (
+            <li
+              key={place.city_id}
+              onClick={() => handleClick(place)}
+              className={`cursor-pointer rounded-md border-b px-2 
                         py-1 hover:bg-gray-50 hover:text-blue-500`}
-          >
-            {parseLocation(place)}
-          </li>
-        ))}
-      </ul>
+            >
+              {parseLocation(place)}
+            </li>
+          ))}
+        </ul>
+      </div>
     )
   }
 
@@ -49,7 +51,7 @@ function LocationAutoComplete({ className, onChange, toggleFunction }: Props) {
       const data = await fetch(`api/placesAcApi?input=${input}`)
       if (data.status == 200) {
         const json = await data.json()
-        const cities: city[] = json.cities
+        const cities: City[] = json.cities
         setPlace(cities)
         console.log("result", cities)
       }

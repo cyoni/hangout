@@ -1,29 +1,16 @@
 import Head from "next/head"
-import styles from "../styles/Home.module.scss"
 import { getAllTravellingFromLocation } from "../lib/travel"
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/router"
-import { useEffect, useRef, useState } from "react"
-import { PrismaClient } from "@prisma/client"
+import { useEffect, useState } from "react"
+import { InboxIcon } from "@heroicons/react/outline"
 
 export default function Home({ travelling, hangouts, connectedUser }) {
   const [location, setLocation] = useState(null)
-  const autoCompleteLocationRef = useRef(null)
-  const [xxx, setXXX] = useState("")
-
-  const getLocation = (xxx) => {
-    if (xxx) {
-      const result = fetch(`api/locationAutocomplete?location=${xxx}`)
-        .then((response) => response.json())
-        .then((res) => console.log("result", res))
-    }
-  }
 
   useEffect(() => {
     if (connectedUser && connectedUser.user.userId !== undefined) {
-      
-     
     }
   }, [connectedUser])
 
@@ -40,62 +27,87 @@ export default function Home({ travelling, hangouts, connectedUser }) {
         <title>Hangout</title>
       </Head>
 
-      <main className="mx-auto w-[80%]">
-        <Link
-          href={`publish-itinerary?city=${location?.city}&state=${location?.state}&country=${location?.country}`}
+      <main className="">
+        <div
+          className={`h-36 border bg-[url('https://rvca738f6h5tbwmj3mxylox3-wpengine.netdna-ssl.com/wp-content/uploads/2018/06/Sheraton_Exterior_Nightime.jpg')] bg-cover bg-center shadow-md`}
         >
-          Publish future travel
-        </Link>
-        <p className="">Location:</p>
-        <div className={styles.travellingContainer}>
-          query countries:{" "}
-          <input
-            onChange={(e) => {
-           
-              getLocation(e.target.value)
-            }}
-         
-            className="border"
-            type="text"
-          />
-          <h1>Upcoming</h1>
-          <div className={styles.travellingSection}>
+          <p className="title-shadow mt-8 w-fit  pl-4  text-4xl font-medium text-gray-200">
+            Tel Aviv, Israel
+          </p>
+        </div>
+        <div className="mt-1 flex border-b pl-2 pb-1">
+          <div className="cursor-pointer rounded-xl py-1 px-2 hover:bg-gray-200">
+            item
+          </div>
+          <div className="cursor-pointer rounded-xl py-1 px-2 hover:bg-gray-200">
+            item
+          </div>
+          <div className="cursor-pointer rounded-xl py-1 px-2 hover:bg-gray-200">
+            item
+          </div>
+          <div className="cursor-pointer rounded-xl py-1 px-2 hover:bg-gray-200">
+            item
+          </div>
+          <div className="cursor-pointer rounded-xl py-1 px-2 hover:bg-gray-200">
+            item
+          </div>
+          <div className="cursor-pointer rounded-xl py-1 px-2 hover:bg-gray-200">
+            item
+          </div>
+          <div className="cursor-pointer rounded-xl py-1 px-2 hover:bg-gray-200">
+            item
+          </div>
+        </div>
+
+        <div className="">
+          <div className="mx-auto grid w-[750px] grid-cols-2 gap-5">
             {travelling &&
               travelling.length > 0 &&
               travelling.map((item, i) => {
                 return (
-                  <a key={i} href={handleTravelRoute(item.userId)}>
-                    <div className={styles.travellingBox}>
+                  <a
+                    key={i}
+                    className="mt-5 rounded-md shadow-md hover:shadow-lg"
+                    href={handleTravelRoute(item.userId)}
+                  >
+                    <div className="flex flex-col px-2 ">
                       {/* profile image */}
-                      <div className={styles.name}>{item.name}</div>
-                      <div className={styles.upcoming.profileImage}>
-                        {
-                          <Image
-                            className={styles.profileImage}
-                            src={item.picture}
-                            alt="pic"
-                            width={150}
-                            height={150}
-                          />
-                        }
+                      <div className="flex items-center ">
+                        <div className="flex-1 font-bold capitalize">
+                          {item.name}
+                        </div>
+                        <InboxIcon className="h-10 w-fit rounded-full p-2  hover:bg-gray-100 " />
                       </div>
-                      {/* dates */}
-                      <div className={styles.upcoming.item}>
-                        {item.startDate} - {item.endDate}
-                        {/* country */}
-                        {item.location?.country && (
-                          <div className={styles.upcoming.item}>
-                            Country: {item.location.country}
-                          </div>
-                        )}
-                        <div>{item.description}</div>
+                      <div className="flex space-x-2">
+                        <div className="">
+                          {
+                            <Image
+                              className="rounded-md"
+                              src={item.picture}
+                              alt="pic"
+                              width={150}
+                              height={150}
+                            />
+                          }
+                        </div>
+                        {/* info */}
+                        <div className="{styles.upcoming.item}">
+                          {item.startDate} - {item.endDate}
+                          {/* country */}
+                          {item.location?.country && (
+                            <div className="{styles.upcoming.item}">
+                              {item.location.country}
+                            </div>
+                          )}
+                          <div>{item.description}</div>
+                        </div>
                       </div>
                     </div>
                   </a>
                 )
               })}
           </div>
-          <div className={styles.more}>
+          <div className="link w-fit">
             <Link
               href={`/more-travels?country=${location?.country}&state=${location?.state}&city=${location?.city}`}
             >

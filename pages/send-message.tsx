@@ -1,12 +1,4 @@
 import { useState } from "react"
-import randomString from "../lib/randomString"
-import styles from "../styles/publish-itinerary.module.css"
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
-import { DatePicker, DesktopDatePicker } from "@mui/x-date-pickers"
-import TextField from "@mui/material/TextField"
-import { Button, Stack } from "@mui/material"
-
 export default function SendMessagePage({ connectedUser, receiverId }) {
   const [message, setMessage] = useState("")
 

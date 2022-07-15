@@ -6,4 +6,13 @@
   .link {
     @apply cursor-pointer hover:underline;
   }
+  .btn {
+    @apply rounded-full bg-blue-600 px-2 py-1 
+    text-lg font-medium text-white
+    hover:bg-blue-600 hover:opacity-80;
+  }
+}
+
+.title-shadow {
+  text-shadow: 5px 0 10px rgb(73, 73, 73);
 }
