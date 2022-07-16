@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next"
 import { prisma } from "../../prisma"
 
 type Response = {
-  cities: City[]
+  places: Place[]
 }
 
 const getSafeString = (input: string): string => {
@@ -17,7 +17,7 @@ const getSafeString = (input: string): string => {
 async function queryLocation(input) {
   const safeString = getSafeString(input)
   if (!safeString) return null
-  const cities: City[] = await prisma.$queryRawUnsafe(
+  const places: Place[] = await prisma.$queryRawUnsafe(
     `SELECT city.name as city, 
     city.id as city_id,
     country.id as country_id,
@@ -29,7 +29,7 @@ async function queryLocation(input) {
     INNER JOIN states as state ON city.state_id = state.id 
     WHERE city.name LIKE '${safeString}%' ORDER BY city.name ASC LIMIT 6`
   )
-  return cities
+  return places
 }
 
 export default async function handler(
@@ -37,7 +37,7 @@ export default async function handler(
   res: NextApiResponse<Response>
 ) {
   const input = req.query.input
-  const cities = await queryLocation(input)
-  if (cities) res.status(200).json({ cities })
+  const places = await queryLocation(input)
+  if (places) res.status(200).json({ places })
   else res.status(400).json(null)
 }

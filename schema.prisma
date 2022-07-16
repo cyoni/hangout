@@ -14,8 +14,8 @@ model cities {
   state_code   String
   country_id   Int        @unique
   country_code String
-  state        states[]
-  countries    countries?
+  state        states?
+  country      countries?
 }
 
 model states {
@@ -27,7 +27,7 @@ model states {
 }
 
 model countries {
-  id         Int    @id
-  name       String
-  city       cities @relation(fields: [id], references: [country_id])
+  id   Int    @id
+  name String
+  city cities @relation(fields: [id], references: [country_id])
 }

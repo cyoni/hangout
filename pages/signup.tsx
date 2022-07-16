@@ -1,11 +1,10 @@
-import { PlacesAutocomplete } from "../lib/PlacesAutoComplete"
 import { useState } from "react"
 import LocationAutoComplete from "../components/placesAc"
 import { useRouter } from "next/router"
 
 export default function Signup() {
   const [placeId, setPlaceId] = useState(null)
-  const [place, setPlace] = useState<City>(null)
+  const [place, setPlace] = useState<Place>(null)
   const router = useRouter()
 
   const handleSelect = (place) => {
@@ -33,9 +32,7 @@ export default function Signup() {
       name: e.target.name.value,
       email: e.target.email.value,
       password: e.target.password.value,
-      city_id: place.city_id,
-      province_id: place.province_id,
-      country_id: place.country_id,
+      city_id: place.city_id
     }
     const JSONdata = JSON.stringify(data)
     const endpoint = "api/signupApi"

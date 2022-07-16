@@ -1,16 +1,20 @@
+
 type City = {
   city_id: number
   city: string
+}
+
+type Country = {
   country_id: number
   country: string
+}
+
+type Province = {
   province_id: number
   province: string
 }
-type Place = {
-  city_id: string
-  province_id: string
-  country_id: string
-}
+
+type Place = {} & City & Country & Province
 
 type JWT = {
   jwt: string

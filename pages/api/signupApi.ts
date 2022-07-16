@@ -5,6 +5,7 @@ import randomString from "../../lib/randomString"
 import { generateAccessToken } from "../../lib/jwtUtils"
 import { Client } from "@googlemaps/google-maps-services-js"
 import { prisma } from "../../prisma"
+import { queryPlace } from "../../lib/place"
 
 async function findUser(db, { email }) {
   console.log("email: ", email)
@@ -28,16 +29,11 @@ const getValueFromAddress = (addressComponents, type) => {
   }
 }
 
-async function queryPlace(
-  cityId: string,
-  provinceId: string,
-  countryId: string
-) {
-  const city: City[] = await prisma.$queryRaw`SELECT * FROM cities WHERE 
-    id = ${cityId} 
-    AND state_id = ${provinceId} 
-    AND country_id = ${countryId}`
-  return city
+interface Props {
+  name: string
+  email: string
+  password: string
+  city_id: number
 }
 
 async function signup(req) {
@@ -49,19 +45,18 @@ async function signup(req) {
 
     console.log("req.body", req.body)
 
-    const { name, email, password, city_id, country_id, province_id } = req.body
+    const { name, email, password, city_id }: Props =
+      req.body
 
-    if (isNaN(city_id) || isNaN(country_id) || isNaN(province_id)) {
+    if (isNaN(city_id) ) {
       throw new Error("Invalid place IDs")
     }
 
-    const location = { city_id, country_id, province_id }
-
     // check if place id is valid
 
-    const place = await queryPlace(city_id, province_id, country_id)
+    const place = await queryPlace(city_id)
     console.log("PLACE", place)
-    if (!Array.isArray(place) || place.length !== 1) {
+    if (!place) {
       throw new Error("Place was not found")
     }
 
@@ -71,7 +66,7 @@ async function signup(req) {
     // }
 
     const userId = randomString(10)
-    const newUser = { userId, name, password, email, location }
+    const newUser = { userId, name, password, email, place }
     console.log("newUser", newUser)
     await addUser(db, newUser)
 

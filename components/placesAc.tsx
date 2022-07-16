@@ -7,7 +7,7 @@ interface Props {
 }
 
 function LocationAutoComplete({ className, onChange, toggleFunction }: Props) {
-  const [places, setPlace] = useState<City[]>(null)
+  const [places, setPlace] = useState<Place[]>(null)
   const [lastInputWithResults, setLastInputWithResults] = useState<string>(null)
   const inputRef = useRef(null)
 
@@ -23,7 +23,7 @@ function LocationAutoComplete({ className, onChange, toggleFunction }: Props) {
     clearLocations()
   }
 
-  const parseLocation = (place: City) => {
+  const parseLocation = (place: Place) => {
     return `${place.city}, ${place.province}, ${place.country}`
   }
 
@@ -51,9 +51,9 @@ function LocationAutoComplete({ className, onChange, toggleFunction }: Props) {
       const data = await fetch(`api/placesAcApi?input=${input}`)
       if (data.status == 200) {
         const json = await data.json()
-        const cities: City[] = json.cities
-        setPlace(cities)
-        console.log("result", cities)
+        const places: Place[] = json.places
+        setPlace(places)
+        console.log("result", places)
       }
     }
   }

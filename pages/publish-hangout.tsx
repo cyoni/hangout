@@ -1,15 +1,12 @@
 import { useState } from "react"
-import randomString from "../lib/randomString"
-import styles from "../styles/publish-itinerary.module.css"
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import LocationAutoComplete from "../components/placesAc"
 import Spinner from "react-bootstrap/Spinner"
-
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
+import { queryPlace } from "../lib/place"
 
 export default function Travelling({ city_code, connectedUser }) {
+  console.log("city_code",city_code)
   console.log("connectedUser", connectedUser)
   const [description, setDescription] = useState<string>("")
   const [startDate, setStartDate] = useState(null)
@@ -97,7 +94,7 @@ export default function Travelling({ city_code, connectedUser }) {
         <label htmlFor="description">Description</label>
         <textarea
           className="mt-2 rounded-md border p-2 text-gray-400 outline-none"
-          rows="5"
+          rows={5}
           name="description"
           id="description"
           value={description}
@@ -114,7 +111,12 @@ export default function Travelling({ city_code, connectedUser }) {
 
 export async function getServerSideProps(context) {
   try {
-    const city_code = context.query.city_code || null
+    const city_code: number = context.query.city_code || null
+    if (city_code) {
+      const place: Place = await queryPlace(city_code)
+      console.log("place: " + place)
+    }
+
     return {
       props: { city_code },
     }
