@@ -1,4 +1,5 @@
 import { useRouter } from "next/router"
+import HeaderWrapper from "../components/HeaderWrapper"
 
 export default function Login() {
   const router = useRouter()
@@ -43,40 +44,43 @@ export default function Login() {
   }
 
   return (
-    <div className="mx-auto mt-20 w-[500px] rounded-md border shadow-md">
-      <h1 className="mt-2 text-center text-3xl">Log in</h1>
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col p-5 "
-        method="post"
-      >
-        <label htmlFor="email">Email</label>
-        <input
-          type="text"
-          className="mt-2 rounded-full border p-2 text-gray-400 outline-none"
-          name="email"
-          id="email"
-        />
+    <div>
+      <HeaderWrapper title="Log in" />
+      <div className="mx-auto mt-20 w-[500px] rounded-md border shadow-md">
+      
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col p-5 "
+          method="post"
+        >
+          <label htmlFor="email">Email</label>
+          <input
+            type="text"
+            className="mt-2 rounded-full border p-2 text-gray-400 outline-none"
+            name="email"
+            id="email"
+          />
 
-        <label htmlFor="password" className="mt-2">
-          Password
-        </label>
-        <input
-          type="password"
-          className="mt-2 rounded-full border p-2 text-gray-400 outline-none"
-          name="password"
-          id="password"
-        />
+          <label htmlFor="password" className="mt-2">
+            Password
+          </label>
+          <input
+            type="password"
+            className="mt-2 rounded-full border p-2 text-gray-400 outline-none"
+            name="password"
+            id="password"
+          />
 
-        <button
-          type="submit"
-          className="mt-5 rounded-full bg-blue-600 px-2 py-1 
+          <button
+            type="submit"
+            className="mt-5 rounded-full bg-blue-600 px-2 py-1 
           text-lg font-medium text-white
           hover:opacity-80"
-        >
-          Log in
-        </button>
-      </form>
+          >
+            Log in
+          </button>
+        </form>
+      </div>
     </div>
   )
 }

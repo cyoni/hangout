@@ -12,7 +12,7 @@ function Header({ connectedUser }) {
               <a className="text-3xl font-medium">Hangouts</a>
             </Link>
           </div>
-          <div className="rounded-md bg-slate-300 py-2">
+          <div className="rounded-md bg-slate-200 py-2">
             <input
               type="text"
               placeholder="Where are you going?"

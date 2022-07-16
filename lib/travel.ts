@@ -1,5 +1,5 @@
 import { USERS_TABLE } from "./consts"
-import dbFind from "./dbFind"
+import { dbAggregate, dbFind } from "./dbFind"
 
 const formatDate = (date) => {
   let d = new Date(date)
@@ -27,59 +27,44 @@ export async function getAllTravelling() {
   return result
 }
 
-export async function getAllTravellingFromLocation(country, state, city) {
-  const travelling = await dbFind("future_travelling", {
-    country,
-    state,
-    city,
-  })
-  const userIds = travelling.map((usr) => {
-    return usr.userId
-  })
-  console.log("userIds", userIds)
-  const profiles = await dbFind("users", { userId: { $in: userIds } })
-
-  console.log("profiles", profiles)
-  const result = travelling.map((item) => {
-    const filteredUsr = profiles.filter((curr) => curr.userId === item.userId)
-    if (filteredUsr && filteredUsr[0]) {
-      const usr = filteredUsr[0]
-      const picture =
-        usr.picture ||
-        "https://www.innovaxn.eu/wp-content/uploads/blank-profile-picture-973460_1280.png"
-      const name = usr.name
-      const location = usr.location
-
-      item.startDate = formatDate(item.startDate)
-      item.endDate = item.endDate ? formatDate(item.endDate) : null
-
-      return { ...item, picture, name, location }
-    }
-  })
-  return result
+export async function getAllTravellingByPlace(city_id: number) {
+  const data = {
+    collection: "future_travelling",
+    from: "users",
+    localField: "userId",
+    foreignField: "userId",
+    as: "profile",
+    $match: { city_id },
+  }
+  const results = await dbAggregate(data)
+  return results
 }
 
-export async function getAllHangouts() {
-  const travelling = await dbFind("hangout", {})
-  const userIds = travelling.map((x, i) => {
-    return x.userId
-  })
-  console.log("userIds", userIds)
-  const profiles = await dbFind("users", { userId: { $in: userIds } })
-  console.log("profiles", profiles)
-  const result = travelling.map((item) => {
-    const picture =
-      profiles.filter((curr) => curr.userId === item.userId)[0]?.picture ||
-      "https://www.innovaxn.eu/wp-content/uploads/blank-profile-picture-973460_1280.png"
-    return { ...item, picture }
-  })
-  return result
-}
+// export async function getAllHangouts() {
+//   const travelling = await dbFind("hangout", {})
+//   console.log("travellingtravelling", travelling)
+//   const userIds = travelling.map((x, i) => {
+//     return x.userId
+//   })
+//   console.log("userIds", userIds)
+//   const profiles = await dbFind("users", { userId: { $in: userIds } })
+//   console.log("profiles", profiles)
+
+//   const result = travelling.map((item) => {
+//     const picture =
+//       profiles.filter((curr) => curr.userId === item.userId)[0]?.picture ||
+//       "https://www.innovaxn.eu/wp-content/uploads/blank-profile-picture-973460_1280.png"
+//     return { ...item, picture }
+//   })
+//   console.log("result",result)
+//   return result
+// }
 
 export async function getTravelContent(userId) {
   if (!userId || userId === undefined) {
     return false
   }
+  console.log("getTravelContent", userId)
   const profileRaw = (await dbFind(USERS_TABLE, { userId }))[0]
   const travelsRaw = await dbFind("future_travelling", { userId })
 
@@ -96,7 +81,7 @@ export async function getTravelContent(userId) {
       userId: profileRaw.userId != null ? profileRaw.userId : "",
       intro: profileRaw.intro != null ? profileRaw.intro : "",
       picture: profileRaw.picture != null ? profileRaw.picture : "",
-      location: profileRaw.location != null ? profileRaw.location : ""
+      location: profileRaw.location != null ? profileRaw.location : "",
     }
     return { travels, profile }
   } else {

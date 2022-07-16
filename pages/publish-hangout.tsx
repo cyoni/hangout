@@ -4,14 +4,16 @@ import Spinner from "react-bootstrap/Spinner"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import { queryPlace } from "../lib/place"
+import HeaderWrapper from "../components/HeaderWrapper"
 
-export default function Travelling({ city_code, connectedUser }) {
-  console.log("city_code",city_code)
+export default function Travelling({ place, connectedUser }) {
   console.log("connectedUser", connectedUser)
+  console.log("place", place)
+
   const [description, setDescription] = useState<string>("")
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
-  const [place, setPlace] = useState<Place>(null)
+  const [newPlace, setNewPlace] = useState<Place>(null)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -21,7 +23,7 @@ export default function Travelling({ city_code, connectedUser }) {
       jwt: connectedUser.jwt,
       startDate,
       endDate,
-      place,
+      place: newPlace,
       description: e.target.description.value,
     }
 
@@ -47,25 +49,26 @@ export default function Travelling({ city_code, connectedUser }) {
   }
 
   const handleOnChange = (ref) => {
-    if (place) {
+    if (newPlace) {
       ref.current.value = ""
-      setPlace(null)
+      setNewPlace(null)
     }
   }
 
   const handleSelect = (place) => {
     console.log("place", place)
-    setPlace(place)
+    setNewPlace(place)
   }
 
   return (
     <div>
+      <HeaderWrapper title="Tel Aviv, Israel" />
       <form
         onSubmit={handleSubmit}
-        className="mx-auto my-10 flex w-[40%] flex-col gap-2 p-2 shadow-md"
+        className="mx-auto my-10 flex w-[40%] flex-col gap-2 rounded-md border p-3 shadow-lg"
         method="post"
       >
-        <h1 className=" mb-4 text-2xl font-medium">
+        <h1 className="mb-4 text-2xl font-medium">
           Tell others about your upcoming travel
         </h1>
 
@@ -111,19 +114,21 @@ export default function Travelling({ city_code, connectedUser }) {
 
 export async function getServerSideProps(context) {
   try {
-    const city_code: number = context.query.city_code || null
-    if (city_code) {
-      const place: Place = await queryPlace(city_code)
-      console.log("place: " + place)
+    const city_id = context.query.city_id || null
+    if (isNaN(city_id)) {
+      return {
+        props: { place: null },
+      }
     }
-
+    const convertedCityId = Number(city_id)
+    const place: Place = await queryPlace(convertedCityId)
     return {
-      props: { city_code },
+      props: { place: place },
     }
   } catch (e) {
     console.error(e)
     return {
-      props: { city_code: null },
+      props: { place: null },
     }
   }
 }

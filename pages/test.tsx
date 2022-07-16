@@ -1,9 +1,19 @@
-import React from 'react'
+import React from "react"
+import HeaderWrapper from "../components/HeaderWrapper"
+import { getPhotoByPhotoRef, getPhotoReference } from "../lib/googlePlaces"
+import { getUnsplashImageByText } from "../lib/unSplash"
+import data from "../lib/cityImages.json"
 
-function test() {
+function test({ photo }) {
   return (
-    <div className="bg-gray-600">test</div>
+    <div className="">
+      <HeaderWrapper title="City" background={photo} />
+    </div>
   )
 }
 
 export default test
+
+export async function getServerSideProps(context) {
+  
+}

@@ -1,6 +1,7 @@
 import { useState } from "react"
 import LocationAutoComplete from "../components/placesAc"
 import { useRouter } from "next/router"
+import HeaderWrapper from "../components/HeaderWrapper"
 
 export default function Signup() {
   const [placeId, setPlaceId] = useState(null)
@@ -32,7 +33,7 @@ export default function Signup() {
       name: e.target.name.value,
       email: e.target.email.value,
       password: e.target.password.value,
-      city_id: place.city_id
+      city_id: place.city_id,
     }
     const JSONdata = JSON.stringify(data)
     const endpoint = "api/signupApi"
@@ -51,54 +52,57 @@ export default function Signup() {
         "user",
         JSON.stringify({ userId: result.userId, token: result.token })
       )
-  //    router.push("/") // if OK redirect
+       //window.location = "/"
     }
 
-    console.log("response", result) 
+    console.log("response", result)
   }
 
   return (
-    <div className="mx-auto mt-20 w-[500px] rounded-md border py-5 shadow-md">
-      <h1 className="text-center text-3xl">Sign up</h1>
-      <form onSubmit={handleSubmit} method="post" className="flex flex-col p-2">
-        <label htmlFor="name">Name</label>
-        <input
-          type="text"
-          className="my-2 rounded-full border p-2 text-gray-400 outline-none"
-          name="name"
-          id="name"
-        />
-
-        <label htmlFor="email">Email</label>
-        <input
-          type="text"
-          className="my-2 rounded-full border p-2 text-gray-400 outline-none"
-          name="email"
-          id="email"
-        />
-
-        <label htmlFor="dates">Password</label>
-        <input
-          type="password"
-          className="my-2 rounded-full border p-2 text-gray-400 outline-none"
-          name="password"
-          id="password"
-        />
-
-        <label>City</label>
-        <LocationAutoComplete
-          className="mt-2 rounded-full border p-2 text-gray-400 outline-none"
-          onChange={handleOnChange}
-          toggleFunction={handleSelect}
-        />
-
-        <button
-          type="submit"
-          className="mt-6 btn"
+    <div>
+      <HeaderWrapper title="Sign up" />
+      <div className="mx-auto mt-20 w-[500px] rounded-md border py-5 shadow-md">
+        <form
+          onSubmit={handleSubmit}
+          method="post"
+          className="flex flex-col p-2"
         >
-          Sign up
-        </button>
-      </form>
+          <label htmlFor="name">Name</label>
+          <input
+            type="text"
+            className="my-2 rounded-full border p-2 text-gray-400 outline-none"
+            name="name"
+            id="name"
+          />
+
+          <label htmlFor="email">Email</label>
+          <input
+            type="text"
+            className="my-2 rounded-full border p-2 text-gray-400 outline-none"
+            name="email"
+            id="email"
+          />
+
+          <label htmlFor="dates">Password</label>
+          <input
+            type="password"
+            className="my-2 rounded-full border p-2 text-gray-400 outline-none"
+            name="password"
+            id="password"
+          />
+
+          <label>City</label>
+          <LocationAutoComplete
+            className="mt-2 rounded-full border p-2 text-gray-400 outline-none"
+            onChange={handleOnChange}
+            toggleFunction={handleSelect}
+          />
+
+          <button type="submit" className="btn mt-6">
+            Sign up
+          </button>
+        </form>
+      </div>
     </div>
   )
 }

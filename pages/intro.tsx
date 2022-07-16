@@ -55,7 +55,7 @@ export async function getServerSideProps({ query }) {
   let usr
   try {
     const userId = query.userId
-    console.log("id", userId)
+    console.log("userIduserIduserId", userId)
 
     if (userId && userId !== undefined) {
       usr = await getTravelContent(userId)

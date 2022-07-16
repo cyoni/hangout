@@ -1,5 +1,5 @@
 import styles from "./_.module.scss";
-import { getAllTravellingFromLocation } from "../../lib/travel";
+import { getAllTravellingByPlace } from "../../lib/travel";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { Button } from "@mui/material";
@@ -67,7 +67,7 @@ export async function getServerSideProps(context) {
     const { query } = context;
     const { country, state, city } = query;
     const location = { country, state, city };
-    const travelling = await getAllTravellingFromLocation(country, state, city);
+    const travelling = await getAllTravellingByPlace(country, state, city);
     return {
       props: { travelling, location },
     };
