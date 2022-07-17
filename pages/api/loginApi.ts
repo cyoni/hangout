@@ -1,6 +1,6 @@
 import { generateAccessToken } from "../../lib/jwtUtils"
 const jwt = require("jsonwebtoken")
-import dbFind from "../../lib/dbFind"
+import { dbFind } from "../../lib/dbFind"
 
 async function login(req) {
   const { email, password } = req.body
@@ -14,20 +14,17 @@ async function login(req) {
     const user = userArray[0]
     const accountPassword = user["password"]
     const userId = user["userId"]
-    const place = user["location"]
+    const place = user["place"]
     const name = user["name"]
     console.log("password", password + "," + accountPassword)
     // compare passwords
     if (password === accountPassword) {
       // generate token
-      const token = generateAccessToken({ userId, name })
+      const token: string = generateAccessToken({ userId, name, place })
       console.log("Connecting OK")
       return {
         isSuccess: true,
-        userId,
-        name,
         token,
-        place,
       }
     } else {
       return { isSuccess: false, message: "wrong password" }

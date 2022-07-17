@@ -1,14 +1,21 @@
 import React, { useRef, useState } from "react"
 
 interface Props {
+  placeholder?: string
   className: string
   onChange?: Function
+  position?: string
   toggleFunction: Function
 }
 
-function LocationAutoComplete({ className, onChange, toggleFunction }: Props) {
+function LocationAutoComplete({
+  className,
+  onChange,
+  toggleFunction,
+  position,
+  placeholder,
+}: Props) {
   const [places, setPlace] = useState<Place[]>(null)
-  const [lastInputWithResults, setLastInputWithResults] = useState<string>(null)
   const inputRef = useRef(null)
 
   const clearLocations = () => {
@@ -19,7 +26,7 @@ function LocationAutoComplete({ className, onChange, toggleFunction }: Props) {
     console.log("place", location)
     const parsedLocation = parseLocation(location)
     inputRef.current.value = parsedLocation
-    toggleFunction(location)
+    toggleFunction(location, inputRef)
     clearLocations()
   }
 
@@ -30,13 +37,18 @@ function LocationAutoComplete({ className, onChange, toggleFunction }: Props) {
   const renderLocations = () => {
     return (
       <div className="relative">
-        <ul className="absolute bg-white z-10 top-[-5px] rounded-md p-1 shadow-lg">
-          {places?.map((place) => (
+        <ul
+          className={`absolute z-10 rounded-md bg-white p-1 shadow-lg ${
+            position ? position : ""
+          }`}
+        >
+          {places?.map((place, i) => (
             <li
               key={place.city_id}
               onClick={() => handleClick(place)}
-              className={`cursor-pointer rounded-md border-b px-2 
-                        py-1 hover:bg-gray-50 hover:text-blue-500`}
+              className={`cursor-pointer  ${
+                places.length - 1 > i ? "border-b" : ""
+              }  px-2 py-1 hover:bg-gray-50 hover:text-blue-500`}
             >
               {parseLocation(place)}
             </li>
@@ -83,6 +95,7 @@ function LocationAutoComplete({ className, onChange, toggleFunction }: Props) {
       <input
         ref={inputRef}
         className={className}
+        placeholder={placeholder}
         type="text"
         onChange={(e) => handleChange(e)}
       />

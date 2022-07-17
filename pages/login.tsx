@@ -31,10 +31,7 @@ export default function Login() {
       window.localStorage.setItem(
         "user",
         JSON.stringify({
-          userId: result.userId,
-          name: result.name,
           token: result.token,
-          place: result.place,
         })
       )
       window.location = "/"
@@ -47,7 +44,6 @@ export default function Login() {
     <div>
       <HeaderWrapper title="Log in" />
       <div className="mx-auto mt-20 w-[500px] rounded-md border shadow-md">
-      
         <form
           onSubmit={handleSubmit}
           className="flex flex-col p-5 "

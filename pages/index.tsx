@@ -6,16 +6,21 @@ import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { InboxIcon } from "@heroicons/react/outline"
 import HeaderWrapper from "../components/HeaderWrapper"
-import { getPhotoByPhotoRef, getPhotoReference } from "../lib/googlePlaces"
-import { getHeaderPicture } from "../lib/headerImage"
+import { queryPlace } from "../lib/place"
+import { formatDate } from "../lib/dates"
 
-export default function Home({ travelling, hangouts, connectedUser }) {
+const defaultCityCode: number = 127407
+
+interface Props {
+  place: Place
+}
+export default function Home({
+  travelling,
+  hangouts,
+  place,
+  connectedUser,
+}: Props) {
   const [location, setLocation] = useState(null)
-
-  useEffect(() => {
-    if (connectedUser && connectedUser.user.userId !== undefined) {
-    }
-  }, [connectedUser])
 
   const router = useRouter()
   console.log("hangouts", hangouts)
@@ -31,7 +36,12 @@ export default function Home({ travelling, hangouts, connectedUser }) {
       </Head>
 
       <main className="">
-        <HeaderWrapper backgroundId={"Jerusalem"} title="Tel Aviv, Israel" />
+        <HeaderWrapper
+          backgroundId={place?.city}
+          title={
+            place ? `${place.city}, ${place.province}, ${place.country}` : ""
+          }
+        />
         <div className="mt-1 flex border-b pl-2 pb-1">
           <div className="cursor-pointer rounded-xl py-1 px-2 hover:bg-gray-200">
             item
@@ -69,18 +79,18 @@ export default function Home({ travelling, hangouts, connectedUser }) {
                   >
                     <div className="flex flex-col px-2 ">
                       {/* profile image */}
-                      <div className="flex items-center ">
-                        <div className="flex-1 font-bold capitalize">
-                          {item.name}
+                      <div className="flex items-center justify-between ">
+                        <div className="font-bold capitalize">
+                          {item.profile[0].name}
                         </div>
-                        <InboxIcon className="h-10 w-fit rounded-full p-2  hover:bg-gray-100 " />
+                        <InboxIcon className="h-10  rounded-full p-2  hover:bg-gray-100 " />
                       </div>
                       <div className="flex space-x-2">
                         <div className="">
                           {
-                            <Image
+                            <img
                               className="rounded-md"
-                              src={item.picture}
+                              src={item.profile[0].picture}
                               alt="pic"
                               width={150}
                               height={150}
@@ -88,8 +98,8 @@ export default function Home({ travelling, hangouts, connectedUser }) {
                           }
                         </div>
                         {/* info */}
-                        <div className="{styles.upcoming.item}">
-                          {item.startDate} - {item.endDate}
+                        <div className="">
+                          {formatDate( item.startDate)} - {formatDate(item.endDate)}
                           {/* country */}
                           {item.location?.country && (
                             <div className="{styles.upcoming.item}">
@@ -120,9 +130,22 @@ export default function Home({ travelling, hangouts, connectedUser }) {
 
 export async function getServerSideProps(context) {
   try {
-    const travelling = await getAllTravellingByPlace(127407)
+    let cityQueryCode = 0
+    const city_id = Number(context.query.city_id)
+
+    if (isNaN(city_id)) {
+      cityQueryCode = defaultCityCode
+    } else {
+      cityQueryCode = city_id
+    }
+
+    console.log("cityQueryCode", cityQueryCode)
+
+    const place = await queryPlace(cityQueryCode)
+    console.log("placeplace", place)
+    const travelling = await getAllTravellingByPlace(cityQueryCode)
     return {
-      props: { travelling },
+      props: { place, travelling },
     }
   } catch (e) {
     console.error(e)

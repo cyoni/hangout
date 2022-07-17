@@ -16,11 +16,11 @@ export async function dbFind(dbName, query) {
 
 export async function dbAggregate(request) {
   try {
-    const { database, from, localField, foreignField, as, $match } = request
+    const { collection, from, localField, foreignField, as, $match } = request
     const client = await clientPromise
     const db = client.db()
     const data = await db
-      .collection(database)
+      .collection(collection)
       .aggregate([
         { $match },
         {

@@ -45,17 +45,17 @@ async function signup(req) {
 
     console.log("req.body", req.body)
 
-    const { name, email, password, city_id }: Props =
-      req.body
+    const { name, email, password, city_id }: Props = req.body
 
-    if (isNaN(city_id) ) {
+    if (isNaN(city_id)) {
       throw new Error("Invalid place IDs")
     }
 
     // check if place id is valid
 
     const place = await queryPlace(city_id)
-    console.log("PLACE", place)
+    console.log("place", place)
+
     if (!place) {
       throw new Error("Place was not found")
     }
@@ -71,7 +71,7 @@ async function signup(req) {
     await addUser(db, newUser)
 
     // generate JWT:
-    const token = generateAccessToken({ userId })
+    const token = generateAccessToken({ userId, name, place })
 
     return { isSuccess: true, token, userId }
   } catch (error) {

@@ -1,11 +1,22 @@
 import Link from "next/link"
+import { useRouter } from "next/router"
 import React from "react"
 import Menubar from "./Menubar"
+import LocationAutoComplete from "./placesAc"
 
 function Header({ connectedUser }) {
+  const router = useRouter()
+
+  const handleSelect = (place: Place, inputRef) => {
+    if (place && place.city_id) {
+      router.push(`/?city_id=${place.city_id}`)
+      inputRef.current.value = ""
+    }
+  }
+
   return (
-    <header className="border-b border-gray-100 p-2 pb-3">
-      <div className="mx-auto flex items-center justify-between  text-gray-700">
+    <header className="border-b border-gray-100 p-2 pb-3 ">
+      <div className="mx-auto flex items-center justify-between  text-gray-700 ">
         <div className="flex items-center space-x-4">
           <div className="pl-10">
             <Link href="/">
@@ -13,22 +24,16 @@ function Header({ connectedUser }) {
             </Link>
           </div>
           <div className="rounded-md bg-slate-200 py-2">
-            <input
-              type="text"
+            <LocationAutoComplete
+              toggleFunction={handleSelect}
+              position="top-2"
+              className="w-60 bg-transparent pl-2 outline-none "
               placeholder="Where are you going?"
-              className="w-60 bg-transparent pl-2 outline-none"
             />
           </div>
         </div>
 
-        {connectedUser?.user?.name && (
-          <>
-            <div>hello {connectedUser.user.name}</div>{" "}
-            <Link href="/logout">log out</Link>
-          </>
-        )}
-
-        <Menubar />
+        <Menubar connectedUser={connectedUser} />
       </div>
     </header>
   )
