@@ -5,7 +5,7 @@ import Image from "next/image"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { InboxIcon } from "@heroicons/react/outline"
-import HeaderWrapper from "../components/HeaderWrapper"
+import HeaderImage from "../components/HeaderImage"
 import { queryPlace } from "../lib/place"
 import { formatDate } from "../lib/dates"
 
@@ -36,7 +36,7 @@ export default function Home({
       </Head>
 
       <main className="">
-        <HeaderWrapper
+        <HeaderImage
           backgroundId={place?.city}
           title={
             place ? `${place.city}, ${place.province}, ${place.country}` : ""

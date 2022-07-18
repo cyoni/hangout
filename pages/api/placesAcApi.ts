@@ -27,7 +27,7 @@ async function queryLocation(input) {
     FROM cities as city 
     INNER JOIN countries as country ON country.id = city.country_id 
     INNER JOIN states as state ON city.state_id = state.id 
-    WHERE city.name LIKE '${safeString}%' ORDER BY city.name ASC LIMIT 6`
+    WHERE city.name LIKE '${safeString}%' ORDER BY city.name ASC LIMIT 15`
   )
   return places
 }

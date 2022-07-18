@@ -1,27 +1,36 @@
 import Link from "next/link"
-import { Props } from "next/script"
 import React from "react"
+import Notification from "./Notification"
 
 interface Props {
   title: string
   Icon?: any
   link: string
+  notifications?: number
   externalClass?: string
 }
-function MenubarRow({ title, Icon, link, externalClass }: Props) {
+function MenubarRow({
+  title,
+  Icon,
+  link,
+  externalClass,
+  notifications,
+}: Props) {
+
   return (
-    <a href={link}>
+    <Link href={link}>
       <div
-        className={`flex cursor-pointer
+        className={`relative flex cursor-pointer
       items-center space-x-2
       rounded-full px-3 py-2
       text-xl hover:bg-gray-100 hover:shadow-sm
        ${externalClass}`}
       >
         {Icon && <Icon className="h-6" />}
+        {notifications && <Notification count={notifications} />}
         <div>{title}</div>
       </div>
-    </a>
+    </Link>
   )
 }
 

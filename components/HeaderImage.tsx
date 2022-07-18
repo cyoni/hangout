@@ -9,7 +9,7 @@ interface Props {
   backgroundId?: string
 }
 
-function HeaderWrapper({
+function HeaderImage({
   title,
   titleExternalClass,
   headerExternalClass,
@@ -32,7 +32,7 @@ function HeaderWrapper({
         }')`,
       }}
       className={`h-40 rounded-sm
-       border border-transparent 
+       border border-transparent
        bg-cover bg-center shadow-lg ${
          headerExternalClass ? headerExternalClass : ""
        }`}
@@ -50,4 +50,4 @@ function HeaderWrapper({
   )
 }
 
-export default HeaderWrapper
+export default HeaderImage

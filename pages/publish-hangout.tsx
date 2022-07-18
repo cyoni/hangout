@@ -4,7 +4,7 @@ import Spinner from "react-bootstrap/Spinner"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import { queryPlace } from "../lib/place"
-import HeaderWrapper from "../components/HeaderWrapper"
+import HeaderImage from "../components/HeaderImage"
 
 export default function Travelling({ place, connectedUser }) {
   console.log("connectedUser", connectedUser)
@@ -62,7 +62,7 @@ export default function Travelling({ place, connectedUser }) {
 
   return (
     <div>
-      <HeaderWrapper title="Tel Aviv, Israel" />
+      <HeaderImage title="Publish a new hangout" />
       <form
         onSubmit={handleSubmit}
         className="mx-auto my-10 flex w-[40%] flex-col gap-2 rounded-md border p-3 shadow-lg"

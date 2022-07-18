@@ -1,7 +1,7 @@
 import { useState } from "react"
 import LocationAutoComplete from "../components/placesAc"
 import { useRouter } from "next/router"
-import HeaderWrapper from "../components/HeaderWrapper"
+import HeaderImage from "../components/HeaderImage"
 
 export default function Signup() {
   const [placeId, setPlaceId] = useState(null)
@@ -60,7 +60,7 @@ export default function Signup() {
 
   return (
     <div>
-      <HeaderWrapper title="Sign up" />
+      <HeaderImage title="Sign up" />
       <div className="mx-auto mt-20 w-[500px] rounded-md border py-5 shadow-md">
         <form
           onSubmit={handleSubmit}

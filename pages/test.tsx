@@ -1,5 +1,5 @@
 import React from "react"
-import HeaderWrapper from "../components/HeaderWrapper"
+import HeaderImage from "../components/HeaderImage"
 import { getPhotoByPhotoRef, getPhotoReference } from "../lib/googlePlaces"
 import { getUnsplashImageByText } from "../lib/unSplash"
 import data from "../lib/cityImages.json"
@@ -7,7 +7,7 @@ import data from "../lib/cityImages.json"
 function test({ photo }) {
   return (
     <div className="">
-      <HeaderWrapper title="City" background={photo} />
+      <HeaderImage title="City" background={photo} />
     </div>
   )
 }

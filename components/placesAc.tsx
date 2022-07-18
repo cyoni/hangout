@@ -36,9 +36,9 @@ function LocationAutoComplete({
 
   const renderLocations = () => {
     return (
-      <div className="relative">
+      <div className="relative ">
         <ul
-          className={`absolute z-10 rounded-md bg-white p-1 shadow-lg ${
+          className={`absolute z-10 rounded-md bg-white p-1 shadow-lg max-h-96 overflow-auto ${
             position ? position : ""
           }`}
         >
@@ -97,6 +97,7 @@ function LocationAutoComplete({
         className={className}
         placeholder={placeholder}
         type="text"
+      //  onBlur={clearLocations}
         onChange={(e) => handleChange(e)}
       />
       {Array.isArray(places) && places.length > 0 && renderLocations()}

@@ -17,6 +17,7 @@ import RightMenuBar from "../components/RightMenuBar"
 import Footer from "../components/Footer"
 import Layout from "../components/Layout"
 import Header from "../components/Header"
+import { Toaster } from "react-hot-toast"
 
 function MyApp({ Component, pageProps }) {
   // const x = process.env.ACCESS_TOKEN_SECRET;
@@ -63,7 +64,7 @@ function MyApp({ Component, pageProps }) {
       ></Script>
 
       <Header connectedUser={connectedUser} />
-      
+      <Toaster />
       <div className="">
         <div className="">
           

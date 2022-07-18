@@ -1,5 +1,5 @@
 import { useRouter } from "next/router"
-import HeaderWrapper from "../components/HeaderWrapper"
+import HeaderImage from "../components/HeaderImage"
 
 export default function Login() {
   const router = useRouter()
@@ -42,8 +42,8 @@ export default function Login() {
 
   return (
     <div>
-      <HeaderWrapper title="Log in" />
-      <div className="mx-auto mt-20 w-[500px] rounded-md border shadow-md">
+      <HeaderImage title="Log in" />
+      <div className="shared-frame">
         <form
           onSubmit={handleSubmit}
           className="flex flex-col p-5 "

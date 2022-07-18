@@ -11,8 +11,16 @@
     text-lg font-medium text-white
     hover:bg-blue-600 hover:opacity-80;
   }
+
+  .shared-frame {
+    @apply mx-auto mt-20 w-[500px] rounded-md border shadow-md;
+  }
 }
 
 .title-shadow {
   text-shadow: rgb(0 0 0 / 88%) 0.25px 0.25px 0.25em;
+}
+
+body {
+  color: rgb(71, 85, 105);
 }

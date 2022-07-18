@@ -11,12 +11,16 @@ import Avatar from "./Avatar"
 import AvatarMenu from "./AvatarMenu"
 
 function Menubar({ connectedUser }) {
-
   return (
     <div className="col-span-2 border-gray-100">
       <div className="flex items-center space-x-2">
         <MenubarRow title="Home" Icon={HomeIcon} link="/" />
-        <MenubarRow title="Messages" Icon={InboxIcon} link="/" />
+        <MenubarRow
+          title="Messages"
+          Icon={InboxIcon}
+          link="/inbox"
+          notifications={2}
+        />
         <MenubarRow title="Search" Icon={SearchIcon} link="/" />
         <MenubarRow
           title="Publish hangout"

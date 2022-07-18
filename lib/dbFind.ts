@@ -14,24 +14,37 @@ export async function dbFind(dbName, query) {
   }
 }
 
-export async function dbAggregate(request) {
+interface AggregateReq {
+  collection: string
+  $match: {}
+  from?: string
+  localField?: string
+  foreignField?: string
+  as?: string
+}
+
+export async function dbAggregate(request: AggregateReq) {
   try {
     const { collection, from, localField, foreignField, as, $match } = request
     const client = await clientPromise
     const db = client.db()
+
+    const aggregateParams = []
+    aggregateParams.push({ $match })
+
+    if (from) {
+      aggregateParams.push({
+        $lookup: {
+          from,
+          localField,
+          foreignField,
+          as,
+        },
+      })
+    }
     const data = await db
       .collection(collection)
-      .aggregate([
-        { $match },
-        {
-          $lookup: {
-            from,
-            localField,
-            foreignField,
-            as,
-          },
-        },
-      ])
+      .aggregate(aggregateParams)
       .toArray()
 
     console.log("dbAggregate data: ", data)
