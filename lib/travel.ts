@@ -1,4 +1,4 @@
-import { USERS_TABLE } from "./consts"
+import { EMPTY_PROFILE_PICTURE, TRAVELLING_TABLE, USERS_TABLE } from "./consts"
 import { dbAggregate, dbFind } from "./dbFind"
 
 const formatDate = (date) => {
@@ -27,17 +27,37 @@ export async function getAllTravelling() {
   return result
 }
 
-export async function getAllTravellingByPlace(city_id: number) {
-  const data = {
-    collection: "future_travelling",
-    from: "users",
+const addEmptyProfileImageIfNeeded = (results) => {
+  for (let i = 0; i < results.length; i++) {
+    const current = results[i]
+    if (!current.profile[0].picture)
+      current.profile[0].picture = EMPTY_PROFILE_PICTURE
+  }
+}
+
+export async function getAllTravellingByPlace(cityId: number) {
+  const request = {
+    collection: TRAVELLING_TABLE,
+    from: USERS_TABLE,
     localField: "userId",
     foreignField: "userId",
     as: "profile",
-    $match: { city_id },
+    $match: { cityId },
+    $project: {
+      startDate: 1,
+      endDate: 1,
+      userId: 1,
+      cityId: 1,
+      description: 1,
+      profile: { name: 1, picture: 1 },
+    },
   }
-  const results = await dbAggregate(data)
-  return results
+  const data = await dbAggregate(request)
+  console.log("data", data)
+
+  addEmptyProfileImageIfNeeded(data)
+
+  return data
 }
 
 // export async function getAllHangouts() {

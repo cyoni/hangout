@@ -18,7 +18,7 @@ function Header({ connectedUser }) {
     <header className="border-b border-gray-100 p-2 pb-3 ">
       <div className="mx-auto flex items-center justify-between  text-gray-700 ">
         <div className="flex items-center space-x-4">
-          <div className="pl-10">
+          <div className="px-7 ">
             <Link href="/">
               <a className="text-3xl font-medium">Hangouts</a>
             </Link>

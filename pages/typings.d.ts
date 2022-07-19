@@ -20,3 +20,16 @@ type JWT = {
   jwt: string
   user: { userId: string; name: string; place: Place }
 }
+type ResponseObject = { 
+  isSuccess: boolean
+  message?: string
+}
+
+interface TravellingObject {
+  jwt: string
+  cityId: number
+  userId: string
+  startDate: string
+  endDate: string
+  description: string
+}

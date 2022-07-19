@@ -35,7 +35,7 @@ export default function SendMessagePage({
     console.log("response", result) // if OK redirect
     if (result.isSuccess) {
       toast.success("Message sent!", { id: refreshToast })
-    } else{
+    } else {
       toast.error("Message could not be sent", { id: refreshToast })
     }
   }

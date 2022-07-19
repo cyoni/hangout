@@ -21,11 +21,13 @@ interface AggregateReq {
   localField?: string
   foreignField?: string
   as?: string
+  $project: {}
 }
 
 export async function dbAggregate(request: AggregateReq) {
   try {
-    const { collection, from, localField, foreignField, as, $match } = request
+    const { collection, from, localField, foreignField, as, $match, $project } =
+      request
     const client = await clientPromise
     const db = client.db()
 
@@ -42,6 +44,13 @@ export async function dbAggregate(request: AggregateReq) {
         },
       })
     }
+
+    if ($project) {
+      aggregateParams.push({ $project })
+    }
+
+    console.log("aggregateParams", aggregateParams)
+
     const data = await db
       .collection(collection)
       .aggregate(aggregateParams)

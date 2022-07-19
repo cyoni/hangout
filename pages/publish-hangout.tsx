@@ -5,6 +5,7 @@ import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import { queryPlace } from "../lib/place"
 import HeaderImage from "../components/HeaderImage"
+import toast from "react-hot-toast"
 
 export default function Travelling({ place, connectedUser }) {
   console.log("connectedUser", connectedUser)
@@ -16,31 +17,46 @@ export default function Travelling({ place, connectedUser }) {
   const [newPlace, setNewPlace] = useState<Place>(null)
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    const refreshToast = toast.loading("Publishing hangout...")
+    try {
+      e.preventDefault()
 
-    const data = {
-      userId: connectedUser.userId,
-      jwt: connectedUser.jwt,
-      startDate,
-      endDate,
-      place: newPlace,
-      description: e.target.description.value,
+      const data: TravellingObject = {
+        userId: connectedUser.user.userId,
+        jwt: connectedUser.jwt,
+        startDate,
+        endDate,
+        cityId: newPlace.city_id,
+        description: e.target.description.value,
+      }
+
+      console.log("data", data)
+
+      const JSONdata = JSON.stringify(data)
+
+      console.log("JSONdata", JSONdata)
+
+      const endpoint = "api/publishHangoutApi"
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSONdata,
+      }
+      const response = await fetch(endpoint, options)
+      const result: ResponseObject = await response.json()
+      console.log("response", result) // if OK redirect
+      
+      if (result?.isSuccess) {
+        toast.success("Publish successfully!", { id: refreshToast })
+      } else {
+        throw new Error()
+      }
+    } catch (e) {
+      toast.error("Hangout could not be published", { id: refreshToast })
+      console.log("error", e.message)
     }
-
-    const JSONdata = JSON.stringify(data)
-
-    console.log("JSONdata", JSONdata)
-    const endpoint = "api/publishTravelling"
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSONdata,
-    }
-    const response = await fetch(endpoint, options)
-    const result = await response.json()
-    console.log("response", result) // if OK redirect
   }
 
   const convertDate = (date) => {
