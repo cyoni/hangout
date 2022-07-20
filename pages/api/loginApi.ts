@@ -1,6 +1,6 @@
 import { generateAccessToken } from "../../lib/jwtUtils"
 const jwt = require("jsonwebtoken")
-import { dbFind } from "../../lib/dbFind"
+import { dbFind } from "../../lib/mongoUtils"
 
 async function login(req) {
   const { email, password } = req.body

@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import dbFind from "../../lib/dbFind"
+import dbFind from "../../lib/mongoUtils"
 import clientPromise from "../../lib/mongodb"
 import randomString from "../../lib/randomString"
 import { generateAccessToken } from "../../lib/jwtUtils"

@@ -13,13 +13,12 @@ export function generateAccessToken(payload: AccessTokenReq) {
     expiresIn: "1d",
   })
 }
-
 export function isUserVarified(token) {
   return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
     if (err) return null
     return {
       isSuccess: true,
-      message: "Authentication succeded.",
+      message: "AUTH SUCCEDED",
       jwt: token,
       user,
     }

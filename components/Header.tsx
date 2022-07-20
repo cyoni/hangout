@@ -4,7 +4,12 @@ import React from "react"
 import Menubar from "./Menubar"
 import LocationAutoComplete from "./placesAc"
 
-function Header({ connectedUser }) {
+interface Props {
+  connectedUser: JWT
+  newMessages: number
+}
+
+function Header({ connectedUser, newMessages } : Props) {
   const router = useRouter()
 
   const handleSelect = (place: Place, inputRef) => {
@@ -33,7 +38,7 @@ function Header({ connectedUser }) {
           </div>
         </div>
 
-        <Menubar connectedUser={connectedUser} />
+        <Menubar connectedUser={connectedUser} newMessages={newMessages} />
       </div>
     </header>
   )

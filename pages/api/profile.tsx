@@ -1,5 +1,5 @@
 import { isUserVarified } from "../../lib/jwtUtils";
-import dbFind from "../../lib/dbFind";
+import dbFind from "../../lib/mongoUtils";
 
 async function profileInfo(userId) {
   const rawResult = await dbFind("users", { userId });

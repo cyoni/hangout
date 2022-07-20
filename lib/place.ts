@@ -17,6 +17,7 @@ export async function queryPlace(cityId: number) {
         city_id: rawPlace.id,
         country_id: rawPlace.country_id,
         province_id: rawPlace.state_id,
+
         city: rawPlace.name,
         province: rawPlace.state?.name,
         country: rawPlace.country?.name

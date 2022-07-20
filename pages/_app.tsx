@@ -18,9 +18,14 @@ import Footer from "../components/Footer"
 import Layout from "../components/Layout"
 import Header from "../components/Header"
 import { Toaster } from "react-hot-toast"
+import { post } from "../lib/postman"
+import { GET_NOTIFICATION_METHOD } from "../lib/consts"
 
 function MyApp({ Component, pageProps }) {
   // const x = process.env.ACCESS_TOKEN_SECRET;
+
+  const [connectedUser, setConnectedUser] = useState<JWT>(null)
+  const [newMessages, setNewMessages] = useState<number>(null)
 
   const isWindow = typeof window !== "undefined"
   const router = useRouter()
@@ -32,11 +37,9 @@ function MyApp({ Component, pageProps }) {
 
   const localStorage = (folder) => {
     const data = window.localStorage.getItem(folder)
-    if (data) return JSON.parse(data)    
+    if (data) return JSON.parse(data)
     else return null
   }
-
-  const [connectedUser, setConnectedUser] = useState<JWT>(null)
 
   useEffect(() => {
     const localUser = localStorage("user")
@@ -49,6 +52,20 @@ function MyApp({ Component, pageProps }) {
       }
     }
   }, [])
+
+  useEffect(() => {
+    const getInbox = async () => {
+      const body = {
+        userId: connectedUser.user.userId,
+        jwt: connectedUser.jwt,
+        method: GET_NOTIFICATION_METHOD,
+      }
+      const result = await post({ url: "api/inboxNotificationsApi", body })
+      setNewMessages(result.data[0]?.msgs)
+      console.log("results from msg api ", result)
+    }
+    if (connectedUser) getInbox()
+  }, [connectedUser])
 
   /* TODO - Replace connectedUser with nextAuth */
 
@@ -63,19 +80,17 @@ function MyApp({ Component, pageProps }) {
         strategy="beforeInteractive"
       ></Script>
 
-      <Header connectedUser={connectedUser} />
+      <Header connectedUser={connectedUser} newMessages={newMessages} />
+
       <Toaster />
+
       <div className="">
         <div className="">
-          
-
           <Layout
             Component={Component}
             pageProps={pageProps}
             connectedUser={connectedUser}
           />
-
-          
         </div>
 
         <Footer />

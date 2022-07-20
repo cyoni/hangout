@@ -1,5 +1,5 @@
 import { EMPTY_PROFILE_PICTURE, TRAVELLING_TABLE, USERS_TABLE } from "./consts"
-import { dbAggregate, dbFind } from "./dbFind"
+import { dbAggregate, dbFind } from "./mongoUtils"
 
 const formatDate = (date) => {
   let d = new Date(date)
@@ -36,12 +36,14 @@ const addEmptyProfileImageIfNeeded = (results) => {
 }
 
 export async function getAllTravellingByPlace(cityId: number) {
-  const request = {
+  const request: AggregateReq = {
     collection: TRAVELLING_TABLE,
-    from: USERS_TABLE,
-    localField: "userId",
-    foreignField: "userId",
-    as: "profile",
+    innerJoin: {
+      localField: "userId",
+      foreignField: "userId",
+      as: "profile",
+      from: USERS_TABLE,
+    },
     $match: { cityId },
     $project: {
       startDate: 1,

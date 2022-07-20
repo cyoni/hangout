@@ -1,25 +1,38 @@
 import React from "react"
 import Avatar from "./Avatar"
-import HeaderImage from "./HeaderImage"
+import moment from "moment"
 
-function Message({ message }) {
+interface Props {
+  _id: string
+  receiverId: string
+  senderId: string
+  message: string
+  timestamp: number
+  profile: [{ name: string; place: Place }]
+}
+function Message({ message, timestamp, profile }: Props) {
+  const time = timestamp > 0 ? moment(timestamp).fromNow() : ""
   return (
-    <div className="mx-5 relative flex gap-7 border-b border-b-gray-100 py-5 pl-5 text-gray-600">
-      
-      <div className="text-[50px] absolute left-0 top-3 text-red-600 font-bold hidden">·</div>
+    <div className="relative mx-5 flex gap-7 border-b border-b-gray-100 py-5 pl-5 text-gray-600">
+      <div className="absolute left-0 top-3 hidden text-[50px] font-bold text-red-600">
+        ·
+      </div>
       <div className="flex gap-2">
         <Avatar className="h-14 w-14" />
 
         <div className="">
-          <div className="font-bold">Yoni</div>
-          <div>Tel Aviv, Israel</div>
+          <div className="font-bold capitalize">{profile[0].name}</div>
+          <div>
+            {profile[0].place.city}, {profile[0].place.province},{" "}
+            {profile[0].place.country}
+          </div>
         </div>
       </div>
       <div className="flex flex-1 flex-col rounded-md  p-3">
         <div className="cursor-pointer truncate rounded-md bg-gray-100 p-2 shadow-sm hover:bg-gray-200">
           {message}
         </div>
-        <div className="ml-auto text-sm">10 hours ago</div>
+        <div className="ml-auto text-sm">{time}</div>
       </div>
     </div>
   )

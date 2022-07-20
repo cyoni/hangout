@@ -1,6 +1,6 @@
 import clientPromise from "../../lib/mongodb"
 import { isUserVarified } from "../../lib/jwtUtils"
-import { dbAggregate, dbFind } from "../../lib/dbFind"
+import { dbAggregate, dbFind } from "../../lib/mongoUtils"
 
 interface Request {
   jwt: string
