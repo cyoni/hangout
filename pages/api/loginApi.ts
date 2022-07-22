@@ -1,6 +1,7 @@
 import { generateAccessToken } from "../../lib/jwtUtils"
 const jwt = require("jsonwebtoken")
 import { dbFind } from "../../lib/mongoUtils"
+import { queryPlace } from "../../lib/place"
 
 async function login(req) {
   const { email, password } = req.body
@@ -14,9 +15,13 @@ async function login(req) {
     const user = userArray[0]
     const accountPassword = user["password"]
     const userId = user["userId"]
-    const place = user["place"]
+    const { cityId } = user["place"]
     const name = user["name"]
     console.log("password", password + "," + accountPassword)
+
+    const place = await queryPlace(cityId)
+    console.log("login place",place)
+
     // compare passwords
     if (password === accountPassword) {
       // generate token

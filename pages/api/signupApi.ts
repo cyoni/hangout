@@ -65,8 +65,14 @@ async function signup(req) {
     //   return { error: true, message: "user exists" }
     // }
 
-    const userId = randomString(10)
-    const newUser = { userId, name, password, email, place }
+    const userId = randomString(30)
+    const newUser = {
+      userId,
+      name,
+      password,
+      email,
+      place: { cityId: place.city_id },
+    }
     console.log("newUser", newUser)
     await addUser(db, newUser)
 

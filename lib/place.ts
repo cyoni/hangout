@@ -6,10 +6,10 @@ export async function queryPlace(cityId: number) {
     },
     include: {
       state: true,
-      country: true
-    }
+      country: true,
+    },
   })
-  
+
   console.log("queryPlace", rawPlace)
 
   const place: Place = rawPlace
@@ -17,10 +17,10 @@ export async function queryPlace(cityId: number) {
         city_id: rawPlace.id,
         country_id: rawPlace.country_id,
         province_id: rawPlace.state_id,
-
+        province_short: rawPlace.state_code,
         city: rawPlace.name,
         province: rawPlace.state?.name,
-        country: rawPlace.country?.name
+        country: rawPlace.country?.name,
       }
     : null
   return place

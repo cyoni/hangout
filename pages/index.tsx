@@ -39,7 +39,7 @@ export default function Home({
         <HeaderImage
           backgroundId={place?.city}
           title={
-            place ? `${place.city}, ${place.province}, ${place.country}` : ""
+            place ? `${place.city}, ${place.province_short}, ${place.country}` : ""
           }
         />
         <div className="mt-1 flex border-b pl-2 pb-1">
