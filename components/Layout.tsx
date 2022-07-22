@@ -2,7 +2,7 @@
 
 function Layout({ Component, pageProps, connectedUser }) {
   return (
-    <main className="">
+    <main>
       <Component {...pageProps} connectedUser={connectedUser} />
     </main>
   )

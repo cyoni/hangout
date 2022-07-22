@@ -1,48 +1,55 @@
 import { useRouter } from "next/router"
 import HeaderImage from "../components/HeaderImage"
+import { getCsrfToken, signIn, useSession } from "next-auth/react"
+import { redirect } from "next/dist/server/api-utils"
 
-export default function Login() {
+export default function Login({ csrfToken, callbackUrl }) {
   const router = useRouter()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    const data = {
-      email: e.target.email.value,
-      password: e.target.password.value,
-    }
+    const email = e.target.email.value
+    const password = e.target.password.value
+    const response = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    })
+    console.log("res", response)
 
-    const JSONdata = JSON.stringify(data)
-    const endpoint = "api/loginApi"
-
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSONdata,
-    }
-
-    const response = await fetch(endpoint, options)
-    const result = await response.json()
-    console.log("response", result)
-
-    if (result.isSuccess) {
-      window.localStorage.setItem(
-        "user",
-        JSON.stringify({
-          token: result.token,
-        })
-      )
-      window.location = "/"
+    if (response.status === 200) {
+      window.location = callbackUrl
     } else {
       console.log("could not login in, try again")
     }
+
+    // const data = {
+    //   email: e.target.email.value,
+    //   password: e.target.password.value,
+    //   csrfToken,
+    // }
+
+    // const JSONdata = JSON.stringify(data)
+    // const endpoint = "/api/auth/callback/credentials"
+
+    // const options = {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSONdata,
+    // }
+
+    // const response = await fetch(endpoint, options)
   }
+  console.log("csrfToken", csrfToken)
+  const session = useSession()
 
   return (
     <div>
       <HeaderImage title="Log in" />
+      session status: {session.status}
       <div className="shared-frame">
         <form
           onSubmit={handleSubmit}
@@ -79,4 +86,13 @@ export default function Login() {
       </div>
     </div>
   )
+}
+export async function getServerSideProps(context) {
+  const csrfToken = await getCsrfToken(context)
+  console.log("contextcontext",context)
+  const callbackUrl = context.query.callbackUrl || "/"
+  console.log("xxxxxxxxxxxx", callbackUrl)
+  return {
+    props: { csrfToken, callbackUrl },
+  }
 }

@@ -8,6 +8,7 @@ interface Props {
   link: string
   notifications?: number
   externalClass?: string
+  onClick?: Function
 }
 function MenubarRow({
   title,
@@ -15,11 +16,12 @@ function MenubarRow({
   link,
   externalClass,
   notifications,
+  onClick,
 }: Props) {
-
   return (
     <Link href={link}>
       <div
+        onClick={() => (onClick ? onClick() : null)}
         className={`relative flex cursor-pointer
       items-center space-x-2
       rounded-full px-3 py-2

@@ -7,21 +7,16 @@ import { isUserVarified } from "../lib/jwtUtils"
 import { useEffect, useState } from "react"
 import Script from "next/script"
 import { useRouter } from "next/router"
-import usePlacesAutocomplete, {
-  getGeocode,
-  getLatLng,
-} from "use-places-autocomplete"
 import useOnclickOutside from "react-cool-onclickoutside"
-import Menubar from "../components/Menubar"
-import RightMenuBar from "../components/RightMenuBar"
 import Footer from "../components/Footer"
 import Layout from "../components/Layout"
 import Header from "../components/Header"
 import { Toaster } from "react-hot-toast"
 import { post } from "../lib/postman"
 import { GET_NOTIFICATION_METHOD } from "../lib/consts"
+import { SessionProvider } from "next-auth/react"
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, session, pageProps }) {
   // const x = process.env.ACCESS_TOKEN_SECRET;
 
   const [connectedUser, setConnectedUser] = useState<JWT>(null)
@@ -29,11 +24,6 @@ function MyApp({ Component, pageProps }) {
 
   const isWindow = typeof window !== "undefined"
   const router = useRouter()
-
-  const handleClick = (data) => {
-    console.log("got data: ", data)
-    router.push(`places?location=${data}`)
-  }
 
   const localStorage = (folder) => {
     const data = window.localStorage.getItem(folder)
@@ -70,6 +60,7 @@ function MyApp({ Component, pageProps }) {
   /* TODO - Replace connectedUser with nextAuth */
 
   return (
+    <SessionProvider session={session}>
     <div>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -96,6 +87,7 @@ function MyApp({ Component, pageProps }) {
         <Footer />
       </div>
     </div>
+    </SessionProvider>
   )
 }
 

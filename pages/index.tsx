@@ -8,6 +8,7 @@ import { InboxIcon } from "@heroicons/react/outline"
 import HeaderImage from "../components/HeaderImage"
 import { queryPlace } from "../lib/place"
 import { formatDate } from "../lib/dates"
+import { signIn, useSession } from "next-auth/react"
 
 const defaultCityCode: number = 127407
 
@@ -39,7 +40,9 @@ export default function Home({
         <HeaderImage
           backgroundId={place?.city}
           title={
-            place ? `${place.city}, ${place.province_short}, ${place.country}` : ""
+            place
+              ? `${place.city}, ${place.province_short}, ${place.country}`
+              : ""
           }
         />
         <div className="mt-1 flex border-b pl-2 pb-1">
@@ -99,7 +102,8 @@ export default function Home({
                         </div>
                         {/* info */}
                         <div className="">
-                          {formatDate( item.startDate)} - {formatDate(item.endDate)}
+                          {formatDate(item.startDate)} -{" "}
+                          {formatDate(item.endDate)}
                           {/* country */}
                           {item.location?.country && (
                             <div className="{styles.upcoming.item}">

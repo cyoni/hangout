@@ -9,8 +9,13 @@ import {
 } from "@heroicons/react/outline"
 import Avatar from "./Avatar"
 import AvatarMenu from "./AvatarMenu"
+import { signIn, useSession } from "next-auth/react"
 
-function Menubar({ connectedUser, newMessages }) {
+function Menubar({ newMessages }) {
+  const session = useSession()
+  console.log("session", session)
+  const isAuthenticated = session.status === "authenticated"
+  const isUnAuthenticated = session.status === "unauthenticated"
   return (
     <div className="col-span-2 border-gray-100">
       <div className="flex items-center space-x-2">
@@ -27,11 +32,10 @@ function Menubar({ connectedUser, newMessages }) {
           Icon={PlusIcon}
           link="/publish-hangout"
         />
-        {connectedUser ? (
-          <AvatarMenu />
-        ) : (
+        {isAuthenticated && <AvatarMenu />}
+        {isUnAuthenticated && (
           <>
-            <MenubarRow title="Login" link="/login" />
+            <MenubarRow title="Login" onClick={() => signIn()} link="/" />
             <MenubarRow
               title="Sign up"
               link="/signup"
