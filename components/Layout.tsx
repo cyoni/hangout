@@ -1,9 +1,7 @@
-
-
-function Layout({ Component, pageProps, connectedUser }) {
+function Layout({ Component, pageProps }) {
   return (
     <main>
-      <Component {...pageProps} connectedUser={connectedUser} />
+      <Component {...pageProps}  />
     </main>
   )
 }

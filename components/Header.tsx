@@ -1,20 +1,37 @@
+import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import React from "react"
+import React, { useEffect, useState } from "react"
+import { GET_NOTIFICATION_METHOD } from "../lib/consts"
+import { post } from "../lib/postman"
+import { isAuthenticated } from "../lib/session"
 import Menubar from "./Menubar"
 import LocationAutoComplete from "./placesAc"
 
-interface Props {
-  connectedUser: JWT
-  newMessages: number
-}
-
-function Header({ connectedUser, newMessages } : Props) {
+function Header() {
   const router = useRouter()
+  const session = useSession()
+  const [newMessages, setNewMessages] = useState<number>(null)
+
+  useEffect(() => {
+    const getInbox = async () => {
+      const body = {
+        userId: session.data.userId,
+        method: GET_NOTIFICATION_METHOD,
+      }
+      const result = await post({ url: "/api/inboxNotificationsApi", body })
+      console.log("getInbox result", result)
+      if (result.isSuccess) {
+        setNewMessages(result.data.msgs)
+      }
+    }
+
+    if (isAuthenticated(session)) getInbox()
+  }, [session])
 
   const handleSelect = (place: Place, inputRef) => {
     if (place && place.city_id) {
-      router.push(`/?city_id=${place.city_id}`)
+      router.push(`/city/${place.city_id}`)
       inputRef.current.value = ""
     }
   }
@@ -38,7 +55,7 @@ function Header({ connectedUser, newMessages } : Props) {
           </div>
         </div>
 
-        <Menubar connectedUser={connectedUser} newMessages={newMessages} />
+        <Menubar newMessages={newMessages} />
       </div>
     </header>
   )

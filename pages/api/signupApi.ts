@@ -1,3 +1,4 @@
+import { signIn } from "next-auth/react"
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import dbFind from "../../lib/mongoUtils"
 import clientPromise from "../../lib/mongodb"
@@ -74,12 +75,9 @@ async function signup(req) {
       place: { cityId: place.city_id },
     }
     console.log("newUser", newUser)
-    await addUser(db, newUser)
+   // await addUser(db, newUser)
 
-    // generate JWT:
-    const token = generateAccessToken({ userId, name, place })
-
-    return { isSuccess: true, token, userId }
+    return { isSuccess: true }
   } catch (error) {
     console.log("error", error.message)
     return { error: true, message: error.message }

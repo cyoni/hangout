@@ -1,14 +1,10 @@
-import { isUserVarified } from "../../lib/jwtUtils"
+import { getToken } from "next-auth/jwt"
 const jwt = require("jsonwebtoken")
 import { dbAggregate } from "../../lib/mongoUtils"
 
-async function getNotifications({ jwt, userId }) {
+async function getNotifications({ userId }: { userId: string }) {
   try {
-    console.log("userIduserId", userId)
-
-    if (!isUserVarified(jwt)) {
-      throw Error("auth failed")
-    }
+    console.log("getNotifications userId", userId)
 
     const request: AggregateReq = {
       collection: "messages",
@@ -17,14 +13,21 @@ async function getNotifications({ jwt, userId }) {
     }
 
     const results = await dbAggregate(request)
-    console.log("results", results)
-    return { isSuccess: true, message: "succeed", data: results }
+
+    if (Array.isArray(results)) {
+      console.log("results", results)
+      return {
+        isSuccess: true,
+        message: "succeed",
+        data: results.length > 0 ? results[0] : results,
+      }
+    }
   } catch (e) {
-    return { isSuccess: false, message: e.message }
+    throw Error(e.message)
   }
 }
 
-async function getMessages({ jwt, userId }) {
+async function getMessages({ userId }: { userId: string }) {
   console.log("userIduserId", userId)
 
   const request: AggregateReq = {
@@ -47,17 +50,18 @@ async function getMessages({ jwt, userId }) {
 
 export default async function handler(req, res) {
   try {
-    const { jwt, method } = req.body
-    if (!isUserVarified(jwt)) {
-      throw new Error("auth failed")
-    }
-
+    const { method } = req.body
+    const token = await getToken({ req })
+    const { userId } = token
     let result = null
 
+    if (!token || !userId) {
+      throw new Error(`User not authenticated`)
+    }
     if (method === "getMessages") {
-      result = await getMessages(req.body)
+      result = await getMessages({ userId })
     } else if (method === "getNotifications") {
-      result = await getNotifications(req.body)
+      result = await getNotifications({ userId })
     }
 
     if (result?.isSuccess) res.status(200).json(result)

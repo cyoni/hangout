@@ -1,8 +1,10 @@
-import { getToken } from 'next-auth/jwt';
+import { decode, getToken } from 'next-auth/jwt';
 import { defaultBackground } from '../../lib/consts';
 import type { NextApiRequest, NextApiResponse } from "next"
 import data from "../../lib/cityImages.json"
 import { getUnsplashImageByText } from "../../lib/unsplash"
+import { unstable_getServerSession } from 'next-auth';
+import {authOptions}  from "./auth/[...nextauth]"
 
 type Response = {
   picture: string
@@ -30,8 +32,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Response>
 ) {
-  const token = await getToken({ req })
-  console.log("session token", token)
   const input = req.query.input
   const picture = await getPicture(input)
   if (picture) res.status(200).json({ picture })

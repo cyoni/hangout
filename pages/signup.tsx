@@ -2,6 +2,7 @@ import { useState } from "react"
 import LocationAutoComplete from "../components/placesAc"
 import { useRouter } from "next/router"
 import HeaderImage from "../components/HeaderImage"
+import { signIn } from "next-auth/react"
 
 export default function Signup() {
   const [placeId, setPlaceId] = useState(null)
@@ -29,10 +30,12 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    const email = e.target.email.value
+    const password = e.target.password.value
     const data = {
       name: e.target.name.value,
-      email: e.target.email.value,
-      password: e.target.password.value,
+      email,
+      password,
       city_id: place.city_id,
     }
     const JSONdata = JSON.stringify(data)
@@ -48,11 +51,13 @@ export default function Signup() {
     const result = await response.json()
 
     if (result.isSuccess) {
-      window.localStorage.setItem(
-        "user",
-        JSON.stringify({ userId: result.userId, token: result.token })
-      )
-       //window.location = "/"
+      console.log("HELLO")
+      await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      })
+      window.location.href = "/"
     }
 
     console.log("response", result)

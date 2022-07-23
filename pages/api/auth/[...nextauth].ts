@@ -1,9 +1,9 @@
 import NextAuth from "next-auth"
+import type { NextAuthOptions } from "next-auth"
 import { encode } from "next-auth/jwt"
 import CredentialsProvider from "next-auth/providers/credentials"
 
-export default NextAuth({
-  // Configure one or more authentication providers
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. 'Sign in with...')
@@ -32,9 +32,9 @@ export default NextAuth({
         console.log("loginresult", result)
         // If no error and we have user data, return it
         if (result.status === 200) {
-          const aaaaaa = await result.json()
-          console.log("session user", aaaaaa)
-          return aaaaaa
+          const data = await result.json()
+          console.log("session user", data)
+          return data
         }
         // Return null if user data could not be retrieved
         return null
@@ -57,34 +57,24 @@ export default NextAuth({
   },
   callbacks: {
     async jwt({ token, account, user }) {
-      console.log("MY USER", user)
-
+      console.log("USER", user)
       // Persist the OAuth access_token to the token right after signin
-
       if (user) {
-        const my_token = await encode({
-          token,
-          secret: process.env.NEXTAUTH_SECRET,
-        })
-        console.log("my_token",my_token)
-        token.accessToken = my_token
         token.place = user.place
         token.userId = user.userId
       }
-
       console.log("TOKEN TOKEN ", token)
-      console.log("ACOUNT", account)
       return token
     },
     async session({ session, token, user }) {
       // Send properties to the client, like an access_token from a provider.
-      session.accessToken = token.accessToken
       session.place = token.place
       session.userId = token.userId
-      session.token = token
       console.log("session user", user)
-      console.log("sessionsession, ", session)
+      console.log("session token", token)
+      console.log("session. ", session)
       return session
     },
   },
-})
+}
+export default NextAuth(authOptions)

@@ -9,8 +9,9 @@ function AvatarMenu() {
     title: string
     url?: string
     onClick?: Function
+    className?: string
   }
-  const MenuItem = ({ title, url, onClick }: Props) => {
+  const MenuItem = ({ title, url, onClick, className }: Props) => {
     return (
       <Menu.Item>
         {({ active }) => (
@@ -19,7 +20,9 @@ function AvatarMenu() {
             href={url}
             className={`${
               active ? "bg-gray-100 text-gray-900" : "text-gray-700"
-            } text-md block cursor-pointer px-4 py-2 `}
+            } block cursor-pointer px-4 py-2 text-lg ${
+              className ? className : ""
+            }`}
           >
             {title}
           </a>
@@ -31,7 +34,7 @@ function AvatarMenu() {
     <Menu as="div" className="relative inline-block text-left">
       <div>
         <Menu.Button className="">
-          <Avatar />
+          <Avatar className="h-9 w-9" />
         </Menu.Button>
       </div>
 
@@ -50,7 +53,7 @@ function AvatarMenu() {
                     shadow-lg ring-1 ring-black 
                     ring-opacity-5 focus:outline-none"
         >
-          <MenuItem title="Profile" url="/" />
+          <MenuItem title="Profile" url="/profile"/>
           <MenuItem title="Log Out" onClick={signOut} />
           <div className="py-1"></div>
         </Menu.Items>

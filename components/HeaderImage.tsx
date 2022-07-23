@@ -15,6 +15,7 @@ function HeaderImage({
   headerExternalClass,
   backgroundId,
 }: Props) {
+  console.log("backgroundId",backgroundId)
   const [backgroundUrl, setBackgroundUrl] = useState<string>()
   useEffect(() => {
     const fetchData = async () => {

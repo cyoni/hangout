@@ -16,10 +16,6 @@ type Province = {
 
 type Place = {} & City & Country & Province
 
-type JWT = {
-  jwt: string
-  user: { userId: string; name: string; place: Place }
-}
 type ResponseObject = {
   isSuccess: boolean
   data?: any

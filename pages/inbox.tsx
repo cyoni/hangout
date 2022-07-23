@@ -1,4 +1,5 @@
 import { dividerClasses } from "@mui/material"
+import { signIn, useSession } from "next-auth/react"
 import React, { useEffect, useState } from "react"
 import Avatar from "../components/Avatar"
 import HeaderImage from "../components/HeaderImage"
@@ -6,6 +7,11 @@ import Message from "../components/Message"
 import Spinner from "../components/Spinner"
 import { GET_MESSAGES_METHOD } from "../lib/consts"
 import { post } from "../lib/postman"
+import {
+  isAuthenticated,
+  isNotAuthenticated,
+  isSessionReady,
+} from "../lib/session"
 
 interface IMessage {
   _id: string
@@ -15,23 +21,22 @@ interface IMessage {
   senderId: string
   profile: [{ name: string; place: Place }]
 }
-function inbox({ connectedUser }) {
+function inbox() {
+  const session = useSession()
   const [messages, setMessages] = useState<IMessage[]>(null)
   useEffect(() => {
     const getMsgs = async () => {
-      console.log("getMsgs", connectedUser)
-      if (!connectedUser) return
+      console.log("getMsgs", session)
       const body = {
-        userId: connectedUser.user.userId,
-        jwt: connectedUser.jwt,
         method: GET_MESSAGES_METHOD,
       }
       const result = await post({ url: "api/inboxNotificationsApi", body })
       console.log("msg msg", result.data)
       setMessages(result.data)
     }
-    getMsgs()
-  }, [connectedUser])
+    if (isAuthenticated(session)) getMsgs()
+    else signIn()
+  }, [session])
   return (
     <div>
       <HeaderImage title="Messages" />
