@@ -54,3 +54,9 @@ interface PostRequest {
   url: string
   body: any
 }
+
+interface MessageObj {
+  _id: string
+  message: string
+  userProfile: { name: string; place: Place }
+}

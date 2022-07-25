@@ -1,4 +1,4 @@
-export async function post(req: PostRequest): Promise<ResponseObject> {
+export async function post(req: PostRequest): Promise<any> {
   try {
     const data = await fetch(req.url, {
       method: "POST",

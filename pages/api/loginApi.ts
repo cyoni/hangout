@@ -7,15 +7,16 @@ async function login({ email, password }) {
   console.log("req.body", email, password)
 
   // check if user exists
-  const userArray = await dbFind("users", { email: email })
+  const userArray = await dbFind("users", { email })
   console.log("userArray", userArray)
 
-  if (userArray && userArray.length === 1) {
+  if (Array.isArray(userArray) && userArray.length === 1) {
     const user = userArray[0]
     const accountPassword = user["password"]
+    const profile = user["profile"]
     const userId = user["userId"]
-    const { cityId } = user["place"]
-    const name = user["name"]
+    const { cityId } = profile["place"]
+    const name = profile["name"]
     console.log("password", password + "," + accountPassword)
 
     const place = await queryPlace(cityId)

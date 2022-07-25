@@ -1,15 +1,18 @@
 import { useState } from "react"
-import LocationAutoComplete from "../components/placesAc"
+import LocationAutoComplete from "../../components/placesAc"
 import Spinner from "react-bootstrap/Spinner"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
-import { queryPlace } from "../lib/place"
-import HeaderImage from "../components/HeaderImage"
+import { queryPlace } from "../../lib/place"
+import HeaderImage from "../../components/HeaderImage"
 import toast from "react-hot-toast"
+import { useRouter } from "next/router"
 
 export default function Travelling({ place, connectedUser }) {
   console.log("connectedUser", connectedUser)
   console.log("place", place)
+  const router = useRouter()
+  console.log("routerrouter", router.params)
 
   const [description, setDescription] = useState<string>("")
   const [startDate, setStartDate] = useState(null)

@@ -66,16 +66,18 @@ async function signup(req) {
     //   return { error: true, message: "user exists" }
     // }
 
-    const userId = randomString(30)
+    const userId = randomString(15)
     const newUser = {
       userId,
-      name,
       password,
       email,
-      place: { cityId: place.city_id },
+      profile: {
+        name,
+        place: { cityId: place.city_id },
+      },
     }
     console.log("newUser", newUser)
-   // await addUser(db, newUser)
+    await addUser(db, newUser)
 
     return { isSuccess: true }
   } catch (error) {

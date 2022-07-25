@@ -1,5 +1,6 @@
 import { dividerClasses } from "@mui/material"
-import { signIn, useSession } from "next-auth/react"
+import { getToken } from "next-auth/jwt"
+import { getSession, signIn, useSession } from "next-auth/react"
 import React, { useEffect, useState } from "react"
 import Avatar from "../components/Avatar"
 import HeaderImage from "../components/HeaderImage"
@@ -23,19 +24,21 @@ interface IMessage {
 }
 function inbox() {
   const session = useSession()
-  const [messages, setMessages] = useState<IMessage[]>(null)
+  const [messages, setMessages] = useState<MessageObj[]>(null)
   useEffect(() => {
     const getMsgs = async () => {
       console.log("getMsgs", session)
       const body = {
         method: GET_MESSAGES_METHOD,
       }
-      const result = await post({ url: "api/inboxNotificationsApi", body })
-      console.log("msg msg", result.data)
-      setMessages(result.data)
+      const result: MessageObj[] = await post({
+        url: "api/inboxNotificationsApi",
+        body,
+      })
+      console.log("msg msg", result)
+      setMessages(result)
     }
     if (isAuthenticated(session)) getMsgs()
-    else signIn()
   }, [session])
   return (
     <div>
@@ -58,3 +61,11 @@ function inbox() {
 }
 
 export default inbox
+
+// export async function getServerSideProps(context) {
+//   const token = await getToken(context)
+//   if (token){
+
+//   }
+//   return { props: {name: "d"}}
+// }

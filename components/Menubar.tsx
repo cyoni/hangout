@@ -10,12 +10,12 @@ import {
 import Avatar from "./Avatar"
 import AvatarMenu from "./AvatarMenu"
 import { signIn, useSession } from "next-auth/react"
+import { isAuthenticated, isNotAuthenticated } from "../lib/session"
+import { useRouter } from "next/router"
 
 function Menubar({ newMessages }) {
+  const router = useRouter()
   const session = useSession()
-  console.log("session", session)
-  const isAuthenticated = session.status === "authenticated"
-  const isUnAuthenticated = session.status === "unauthenticated"
   return (
     <div className="col-span-2 border-gray-100">
       <div className="flex items-center space-x-2">
@@ -30,10 +30,12 @@ function Menubar({ newMessages }) {
         <MenubarRow
           title="Publish hangout"
           Icon={PlusIcon}
-          link="/publish-hangout"
+          link={`/publish-hangout/${
+            router.query.city_id ? `city/${router.query.city_id}` : ""
+          }`}
         />
-        {isAuthenticated && <AvatarMenu />}
-        {isUnAuthenticated && (
+        {isAuthenticated(session) && <AvatarMenu />}
+        {isNotAuthenticated(session) && (
           <>
             <MenubarRow title="Login" onClick={() => signIn()} link="/" />
             <MenubarRow

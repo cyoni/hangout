@@ -1,19 +1,14 @@
 import { useState } from "react"
 import HeaderImage from "../components/HeaderImage"
 import toast from "react-hot-toast"
-export default function SendMessagePage({
-  connectedUser,
-  receiverId,
-  receiverName,
-}) {
+import { getToken } from "next-auth/jwt"
+export default function SendMessagePage({ receiverId, receiverName }) {
   const [message, setMessage] = useState("")
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
     const data = {
-      jwt: connectedUser.jwt,
-      senderId: connectedUser.user.userId,
       receiverId: receiverId,
       message,
     }
@@ -76,9 +71,11 @@ export default function SendMessagePage({
   )
 }
 
-export async function getServerSideProps({ query }) {
-  const receiverId = query.id
-  const receiverName = query.name
+export async function getServerSideProps(context) {
+  const receiverId = context.query.id
+  const receiverName = context.query.name
+ // const token = await getToken(context)
+
 
   console.log("receiverId", receiverId)
   if (receiverId && receiverName) {

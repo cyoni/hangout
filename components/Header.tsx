@@ -21,9 +21,7 @@ function Header() {
       }
       const result = await post({ url: "/api/inboxNotificationsApi", body })
       console.log("getInbox result", result)
-      if (result.isSuccess) {
-        setNewMessages(result.data.msgs)
-      }
+      setNewMessages(result.msgs)
     }
 
     if (isAuthenticated(session)) getInbox()

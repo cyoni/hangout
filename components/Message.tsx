@@ -4,13 +4,13 @@ import moment from "moment"
 
 interface Props {
   _id: string
-  receiverId: string
   senderId: string
   message: string
   timestamp: number
-  profile: [{ name: string; place: Place }]
+  userProfile: { name: string; place: Place }
 }
-function Message({ message, timestamp, profile }: Props) {
+
+function Message({ message, timestamp, userProfile }: Props) {
   const time = timestamp > 0 ? moment(timestamp).fromNow() : ""
   return (
     <div className="relative mx-5 flex gap-7 border-b border-b-gray-100 py-5 pl-5 text-gray-600">
@@ -21,10 +21,10 @@ function Message({ message, timestamp, profile }: Props) {
         <Avatar className="h-14 w-14" />
 
         <div className="">
-          <div className="font-bold capitalize">{profile[0].name}</div>
+          <div className="font-bold capitalize">{userProfile.name}</div>
           <div>
-            {profile[0].place.city}, {profile[0].place.province},{" "}
-            {profile[0].place.country}
+            {userProfile.place.city}, {userProfile.place.province},{" "}
+            {userProfile.place.country}
           </div>
         </div>
       </div>

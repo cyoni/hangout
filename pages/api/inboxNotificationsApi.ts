@@ -1,3 +1,4 @@
+import { NextApiRequest, NextApiResponse } from "next"
 import { getToken } from "next-auth/jwt"
 const jwt = require("jsonwebtoken")
 import { dbAggregate } from "../../lib/mongoUtils"
@@ -16,11 +17,7 @@ async function getNotifications({ userId }: { userId: string }) {
 
     if (Array.isArray(results)) {
       console.log("results", results)
-      return {
-        isSuccess: true,
-        message: "succeed",
-        data: results.length > 0 ? results[0] : results,
-      }
+      return results.length > 0 ? results[0] : results
     }
   } catch (e) {
     throw Error(e.message)
@@ -36,24 +33,38 @@ async function getMessages({ userId }: { userId: string }) {
     innerJoin: {
       from: "users",
       foreignField: "userId",
-      as: "profile",
       localField: "senderId",
+      as: "userProfile",
     },
-    $project: { message: 1, timestamp: 1, profile: { place: 1, name: 1 } },
+    $project: {
+      senderId: 1,
+      message: 1,
+      timestamp: 1,
+      userProfile: { profile: 1 },
+    },
     $sort: { timestamp: -1 },
   }
-
-  const results = await dbAggregate(request)
-  console.log("results", results)
-  return { isSuccess: true, message: "succeed", data: results }
+  const results: MessageObj[] = await dbAggregate(request)
+  console.log("results results", JSON.stringify(results))
+  for (let i = 0; i < results.length; i++) {
+    const curr = results[i]
+    curr.userProfile = curr.userProfile[0].profile
+  }
+  console.log("MessageObj results", results)
+  return results
 }
 
-export default async function handler(req, res) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<Response>
+) {
   try {
     const { method } = req.body
     const token = await getToken({ req })
     const { userId } = token
     let result = null
+
+    console.log("msg inbox token", token)
 
     if (!token || !userId) {
       throw new Error(`User not authenticated`)
@@ -63,10 +74,9 @@ export default async function handler(req, res) {
     } else if (method === "getNotifications") {
       result = await getNotifications({ userId })
     }
-
-    if (result?.isSuccess) res.status(200).json(result)
-    else res.status(200).json(result)
+    res.status(200).json(result)
   } catch (e) {
-    return { isSuccess: false, message: e.message }
+    console.log("ERROR ", e.message)
+    res.status(403).json({ error: e.message })
   }
 }
