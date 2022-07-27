@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
 interface Props {
   placeholder?: string
@@ -6,6 +6,7 @@ interface Props {
   onChange?: Function
   position?: string
   toggleFunction: Function
+  initialValue?: string
 }
 
 function LocationAutoComplete({
@@ -14,9 +15,14 @@ function LocationAutoComplete({
   toggleFunction,
   position,
   placeholder,
+  initialValue = "",
 }: Props) {
   const [places, setPlace] = useState<Place[]>(null)
   const inputRef = useRef(null)
+
+  useEffect(() => {
+    if (initialValue) inputRef.current.value = initialValue
+  }, [])
 
   const clearLocations = () => {
     setPlace(null)
@@ -38,7 +44,7 @@ function LocationAutoComplete({
     return (
       <div className="relative ">
         <ul
-          className={`absolute z-10 rounded-md bg-white p-1 shadow-lg max-h-96 overflow-auto ${
+          className={`absolute z-10 max-h-96 overflow-auto rounded-md bg-white p-1 shadow-lg ${
             position ? position : ""
           }`}
         >
@@ -60,7 +66,7 @@ function LocationAutoComplete({
 
   const fetchLocation = async (input: string) => {
     if (input) {
-      const data = await fetch(`api/placesAcApi?input=${input}`)
+      const data = await fetch(`/api/placesAcApi?input=${input}`)
       if (data.status == 200) {
         const json = await data.json()
         const places: Place[] = json.places
@@ -97,7 +103,7 @@ function LocationAutoComplete({
         className={className}
         placeholder={placeholder}
         type="text"
-      //  onBlur={clearLocations}
+        //  onBlur={clearLocations}
         onChange={(e) => handleChange(e)}
       />
       {Array.isArray(places) && places.length > 0 && renderLocations()}

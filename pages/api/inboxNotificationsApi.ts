@@ -34,23 +34,18 @@ async function getMessages({ userId }: { userId: string }) {
       from: "users",
       foreignField: "userId",
       localField: "senderId",
-      as: "userProfile",
+      as: "profile",
     },
     $project: {
       senderId: 1,
       message: 1,
       timestamp: 1,
-      userProfile: { profile: 1 },
+      profile: { picture: 1, name: 1, cityId: 1 },
     },
     $sort: { timestamp: -1 },
   }
   const results: MessageObj[] = await dbAggregate(request)
   console.log("results results", JSON.stringify(results))
-  for (let i = 0; i < results.length; i++) {
-    const curr = results[i]
-    curr.userProfile = curr.userProfile[0].profile
-  }
-  console.log("MessageObj results", results)
   return results
 }
 

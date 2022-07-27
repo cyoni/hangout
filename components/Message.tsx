@@ -7,10 +7,13 @@ interface Props {
   senderId: string
   message: string
   timestamp: number
-  userProfile: { name: string; place: Place }
+  name: string
+  picture: string
+  place: Place
+  profile: {}
 }
 
-function Message({ message, timestamp, userProfile }: Props) {
+function Message({senderId, message, timestamp, profile, place }: Props) {
   const time = timestamp > 0 ? moment(timestamp).fromNow() : ""
   return (
     <div className="relative mx-5 flex gap-7 border-b border-b-gray-100 py-5 pl-5 text-gray-600">
@@ -21,17 +24,18 @@ function Message({ message, timestamp, userProfile }: Props) {
         <Avatar className="h-14 w-14" />
 
         <div className="">
-          <div className="font-bold capitalize">{userProfile.name}</div>
+          <div className="font-bold capitalize">{profile[0].name}</div>
           <div>
-            {userProfile.place.city}, {userProfile.place.province},{" "}
-            {userProfile.place.country}
+            {place?.city}, {place?.province}, {place?.country}
           </div>
         </div>
       </div>
       <div className="flex flex-1 flex-col rounded-md  p-3">
+        <a href={`/messages/${senderId}`}>
         <div className="cursor-pointer truncate rounded-md bg-gray-100 p-2 shadow-sm hover:bg-gray-200">
           {message}
         </div>
+        </a>
         <div className="ml-auto text-sm">{time}</div>
       </div>
     </div>

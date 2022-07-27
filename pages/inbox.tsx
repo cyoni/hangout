@@ -62,10 +62,4 @@ function inbox() {
 
 export default inbox
 
-// export async function getServerSideProps(context) {
-//   const token = await getToken(context)
-//   if (token){
-
-//   }
-//   return { props: {name: "d"}}
-// }
+ 

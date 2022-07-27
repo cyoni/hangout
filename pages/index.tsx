@@ -1,4 +1,5 @@
 import Head from "next/head"
+import Back from "../components/Back"
 import HeaderImage from "../components/HeaderImage"
 
 interface Props {
@@ -14,6 +15,7 @@ export default function Home() {
       <main className="">
         <HeaderImage title="Home" />
         Welcome
+        <Back/>
       </main>
     </div>
   )

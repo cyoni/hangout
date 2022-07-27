@@ -71,10 +71,8 @@ async function signup(req) {
       userId,
       password,
       email,
-      profile: {
-        name,
-        place: { cityId: place.city_id },
-      },
+      name,
+      cityId: place.city_id,
     }
     console.log("newUser", newUser)
     await addUser(db, newUser)

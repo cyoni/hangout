@@ -7,58 +7,49 @@ import { queryPlace } from "../../lib/place"
 import HeaderImage from "../../components/HeaderImage"
 import toast from "react-hot-toast"
 import { useRouter } from "next/router"
+import { getFullPlaceName } from "../../lib/scripts/place"
 
-export default function Travelling({ place, connectedUser }) {
-  console.log("connectedUser", connectedUser)
+interface Props {
+  place: Place
+}
+export default function Travelling({ place }: Props) {
   console.log("place", place)
   const router = useRouter()
-  console.log("routerrouter", router.params)
+  console.log("xxxxxxx", router.query.city_id)
 
   const [description, setDescription] = useState<string>("")
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
-  const [newPlace, setNewPlace] = useState<Place>(null)
+  const [newPlace, setNewPlace] = useState<Place>(place)
 
   const handleSubmit = async (e) => {
     const refreshToast = toast.loading("Publishing hangout...")
-    try {
-      e.preventDefault()
 
-      const data: TravellingObject = {
-        userId: connectedUser.user.userId,
-        jwt: connectedUser.jwt,
-        startDate,
-        endDate,
-        cityId: newPlace.city_id,
-        description: e.target.description.value,
-      }
+    e.preventDefault()
 
-      console.log("data", data)
+    const data: TravellingObject = {
+      startDate,
+      endDate,
+      cityId: newPlace.city_id,
+      description: e.target.description.value,
+    }
+    console.log("data", data)
+    const JSONdata = JSON.stringify(data)
+    console.log("JSONdata", JSONdata)
 
-      const JSONdata = JSON.stringify(data)
-
-      console.log("JSONdata", JSONdata)
-
-      const endpoint = "api/publishHangoutApi"
-      const options = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSONdata,
-      }
-      const response = await fetch(endpoint, options)
-      const result: ResponseObject = await response.json()
-      console.log("response", result) // if OK redirect
-      
-      if (result?.isSuccess) {
-        toast.success("Publish successfully!", { id: refreshToast })
-      } else {
-        throw new Error()
-      }
-    } catch (e) {
+    const endpoint = "/api/publishHangoutApi"
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSONdata,
+    }
+    const response = await fetch(endpoint, options)
+    if (response.status === 200) {
+      toast.success("Publish successfully!", { id: refreshToast })
+    } else {
       toast.error("Hangout could not be published", { id: refreshToast })
-      console.log("error", e.message)
     }
   }
 
@@ -96,6 +87,7 @@ export default function Travelling({ place, connectedUser }) {
           className="rounded-full border p-2 text-gray-400 outline-none"
           onChange={handleOnChange}
           toggleFunction={handleSelect}
+          initialValue={getFullPlaceName(place)}
         />
 
         <label>Arrival</label>
@@ -133,13 +125,13 @@ export default function Travelling({ place, connectedUser }) {
 
 export async function getServerSideProps(context) {
   try {
-    const city_id = context.query.city_id || null
-    if (isNaN(city_id)) {
+    const cityId = context.query.city_id[1] || null
+    if (isNaN(cityId)) {
       return {
         props: { place: null },
       }
     }
-    const convertedCityId = Number(city_id)
+    const convertedCityId = Number(cityId)
     const place: Place = await queryPlace(convertedCityId)
     return {
       props: { place: place },

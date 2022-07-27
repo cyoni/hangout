@@ -12,21 +12,17 @@ import { getAllTravellingByPlace } from "../../lib/travel"
 const defaultCityCode: number = 127407
 
 interface Props {
+  travels
   place: Place
 }
-export default function Home({
-  travelling,
-  hangouts,
-  place,
-}: Props) {
+export default function Home({ travels, place }: Props) {
   const [location, setLocation] = useState(null)
 
   const router = useRouter()
-  console.log("hangouts", hangouts)
   const handleTravelRoute = (userId) => {
     return `/intro?userId=${userId}`
   }
-  console.log("travelling", travelling)
+  console.log("travelstravels", travels)
 
   return (
     <div>
@@ -69,37 +65,35 @@ export default function Home({
 
         <div className="">
           <div className="mx-auto grid w-[750px] grid-cols-2 gap-5">
-            {travelling &&
-              travelling.length > 0 &&
-              travelling.map((item, i) => {
+            {Array.isArray(travels) &&
+              travels.length > 0 &&
+              travels.map((item, i) => {
                 return (
-                  <a
-                    key={i}
-                    className="mt-5 rounded-md shadow-md hover:shadow-lg"
-                    href={handleTravelRoute(item.userId)}
-                  >
-                    <div className="flex flex-col px-2 ">
-                      {/* profile image */}
+                  <Link key={i} href={handleTravelRoute(item.userId)}>
+                    <div className="mt-5 flex cursor-pointer flex-col rounded-md p-2 shadow-md hover:shadow-lg">
                       <div className="flex items-center justify-between ">
                         <div className="font-bold capitalize">
-                          {item.profile[0].name}
+                          {item.profile.name}
                         </div>
-                        <InboxIcon className="h-10  rounded-full p-2  hover:bg-gray-100 " />
+                        <Link
+                          href={`/send-message?id=${item.userId}&name=${item.profile.name}`}
+                        >
+                          <InboxIcon className="h-10  rounded-full p-2 hover:bg-gray-100 " />
+                        </Link>
                       </div>
                       <div className="flex space-x-2">
-                        <div className="">
+                        {/* profile image */}
+                        <div className="h-[150px] w-[150px]">
                           {
                             <img
-                              className="rounded-md"
-                              src={item.profile[0].picture}
+                              className="w-full h-full rounded-md shadow-md"
+                              src={item.profile.picture}
                               alt="pic"
-                              width={150}
-                              height={150}
                             />
                           }
                         </div>
                         {/* info */}
-                        <div className="">
+                        <div className="w-[180px]">
                           {formatDate(item.startDate)} -{" "}
                           {formatDate(item.endDate)}
                           {/* country */}
@@ -108,11 +102,11 @@ export default function Home({
                               {item.location.country}
                             </div>
                           )}
-                          <div>{item.description}</div>
+                          <div className="line-clamp-5">{item.description}</div>
                         </div>
                       </div>
                     </div>
-                  </a>
+                  </Link>
                 )
               })}
           </div>
@@ -132,8 +126,6 @@ export default function Home({
 
 export async function getServerSideProps(context) {
   try {
-
-
     let cityQueryCode = 0
     const city_id = Number(context.params.city_id)
 
@@ -147,9 +139,9 @@ export async function getServerSideProps(context) {
 
     const place = await queryPlace(cityQueryCode)
     console.log("placeplace", place)
-    const travelling = await getAllTravellingByPlace(cityQueryCode)
+    const travels = await getAllTravellingByPlace(cityQueryCode)
     return {
-      props: { place, travelling },
+      props: { place, travels },
     }
   } catch (e) {
     console.error(e)
@@ -158,4 +150,3 @@ export async function getServerSideProps(context) {
     }
   }
 }
-

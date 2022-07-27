@@ -1,41 +1,35 @@
+import { getToken } from "next-auth/jwt"
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import clientPromise from "../../lib/mongodb"
-import { isUserVarified } from "../../lib/jwtUtils"
 import { TRAVELLING_TABLE } from "../../lib/consts"
 
+async function addTravel({ userId, startDate, endDate, cityId, description }) {
+  const client = await clientPromise
+  const db = client.db()
 
-async function addTravel(request: TravellingObject) {
-  try {
-    const client = await clientPromise
-    const db = client.db()
-
-    // varify user
-    const userAuth = isUserVarified(request.jwt)
-    console.log("userAuth", userAuth.isSuccess)
-
-    const dataToDb = {
-      userId: request.userId,
-      startDate: request.startDate,
-      endDate: request.endDate,
-      cityId: request.cityId,
-      description: request.description,
-    }
-
-    if (userAuth?.isSuccess) {
-      const data = [{ ...dataToDb }]
-      await db
-        .collection(TRAVELLING_TABLE)
-        .insertMany(JSON.parse(JSON.stringify(data)))
-      return { isSuccess: true, message: "post has been published" }
-    }
-    return { isSuccess: false, message: "auth error." }
-  } catch (error) {
-    return { isSuccess: false, message: error.message }
+  const dataToDb = {
+    userId,
+    startDate,
+    endDate,
+    cityId,
+    description,
   }
+  const data = [{ ...dataToDb }]
+  console.log("data to db", data)
+  const res: MongoInsertRes = await db
+    .collection(TRAVELLING_TABLE)
+    .insertMany(JSON.parse(JSON.stringify(data)))
+  if (res.acknowledged) return { isSuccess: true }
+  throw Error("Could not insert to db")
 }
 
 export default async function handler(req, res) {
-  const result = await addTravel(req.body)
-  if (result.isSuccess) res.status(200).json(result)
-  else res.status(400).json(result)
+  try {
+    const token = await getToken({ req })
+    if (!token) throw Error("auth failed")
+    const result = await addTravel({ ...req.body, userId: token.userId })
+    if (result.isSuccess) res.status(200).json({ isSuccess: true })
+  } catch (e) {
+    res.status(400).json({ isError: true, message: e.message })
+  }
 }

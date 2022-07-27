@@ -23,9 +23,7 @@ type ResponseObject = {
 }
 
 interface TravellingObject {
-  jwt: string
   cityId: number
-  userId: string
   startDate: string
   endDate: string
   description: string
@@ -59,4 +57,18 @@ interface MessageObj {
   _id: string
   message: string
   userProfile: { name: string; place: Place }
+}
+
+interface MongoInsertRes {
+  acknowledged: boolean
+  insertedCount: number
+  insertedIds: {}
+}
+
+interface IUser {
+  id: string
+  profile: {
+    name: string
+    picture: string
+  }
 }

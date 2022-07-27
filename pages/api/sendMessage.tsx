@@ -25,7 +25,7 @@ async function SendMessage(params: Request) {
     senderId: params.senderId,
     receiverId: params.receiverId,
     message: params.message,
-    timestamp: Date,
+    timestamp: Date.now(),
   }
   console.log("dataToDb", dataToDb)
 

@@ -29,9 +29,10 @@ export async function getAllTravelling() {
 
 const addEmptyProfileImageIfNeeded = (results) => {
   for (let i = 0; i < results.length; i++) {
-    const current = results[i]
-    if (!current.profile[0].picture)
-      current.profile[0].picture = EMPTY_PROFILE_PICTURE
+    console.log("aaa current", results[i])
+    results[i].profile = results[i].profile[0]
+    if (!results[i].profile.picture)
+      results[i].profile.picture = EMPTY_PROFILE_PICTURE
   }
 }
 
@@ -49,16 +50,15 @@ export async function getAllTravellingByPlace(cityId: number) {
       startDate: 1,
       endDate: 1,
       userId: 1,
-      cityId: 1,
       description: 1,
       profile: { name: 1, picture: 1 },
     },
   }
   const data = await dbAggregate(request)
-  console.log("data", data)
+  console.log("getAllTravellingByPlace data", data)
 
   addEmptyProfileImageIfNeeded(data)
-
+  console.log("datadatadata", data)
   return data
 }
 
