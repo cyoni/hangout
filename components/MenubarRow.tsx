@@ -18,6 +18,7 @@ function MenubarRow({
   notifications,
   onClick,
 }: Props) {
+  console.log("linklink",link)
   return (
     <Link href={link}>
       <div

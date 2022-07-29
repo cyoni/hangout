@@ -23,7 +23,7 @@ function Menubar({ newMessages }) {
         <MenubarRow
           title="Messages"
           Icon={InboxIcon}
-          link="/inbox"
+          link="/messages"
           notifications={newMessages}
         />
         <MenubarRow title="Search" Icon={SearchIcon} link="/" />

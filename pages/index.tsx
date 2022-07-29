@@ -15,7 +15,7 @@ export default function Home() {
       <main className="">
         <HeaderImage title="Home" />
         Welcome
-        <Back/>
+       
       </main>
     </div>
   )

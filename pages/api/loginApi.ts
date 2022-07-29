@@ -1,5 +1,4 @@
 import { generateAccessToken } from "../../lib/jwtUtils"
-const jwt = require("jsonwebtoken")
 import { dbFind } from "../../lib/mongoUtils"
 import { queryPlace } from "../../lib/place"
 
@@ -24,12 +23,9 @@ async function login({ email, password }) {
 
     // compare passwords
     if (password === accountPassword) {
-      // generate token
-      const accessToken: string = generateAccessToken({ userId, name, place })
       console.log("Connecting OK")
       return {
         isSuccess: true,
-        accessToken,
         userId,
         name,
         place,

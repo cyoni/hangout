@@ -10,11 +10,20 @@ interface Props {
   name: string
   picture: string
   place: Place
+  places: Place[]
   profile: {}
 }
 
-function Message({senderId, message, timestamp, profile, place }: Props) {
+function Message({ senderId, message, timestamp, profile, places }: Props) {
+  const renderPlace = () => {
+    const place = places[profile[0].cityId]
+    if (place) {
+      return `${place.city}, ${place.province_short}, ${place.country}`
+    }
+  }
   const time = timestamp > 0 ? moment(timestamp).fromNow() : ""
+  console.log("place", profile[0].cityId)
+  console.log("got places:", places)
   return (
     <div className="relative mx-5 flex gap-7 border-b border-b-gray-100 py-5 pl-5 text-gray-600">
       <div className="absolute left-0 top-3 hidden text-[50px] font-bold text-red-600">
@@ -25,16 +34,14 @@ function Message({senderId, message, timestamp, profile, place }: Props) {
 
         <div className="">
           <div className="font-bold capitalize">{profile[0].name}</div>
-          <div>
-            {place?.city}, {place?.province}, {place?.country}
-          </div>
+          <div>{renderPlace()}</div>
         </div>
       </div>
       <div className="flex flex-1 flex-col rounded-md  p-3">
         <a href={`/messages/${senderId}`}>
-        <div className="cursor-pointer truncate rounded-md bg-gray-100 p-2 shadow-sm hover:bg-gray-200">
-          {message}
-        </div>
+          <div className="cursor-pointer truncate rounded-md bg-gray-100 p-2 shadow-sm hover:bg-gray-200">
+            {message}
+          </div>
         </a>
         <div className="ml-auto text-sm">{time}</div>
       </div>

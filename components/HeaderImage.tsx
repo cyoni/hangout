@@ -15,12 +15,15 @@ function HeaderImage({
   headerExternalClass,
   backgroundId,
 }: Props) {
-  console.log("backgroundId",backgroundId)
+  console.log("backgroundId", backgroundId)
   const [backgroundUrl, setBackgroundUrl] = useState<string>()
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true)
       const result = await getHeaderPicture(backgroundId)
       setBackgroundUrl(result)
+      setIsLoading(false)
     }
     fetchData()
   }, [backgroundId])
@@ -31,6 +34,7 @@ function HeaderImage({
         backgroundImage: `url('${
           backgroundId ? backgroundUrl : defaultBackground
         }')`,
+        filter: backgroundId && isLoading ? `blur(8px)` : "",
       }}
       className={`h-40 rounded-sm
        border border-transparent

@@ -1,18 +1,18 @@
-import { dividerClasses } from "@mui/material"
-import { getToken } from "next-auth/jwt"
-import { getSession, signIn, useSession } from "next-auth/react"
+import { useSession } from "next-auth/react"
+import Head from "next/head"
 import React, { useEffect, useState } from "react"
-import Avatar from "../components/Avatar"
-import HeaderImage from "../components/HeaderImage"
-import Message from "../components/Message"
-import Spinner from "../components/Spinner"
-import { GET_MESSAGES_METHOD } from "../lib/consts"
-import { post } from "../lib/postman"
+import HeaderImage from "../../components/HeaderImage"
+import Message from "../../components/Message"
+import Spinner from "../../components/Spinner"
+import { GET_MESSAGES_METHOD } from "../../lib/consts"
+import { queryPlacesFromClient } from "../../lib/dbClient"
+import { post } from "../../lib/postman"
+import { unique } from "../../lib/scripts/arrays"
 import {
   isAuthenticated,
   isNotAuthenticated,
   isSessionReady,
-} from "../lib/session"
+} from "../../lib/session"
 
 interface IMessage {
   _id: string
@@ -25,6 +25,7 @@ interface IMessage {
 function inbox() {
   const session = useSession()
   const [messages, setMessages] = useState<MessageObj[]>(null)
+  const [places, setPlaces] = useState<Place[]>([])
   useEffect(() => {
     const getMsgs = async () => {
       console.log("getMsgs", session)
@@ -35,13 +36,26 @@ function inbox() {
         url: "api/inboxNotificationsApi",
         body,
       })
-      console.log("msg msg", result)
-      setMessages(result)
+      const cities = result.map((r) => r.profile[0].cityId)
+      // getPlacesFromClient(cities) -> unique -> localCities ->  queryPlacesFromClient(cities) -> saveInLocalStorage
+      const uniqueCityCodes = unique(cities)
+      const places = await queryPlacesFromClient(uniqueCityCodes)
+      if (places?.isError) {
+        console.log("An error occured while proccessing the request")
+      } else {
+        setPlaces(places)
+        console.log("placesplaces", places)
+        console.log("msg msg", result)
+        setMessages(result)
+      }
     }
     if (isAuthenticated(session)) getMsgs()
   }, [session])
   return (
     <div>
+      <Head>
+        <title>Messages</title>
+      </Head>
       <HeaderImage title="Messages" />
       {!messages && <Spinner className="mt-20 flex justify-center" />}
       <div className="mt-6 max-w-[80%]">
@@ -49,7 +63,7 @@ function inbox() {
           <div>
             {messages.map((msg) => (
               <div key={msg._id}>
-                <Message {...msg} />
+                <Message {...msg} places={places} />
               </div>
             ))}
           </div>
@@ -61,5 +75,3 @@ function inbox() {
 }
 
 export default inbox
-
- 

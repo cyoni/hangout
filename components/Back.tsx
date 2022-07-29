@@ -1,12 +1,16 @@
 import { ArrowLeftIcon } from '@heroicons/react/outline'
+import Link from 'next/link'
 import React from 'react'
 
-function Back() {
+interface Props {
+  className: string
+  url: string
+}
+function Back({className, url}: Props) {
   return (
-    <div>
-        <ArrowLeftIcon className="h-10 p-2 rounded-full text-gray-400 hover:bg-gray-100 cursor-pointer"/>
-
-    </div>
+    <Link href={url}>
+      <ArrowLeftIcon className={`h-10 p-2 rounded-full text-gray-400 hover:bg-gray-100 cursor-pointer ${className ? className : ""}`}/>
+      </Link>
   )
 }
 

@@ -4,30 +4,25 @@ import { getPhotoByPhotoRef, getPhotoReference } from "../lib/googlePlaces"
 import data from "../lib/cityImages.json"
 import { signIn, signOut, useSession } from "next-auth/react"
 import { getToken } from "next-auth/jwt"
+import { post } from "../lib/postman"
+
 
 function test({ photo }) {
   const { data: session } = useSession()
   console.log("session", session)
 
-  return (
-    <>
-      {session ? (
-        <div>
-          HELLO SESSION{" "}
-          <p>
-            {" "}
-            <button onClick={() => signOut()}>Sign out</button>
-          </p>
-        </div>
-      ) : (
-        <div>
-          NOT CONNECTED<div>
-          <button onClick={() => signIn()}>Sign in</button>
-          </div>
-        </div>
-      )}
-    </>
-  )
+  useEffect(() => {
+    const getMsgs = async () => {
+      const xxx = await post({
+        url: "/api/inboxNotificationsApi",
+        body: { method: "getMessages" },
+      })
+
+      console.log("aaaaaaaaaaaaaaaaaaa", xxx)
+    }
+    getMsgs()
+  }, [])
+  return <div>TEST SCREEN</div>
 }
 
 export default test

@@ -37,6 +37,7 @@ interface InnerJoin {
 }
 interface AggregateReq {
   collection: string
+  $group? : {}
   $match?: {}
   from?: string
   localField?: string
@@ -56,7 +57,7 @@ interface PostRequest {
 interface MessageObj {
   _id: string
   message: string
-  userProfile: { name: string; place: Place }
+  profile: { name: string; place: Place }
 }
 
 interface MongoInsertRes {

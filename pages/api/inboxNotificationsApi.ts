@@ -29,7 +29,53 @@ async function getMessages({ userId }: { userId: string }) {
 
   const request: AggregateReq = {
     collection: "messages",
+    $group: {
+      key: {
+        senderId: true,
+      },
+      initial: {},
+      reduce: function (obj, prev) {},
+      finalize: function (prev) {},
+      cond: {
+        $where: `this.receiverId == ${userId}`,
+      },
+    },
     $match: { receiverId: userId, senderId: userId },
+
+    // innerJoin: {
+    //   from: "users",
+    //   foreignField: "userId",
+    //   localField: "senderId",
+    //   as: "profile",
+    // },
+    // $project: {
+    //   senderId: 1,
+    //   message: 1,
+    //   timestamp: 1,
+    //   profile: { picture: 1, name: 1, cityId: 1 },
+    // },
+    $sort: { timestamp: -1 },
+  }
+  const results: MessageObj[] = await dbAggregate(request)
+  console.log("results results", JSON.stringify(results))
+  return results
+}
+
+async function getAllMessagesByUser({
+  userId,
+  receiverId,
+}: {
+  userId: string
+  receiverId: string
+}) {
+  const request: AggregateReq = {
+    collection: "messages",
+    $match: {
+      $or: [
+        { receiverId, senderId: userId },
+        { receiverId: userId, senderId: receiverId },
+      ],
+    },
     innerJoin: {
       from: "users",
       foreignField: "userId",

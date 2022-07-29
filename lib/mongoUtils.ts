@@ -16,14 +16,8 @@ export async function dbFind(dbName, query) {
 
 export async function dbAggregate(request: AggregateReq) {
   try {
-    const {
-      collection,
-      innerJoin,
-      $match,
-      $project,
-      $count,
-      $sort,
-    } = request
+    const { collection, innerJoin, $match, $project, $count, $sort, $group } =
+      request
     const client = await clientPromise
     const db = client.db()
 
@@ -38,17 +32,10 @@ export async function dbAggregate(request: AggregateReq) {
       })
     }
 
-    if ($project) {
-      aggregateParams.push({ $project })
-    }
-
-    if ($count) {
-      aggregateParams.push({ $count })
-    }
-
-    if ($sort) {
-      aggregateParams.push({ $sort })
-    }
+    if ($group) aggregateParams.push({ $group })
+    if ($project) aggregateParams.push({ $project })
+    if ($count) aggregateParams.push({ $count })
+    if ($sort) aggregateParams.push({ $sort })
 
     console.log("aggregateParams", aggregateParams)
 

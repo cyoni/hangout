@@ -25,3 +25,36 @@ export async function queryPlace(cityId: number) {
     : null
   return place
 }
+
+export async function queryPlaces(codes: number[]) {
+  console.log("here")
+  const rawPlaces = await prisma.cities.findMany({
+    where: {
+      id: {
+        in: codes,
+      },
+    },
+    include: {
+      state: true,
+      country: true,
+    },
+  })
+  console.log("rawPlaces", rawPlaces)
+
+  const results: { [id: number]: Place } = rawPlaces.reduce(
+    (acc, curr) => ({
+      ...acc,
+      [curr.id]: {
+        city: curr.name,
+        provinenceId: curr.state_id,
+        province_short: curr.state_code,
+        countryId: curr.country_code,
+        country: curr.country.name,
+        province_long: curr.state.name,
+      },
+    }),
+    {}
+  )
+
+  return results
+}

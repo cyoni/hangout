@@ -7,8 +7,12 @@ export async function post(req: PostRequest): Promise<any> {
       },
       body: JSON.stringify(req.body),
     })
-    const result: ResponseObject = await data.json()
-    return result
+    if (data.status == 200) {
+      const result: ResponseObject = await data.json()
+
+      return result
+    }
+    throw Error("bad request")
   } catch (e) {
     const res: ResponseObject = { isSuccess: false, message: e.message }
     return res
