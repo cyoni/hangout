@@ -37,16 +37,19 @@ interface InnerJoin {
 }
 interface AggregateReq {
   collection: string
-  $group? : {}
-  $match?: {}
-  from?: string
-  localField?: string
-  foreignField?: string
-  as?: string
-  innerJoin?: InnerJoin
-  $project?: {}
-  $count?: {}
-  $sort?: {}
+  params: any[]
+  // params: [
+  // $group?: {}
+  // $match?: {}
+  // from?: string
+  // localField?: string
+  // foreignField?: string
+  // as?: string
+  // innerJoin?: InnerJoin
+  // $project?: {}
+  // $count?: {}
+  // $sort?: {}
+  // ]
 }
 
 interface PostRequest {
@@ -61,9 +64,10 @@ interface MessageObj {
 }
 
 interface MongoInsertRes {
-  acknowledged: boolean
-  insertedCount: number
-  insertedIds: {}
+  acknowledged?: boolean
+  insertedCount?: number
+  insertedIds?: {}
+  error?: {}
 }
 
 interface IUser {

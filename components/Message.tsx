@@ -4,6 +4,7 @@ import moment from "moment"
 
 interface Props {
   _id: string
+  sharedToken: string
   senderId: string
   message: string
   timestamp: number
@@ -14,7 +15,15 @@ interface Props {
   profile: {}
 }
 
-function Message({ senderId, message, timestamp, profile, places }: Props) {
+function Message({
+  sharedToken,
+  senderId,
+  recieverId,
+  message,
+  timestamp,
+  profile,
+  places,
+}: Props) {
   const renderPlace = () => {
     const place = places[profile[0].cityId]
     if (place) {
@@ -38,7 +47,7 @@ function Message({ senderId, message, timestamp, profile, places }: Props) {
         </div>
       </div>
       <div className="flex flex-1 flex-col rounded-md  p-3">
-        <a href={`/messages/${senderId}`}>
+        <a href={`/messages/conversation?token=${sharedToken}`}>
           <div className="cursor-pointer truncate rounded-md bg-gray-100 p-2 shadow-sm hover:bg-gray-200">
             {message}
           </div>

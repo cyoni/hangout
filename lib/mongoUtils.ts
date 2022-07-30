@@ -16,37 +16,36 @@ export async function dbFind(dbName, query) {
 
 export async function dbAggregate(request: AggregateReq) {
   try {
-    const { collection, innerJoin, $match, $project, $count, $sort, $group } =
+    const { collection, params } =
       request
     const client = await clientPromise
     const db = client.db()
 
-    const aggregateParams = []
-    aggregateParams.push({ $match })
-
-    if (innerJoin) {
-      aggregateParams.push({
-        $lookup: {
-          ...innerJoin,
-        },
-      })
-    }
-
-    if ($group) aggregateParams.push({ $group })
-    if ($project) aggregateParams.push({ $project })
-    if ($count) aggregateParams.push({ $count })
-    if ($sort) aggregateParams.push({ $sort })
-
-    console.log("aggregateParams", aggregateParams)
+    console.log("aggregateParams", params)
 
     const data = await db
       .collection(collection)
-      .aggregate(aggregateParams)
+      .aggregate(params)
       .toArray()
 
     console.log("dbAggregate data: ", data)
     return JSON.parse(JSON.stringify(data))
   } catch (error) {
     return { error: error.message }
+  }
+}
+
+export async function dbInsert(
+  database: string,
+  query: {}
+): Promise<MongoInsertRes> {
+  try {
+    const client = await clientPromise
+    const db = client.db()
+    return await db
+      .collection(database)
+      .insertMany(JSON.parse(JSON.stringify(query)))
+  } catch (e) {
+    return { error: e.message }
   }
 }

@@ -57,7 +57,7 @@ export default function Signup() {
         password,
         redirect: false,
       })
-      window.location.href = "/"
+      // window.location.href = "/"
     }
 
     console.log("response", result)

@@ -1,7 +1,6 @@
 import { useState } from "react"
 import HeaderImage from "../components/HeaderImage"
 import toast from "react-hot-toast"
-import { getToken } from "next-auth/jwt"
 export default function SendMessagePage({ receiverId, receiverName }) {
   const [message, setMessage] = useState("")
 

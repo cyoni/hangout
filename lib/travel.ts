@@ -39,20 +39,26 @@ const addEmptyProfileImageIfNeeded = (results) => {
 export async function getAllTravellingByPlace(cityId: number) {
   const request: AggregateReq = {
     collection: TRAVELLING_TABLE,
-    innerJoin: {
-      localField: "userId",
-      foreignField: "userId",
-      as: "profile",
-      from: USERS_TABLE,
-    },
-    $match: { cityId },
-    $project: {
-      startDate: 1,
-      endDate: 1,
-      userId: 1,
-      description: 1,
-      profile: { name: 1, picture: 1 },
-    },
+    params: [
+      {
+        $lookup: {
+          localField: "userId",
+          foreignField: "userId",
+          as: "profile",
+          from: USERS_TABLE,
+        },
+      },
+      { $match: { cityId } },
+      {
+        $project: {
+          startDate: 1,
+          endDate: 1,
+          userId: 1,
+          description: 1,
+          profile: { name: 1, picture: 1 },
+        },
+      },
+    ],
   }
   const data = await dbAggregate(request)
   console.log("getAllTravellingByPlace data", data)

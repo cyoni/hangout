@@ -15,11 +15,10 @@ async function findUser(db, { email }) {
 }
 
 async function addUser(db, params) {
-  //const user = await dbFind("users", { userId })
-  // if (!user || user.length === 0) {
+
   const newUser = { ...params }
-  await db.collection("users").insertOne(JSON.parse(JSON.stringify(newUser)))
-  // }
+  const result =  await db.collection("users").insertOne(JSON.parse(JSON.stringify(newUser)))
+  
 }
 
 const getValueFromAddress = (addressComponents, type) => {
@@ -61,10 +60,10 @@ async function signup(req) {
       throw new Error("Place was not found")
     }
 
-    // const user = await findUser(db, req.body)
-    // if (user?.length > 0) {
-    //   return { error: true, message: "user exists" }
-    // }
+    const user = await findUser(db, req.body)
+    if (user?.length > 0) {
+      return { error: true, message: "user exists" }
+    }
 
     const userId = randomString(15)
     const newUser = {
@@ -75,7 +74,7 @@ async function signup(req) {
       cityId: place.city_id,
     }
     console.log("newUser", newUser)
-    await addUser(db, newUser)
+     await addUser(db, newUser)
 
     return { isSuccess: true }
   } catch (error) {

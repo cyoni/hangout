@@ -4,7 +4,7 @@ export async function getProfile(userId) {
   try {
     const req: AggregateReq = {
       collection: "users",
-      $match: { userId },
+      params: [{ $match: { userId } }],
     }
     const data = await dbAggregate(req)
     console.log("getprofile", data)

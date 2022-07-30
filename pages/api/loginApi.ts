@@ -14,8 +14,8 @@ async function login({ email, password }) {
     const accountPassword = user["password"]
     const profile = user["profile"]
     const userId = user["userId"]
-    const { cityId } = profile["place"]
-    const name = profile["name"]
+    const cityId = user["cityId"]
+    const name = user["name"]
     console.log("password", password + "," + accountPassword)
 
     const place = await queryPlace(cityId)
@@ -39,9 +39,13 @@ async function login({ email, password }) {
 }
 
 export default async function handler(req, res) {
-  const body = req.body
-  const result = await login(body)
-  console.log("result.data", result)
-  if (result?.isSuccess) res.status(200).json(result)
-  else res.status(401).json({ isSuccess: false, message: "login failed." })
+  try {
+    const body = req.body
+    const result = await login(body)
+    console.log("result.data", result)
+    if (result?.isSuccess) res.status(200).json(result)
+    else res.status(401).json({ isSuccess: false, message: "login failed." })
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
 }

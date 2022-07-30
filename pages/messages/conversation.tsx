@@ -4,30 +4,55 @@ import React, { useEffect, useRef, useState } from "react"
 import Avatar from "../../components/Avatar"
 import Back from "../../components/Back"
 import HeaderImage from "../../components/HeaderImage"
+import { GET_ALL_MESSAGES_BY_USER_METHOD } from "../../lib/consts"
 import { post } from "../../lib/postman"
 
 function Messages() {
-  useEffect(() => {
-    await get({url: "/api/getMessages"})
-  }, [])
-
   const router = useRouter()
-  const { recipient } = router.query
+  const recieverId = router.query.id
+  const sharedToken = router.query.token
+  console.log("sharedToken", sharedToken)
+
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState<string>("")
+
+  useEffect(() => {
+    const getMessages = async () => {
+      console.log("getting messages....")
+      const messages = await post({
+        url: "/api/inboxNotificationsApi",
+        body: {
+          method: GET_ALL_MESSAGES_BY_USER_METHOD,
+          sharedToken: sharedToken,
+          recieverId: recieverId,
+        },
+      })
+      console.log("messages", messages)
+      setMessages(messages)
+    }
+    if (sharedToken) getMessages()
+  }, [sharedToken])
+
   const inputRef = useRef()
 
   const handleMessage = async (e) => {
     e.preventDefault()
+
     if (!input) return
+
     const newMessage = { message: input, isIncoming: false }
     const result = await post({
       url: "/api/sendMessage",
-      body: { receiverId: recipient, message: input },
+      body: {
+        receiverId: recieverId,
+        message: input,
+        sharedToken: sharedToken,
+        recieverId: recieverId,
+      },
     })
     console.log("msg result", result)
 
-    /// setMessages([...messages, newMessage])
+    setMessages([...messages, newMessage])
     setInput("")
     inputRef.current.focus()
   }
@@ -35,7 +60,7 @@ function Messages() {
   const Msg = ({ message }) => {
     return (
       <div className="my-2 flex">
-        <div className="max-w-[800px]  rounded-xl border bg-blue-700 py-1 px-3 text-white shadow-md">
+        <div className="max-w-[800px] rounded-xl border bg-blue-700 py-1 px-3 text-white shadow-md">
           {message}
         </div>
       </div>
