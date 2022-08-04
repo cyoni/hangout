@@ -1,28 +1,39 @@
 import {
   GET_ALL_MESSAGES_BY_USER_METHOD,
   GET_NOTIFICATION_METHOD,
-} from "./../../lib/consts"
+} from "../../lib/consts"
 import { NextApiRequest, NextApiResponse } from "next"
 import { getToken } from "next-auth/jwt"
 import { GET_PREVIEW_MESSAGES_METHOD } from "../../lib/consts"
 const jwt = require("jsonwebtoken")
-import { dbAggregate, dbFind } from "../../lib/mongoUtils"
+import { dbAggregate, dbFind, dbUpdateOne } from "../../lib/mongoUtils"
+import { getSharedToken } from "../../lib/chat"
+import { resetUnreadMessages } from "../../lib/inboxUtils"
 
-async function getNotifications({ userId }: { userId: string }) {
+async function getUnreadMsgsCount({ userId }: { userId: string }) {
   try {
+    if (!userId) return { error: "bad request" }
+
     console.log("getNotifications userId", userId)
 
     const request: AggregateReq = {
-      collection: "messages",
-      params: [{ $match: { receiverId: userId } }, { $count: "msgs" }],
+      collection: "users",
+      params: [
+        { $match: { userId } },
+        {
+          $project: {
+            _id: 0,
+            unreadMsgs: { $size: { $ifNull: ["$unreadMsgs", []] } },
+          },
+        },
+      ],
     }
-
     const results = await dbAggregate(request)
-
+    console.log("results getNotifications", results)
     if (Array.isArray(results)) {
       console.log("results", results)
       return results.length > 0 ? results[0] : results
-    }
+    } else return { error: "no results" }
   } catch (e) {
     throw Error(e.message)
   }
@@ -35,7 +46,12 @@ async function getAllSharedTokens(userId: string) {
   return result.length > 0 ? result.map((item) => item.sharedToken) : []
 }
 
-async function getPreviewMessages(userId: string[], allSharedTokens: string[]) {
+async function getPreviewMessages(userId: string) {
+  /// get all shared tokens
+  const allSharedTokens = await getAllSharedTokens(userId)
+  if (allSharedTokens.length === 0) {
+    return []
+  }
   const convertedSharedTokens = allSharedTokens.map((token) => {
     return { sharedToken: token }
   })
@@ -89,26 +105,16 @@ async function getPreviewMessages(userId: string[], allSharedTokens: string[]) {
   return result
 }
 
-async function getMessages({ userId }: { userId: string }) {
-  console.log("userIduserId", userId)
-
-  /// get all tokens
-  const allSharedTokens = await getAllSharedTokens(userId)
-  if (allSharedTokens.length === 0) {
-    return { message: "no messages available" }
+async function getAllMessagesByUserId({ theirId, userId }) {
+  if (!theirId) {
+    return { error: "No id was provided" }
   }
 
-  /// query all messages by token
-  const previewMessages = await getPreviewMessages(userId, allSharedTokens)
-
-  console.log("results getMessages", JSON.stringify(previewMessages))
-  return previewMessages
-}
-
-async function getAllMessagesByUser({ sharedToken }) {
+  const sharedToken = await getSharedToken(theirId, userId)
   if (!sharedToken) {
-    return { error: "No shared token was provided" }
+    return { error: "Shared token is invalid" }
   }
+
   const results = await dbAggregate({
     collection: "messages",
     params: [
@@ -126,10 +132,14 @@ async function getAllMessagesByUser({ sharedToken }) {
     ],
   })
 
-  console.log("results getAllMessagesByUser", JSON.stringify(results))
+  // Reset unread messages
+  resetUnreadMessages(userId)
+
   return results
 }
-
+type Response = {
+  error?: string
+}
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Response>
@@ -146,19 +156,23 @@ export default async function handler(
       throw new Error(`User not authenticated`)
     }
     switch (method) {
+      case "SEND_MESSAGE": {
+        break
+      }
       case GET_PREVIEW_MESSAGES_METHOD:
-        result = await getMessages({ userId })
+        result = await await getPreviewMessages(userId)
         break
       case GET_ALL_MESSAGES_BY_USER_METHOD:
-        result = await getAllMessagesByUser(req.body)
+        result = await getAllMessagesByUserId({ ...req.body, userId })
         break
       case GET_NOTIFICATION_METHOD:
-        result = await getNotifications({ userId })
+        result = await getUnreadMsgsCount({ userId })
         break
     }
+    if (!result || result.error) res.status(400).json({ error: result.message })
     res.status(200).json(result)
   } catch (e) {
     console.log("ERROR ", e.message)
-    res.status(403).json({ error: e.message })
+    res.status(500).json({ error: e.message })
   }
 }

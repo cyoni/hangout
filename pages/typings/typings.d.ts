@@ -77,3 +77,10 @@ interface IUser {
     picture: string
   }
 }
+
+type Profile = {
+  userId: string
+  name: string
+  picture: string
+  cityId: number
+}

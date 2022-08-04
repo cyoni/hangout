@@ -19,12 +19,15 @@ function Header() {
         userId: session.data.userId,
         method: GET_NOTIFICATION_METHOD,
       }
-      const result = await post({ url: "/api/inboxNotificationsApi", body })
+      const result = await post({ url: "/api/messagesApi", body })
       console.log("getInbox result", result)
-      setNewMessages(result.msgs)
+      setNewMessages(result.unreadMsgs)
     }
-
-    if (isAuthenticated(session)) getInbox()
+ 
+    if (isAuthenticated(session)) {
+      console.log("getting messages....")
+      getInbox()
+    }
   }, [session])
 
   const handleSelect = (place: Place, inputRef) => {

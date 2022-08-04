@@ -14,7 +14,7 @@ function test({ photo }) {
   useEffect(() => {
     const getMsgs = async () => {
       const xxx = await post({
-        url: "/api/inboxNotificationsApi",
+        url: "/api/messagesApi",
         body: { method: "getMessages" },
       })
 

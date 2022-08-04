@@ -2,7 +2,8 @@ import { useSession } from "next-auth/react"
 import Head from "next/head"
 import React, { useEffect, useState } from "react"
 import HeaderImage from "../../components/HeaderImage"
-import Message from "../../components/Message"
+import PreviewMessage from "../../components/PreviewMessage"
+import Refresh from "../../components/Refresh"
 import Spinner from "../../components/Spinner"
 import { GET_PREVIEW_MESSAGES_METHOD } from "../../lib/consts"
 import { MESSAGES_API } from "../../lib/consts/apis"
@@ -28,28 +29,36 @@ function inbox() {
   const session = useSession()
   const [messages, setMessages] = useState<MessageObj[]>(null)
   const [places, setPlaces] = useState<Place[]>([])
-  useEffect(() => {
-    const getMsgs = async () => {
-      console.log("getMsgs", session)
 
-      const result: MessageObj[] = await post({
-        url: MESSAGES_API,
-        body: { method: GET_PREVIEW_MESSAGES_METHOD },
-      })
-      if (Array.isArray(result)) {
-        const cities = result.map((r) => r.profile[0].cityId)
-        const uniqueCityCodes = unique(cities)
-        const places = await queryPlacesFromClient(uniqueCityCodes)
-        if (places?.isError) {
-          console.log("An error occured while proccessing the request")
-        } else {
-          setPlaces(places)
-          console.log("placesplaces", places)
-          console.log("msg msg", result)
-          setMessages(result)
-        }
-      } else setMessages([])
-    }
+  const handleRefresh = () => {
+    setMessages(null)
+    getMsgs()
+  }
+
+  const getMsgs = async () => {
+    const result: MessageObj[] = await post({
+      url: MESSAGES_API,
+      body: { method: GET_PREVIEW_MESSAGES_METHOD },
+    })
+
+    console.log("getMsgs", result)
+
+    if (Array.isArray(result)) {
+      const cities = result.map((r) => r.profile[0]?.cityId)
+      const uniqueCityCodes = unique(cities)
+      const places = await queryPlacesFromClient(uniqueCityCodes)
+      if (places?.isError) {
+        console.log("An error occured while proccessing the request")
+      } else {
+        setPlaces(places)
+        console.log("placesplaces", places)
+        console.log("msg msg", result)
+        setMessages(result)
+      }
+    } else setMessages([])
+  }
+
+  useEffect(() => {
     if (isAuthenticated(session)) getMsgs()
   }, [session])
   return (
@@ -58,13 +67,22 @@ function inbox() {
         <title>Messages</title>
       </Head>
       <HeaderImage title="Messages" />
+      {messages && (
+        <Refresh
+          className="mt-5 ml-5 h-10 cursor-pointer rounded-full p-2
+          text-gray-400 transition duration-150 hover:rotate-180
+           hover:bg-gray-100"
+          onClick={handleRefresh}
+        />
+      )}
+
       {!messages && <Spinner className="mt-20 flex justify-center" />}
       <div className="mt-6 max-w-[80%]">
         {messages?.length > 0 && (
           <div>
             {messages.map((msg) => (
               <div key={msg._id}>
-                <Message {...msg} places={places} />
+                <PreviewMessage {...msg} places={places} />
               </div>
             ))}
           </div>

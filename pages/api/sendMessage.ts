@@ -1,16 +1,22 @@
 import clientPromise from "../../lib/mongodb"
-import { dbAggregate, dbFind, dbInsert } from "../../lib/mongoUtils"
+import {
+  dbAggregate,
+  dbFind,
+  dbInsertMany,
+  dbUpdateOne,
+} from "../../lib/mongoUtils"
 import { getToken } from "next-auth/jwt"
 import randomString from "../../lib/randomString"
+import { getSharedToken } from "../../lib/chat"
+import { Collection } from "mongodb"
 
 interface Request {
+  message: string
   senderId: string
   receiverId: string
-  sharedToken?: any
-  message: string
 }
 
-async function recieverCheck(userId: string) {
+async function receiverCheck(userId: string) {
   const result = await dbAggregate({
     collection: "users",
     params: [{ $match: { userId } }],
@@ -18,19 +24,9 @@ async function recieverCheck(userId: string) {
   return result.length === 1 && result[0].userId === userId
 }
 
-async function getSharedToken(senderId, receiverId) {
-  const result = await dbFind("messages_token", {
-    $or: [
-      { $and: [{ user1: senderId }, { user2: receiverId }] },
-      { $and: [{ user1: receiverId }, { user2: senderId }] },
-    ],
-  })
-  return result.length > 0 ? result[0].sharedToken : null
-}
-
 async function createSharedToken(user1, user2) {
   const sharedToken = randomString(20)
-  const result = await dbInsert("messages_token", [
+  const result = await dbInsertMany("messages_token", [
     {
       sharedToken,
       user1,
@@ -39,58 +35,51 @@ async function createSharedToken(user1, user2) {
   ])
   return result.insertedCount === 1 ? sharedToken : null
 }
-async function SendMessage(params: Request) {
-  const { senderId } = params
-  let sharedToken = params.sharedToken
-  let receiverId = params.receiverId
-
-  //const checkUser = await recieverCheck(receiverId)
-  //if (!checkUser) {
-  //  throw new Error("reciever check failed")
-  //}
-
-  if (sharedToken) {
-    const varifyToken = await dbFind("messages_token", {
-      sharedToken: sharedToken,
-    })
-    if (varifyToken && varifyToken.length > 0) {
-      receiverId =
-        varifyToken[0].user1 === senderId
-          ? varifyToken[0].user2
-          : varifyToken[0].user1
-    } else {
-      return { error: "invalid shared token" }
-    }
-  } else {
-    // get shared token
-    sharedToken = await getSharedToken(senderId, receiverId)
-    console.log("msg result", sharedToken)
-    if (!sharedToken) {
-      // create unique token
-      sharedToken = await createSharedToken(senderId, receiverId)
-    }
+async function insertUnreadMsgToReceiver({
+  timestamp,
+  receiverId,
+  senderId,
+}) {
+  await dbUpdateOne(
+    "users",
+    { userId: receiverId },
+    { $push: { unreadMsgs: { senderId: senderId, timestamp } } },
+    {}
+  )
+}
+async function SendMessage(request: Request) {
+  const { senderId, receiverId, message } = request
+  const checkUser = await receiverCheck(request.receiverId)
+  if (!checkUser) {
+    return { error: "receiver check failed" }
   }
 
+  let sharedToken = await getSharedToken(senderId, receiverId)
+  if (!sharedToken) sharedToken = createSharedToken(senderId, receiverId)
   console.log("RESULT sharedToken", sharedToken)
+  if (!sharedToken) return { error: "creation of shared token failed" }
+
+  const timestamp = Date.now()
 
   const dataToDb = {
     sharedToken,
-    senderId: params.senderId,
-    receiverId: receiverId,
-    message: params.message,
-    timestamp: Date.now(),
+    senderId,
+    receiverId,
+    message,
+    timestamp,
   }
   console.log("dataToDb", dataToDb)
 
   const data = [{ ...dataToDb }]
-  const sendMessageHandler = await dbInsert("messages", data)
 
-  if (sendMessageHandler.insertedCount === 1) {
-    return { isSuccess: true, message: "message has been sent" }
+  insertUnreadMsgToReceiver({ senderId, receiverId, timestamp })
+
+  const sendMessageHandler = await dbInsertMany("messages", data)
+  if (sendMessageHandler.acknowledged) {
+    return { message: "message has been sent" }
   }
   return {
-    isSuccess: false,
-    message: `message could not be send. Error: ${sendMessageHandler.error}`,
+    error: `message could not be send. Error: ${sendMessageHandler.error}`,
   }
 }
 
@@ -98,14 +87,20 @@ export default async function handler(req, res) {
   try {
     const token = await getToken({ req })
     if (!token) res.status(400)
-    const senderId = token.userId
-    const body = req.body
 
-    if (token && body.message) {
-      const result = await SendMessage({ ...body, senderId })
-      if (result.isSuccess) res.status(200).json(JSON.stringify(result))
-    } else throw Error("request invalid")
+    const request: Request = {
+      message: req.body.message,
+      senderId: token.userId,
+      receiverId: req.body.theirId,
+    }
+
+    if (token && request.message && request.receiverId) {
+      const result = await SendMessage(request)
+      if (result.error) res.status(400).json(JSON.stringify(result.error))
+      res.status(200).json(JSON.stringify(result))
+    } else {
+    }
   } catch (e) {
-    res.status(400).json(JSON.stringify(e.message))
+    res.status(500).json(JSON.stringify(e.message))
   }
 }

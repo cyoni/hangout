@@ -15,23 +15,23 @@ interface Props {
   profile: {}
 }
 
-function Message({
+function PreviewMessage({
   sharedToken,
   senderId,
-  recieverId,
+  theirId,
   message,
   timestamp,
   profile,
   places,
 }: Props) {
   const renderPlace = () => {
-    const place = places[profile[0].cityId]
+    const place = places[profile[0]?.cityId]
     if (place) {
       return `${place.city}, ${place.province_short}, ${place.country}`
     }
   }
   const time = timestamp > 0 ? moment(timestamp).fromNow() : ""
-  console.log("place", profile[0].cityId)
+  console.log("place", profile[0]?.cityId)
   console.log("got places:", places)
   return (
     <div className="relative mx-5 flex gap-7 border-b border-b-gray-100 py-5 pl-5 text-gray-600">
@@ -42,12 +42,12 @@ function Message({
         <Avatar className="h-14 w-14" />
 
         <div className="">
-          <div className="font-bold capitalize">{profile[0].name}</div>
+          <div className="font-bold capitalize">{profile[0]?.name}</div>
           <div>{renderPlace()}</div>
         </div>
       </div>
       <div className="flex flex-1 flex-col rounded-md  p-3">
-        <a href={`/messages/conversation?token=${sharedToken}`}>
+        <a href={`/messages/conversation/${theirId}`}>
           <div className="cursor-pointer truncate rounded-md bg-gray-100 p-2 shadow-sm hover:bg-gray-200">
             {message}
           </div>
@@ -58,4 +58,4 @@ function Message({
   )
 }
 
-export default Message
+export default PreviewMessage

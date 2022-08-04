@@ -18,6 +18,7 @@ function HeaderImage({
   console.log("backgroundId", backgroundId)
   const [backgroundUrl, setBackgroundUrl] = useState<string>()
   const [isLoading, setIsLoading] = useState<boolean>(true)
+
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
@@ -37,7 +38,7 @@ function HeaderImage({
         filter: backgroundId && isLoading ? `blur(8px)` : "",
       }}
       className={`h-40 rounded-sm
-       border border-transparent
+       border border-transparent object-fill	
        bg-cover bg-center shadow-lg ${
          headerExternalClass ? headerExternalClass : ""
        }`}

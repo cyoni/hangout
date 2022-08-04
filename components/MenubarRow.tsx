@@ -18,7 +18,7 @@ function MenubarRow({
   notifications,
   onClick,
 }: Props) {
-  console.log("linklink",link)
+  console.log("linklink", link)
   return (
     <Link href={link}>
       <div
@@ -30,7 +30,7 @@ function MenubarRow({
        ${externalClass}`}
       >
         {Icon && <Icon className="h-6" />}
-        {notifications && <Notification count={notifications} />}
+        {notifications > 0 && <Notification count={notifications} />}
         <div>{title}</div>
       </div>
     </Link>

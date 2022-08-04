@@ -1,6 +1,9 @@
 import React from "react"
 
-function Spinner({ className }) {
+interface Props {
+  className?: string
+}
+function Spinner({ className }: Props) {
   return (
     <div role="status" className={className ? className : ""}>
       <svg
