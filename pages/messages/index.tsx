@@ -28,6 +28,7 @@ interface PreviewMessage {
 function inbox() {
   const session = useSession()
   const [messages, setMessages] = useState<MessageObj[]>(null)
+  const [unreadMsgs, setUnreadMsgs] = useState<string[]>(null)
   const [places, setPlaces] = useState<Place[]>([])
 
   const handleRefresh = () => {
@@ -36,7 +37,7 @@ function inbox() {
   }
 
   const getMsgs = async () => {
-    const result: MessageObj[] = await post({
+    const result: MessageObjResponse = await post({
       url: MESSAGES_API,
       body: { method: GET_PREVIEW_MESSAGES_METHOD },
     })
@@ -45,15 +46,15 @@ function inbox() {
 
     if (Array.isArray(result)) {
       const cities = result.map((r) => r.profile[0]?.cityId)
-      const uniqueCityCodes = unique(cities)
-      const places = await queryPlacesFromClient(uniqueCityCodes)
+      const places = await queryPlacesFromClient(cities)
       if (places?.isError) {
         console.log("An error occured while proccessing the request")
       } else {
         setPlaces(places)
-        console.log("placesplaces", places)
+        console.log("places##", places)
         console.log("msg msg", result)
-        setMessages(result)
+        setUnreadMsgs(result.unreadMsgsIds)
+        setMessages(result.previewMsgs)
       }
     } else setMessages([])
   }

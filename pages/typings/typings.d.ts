@@ -57,6 +57,11 @@ interface PostRequest {
   body: any
 }
 
+interface MessageObjResponse {
+  unreadMsgsIds: string[]
+  previewMsgs: MessageObj[]
+}
+
 interface MessageObj {
   _id: string
   message: string

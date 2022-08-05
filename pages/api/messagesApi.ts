@@ -8,7 +8,11 @@ import { GET_PREVIEW_MESSAGES_METHOD } from "../../lib/consts"
 const jwt = require("jsonwebtoken")
 import { dbAggregate, dbFind, dbUpdateOne } from "../../lib/mongoUtils"
 import { getSharedToken } from "../../lib/chat"
-import { resetUnreadMessages } from "../../lib/inboxUtils"
+import {
+  getPreviewMsgs,
+  getUnreadMsgsIds,
+  resetUnreadMessages,
+} from "../../lib/inboxUtils"
 
 async function getUnreadMsgsCount({ userId }: { userId: string }) {
   try {
@@ -39,11 +43,13 @@ async function getUnreadMsgsCount({ userId }: { userId: string }) {
   }
 }
 
-async function getAllSharedTokens(userId: string) {
-  const result = await dbFind("messages_token", {
+async function getAllSharedTokens(userId: string): Promise<string[]> {
+  const result: string[] = []
+  const tokens = await dbFind("messages_token", {
     $or: [{ user1: userId }, { user2: userId }],
   })
-  return result.length > 0 ? result.map((item) => item.sharedToken) : []
+  if (tokens.length > 0) tokens.map((item) => result.push(item.sharedToken))
+  return result
 }
 
 async function getPreviewMessages(userId: string) {
@@ -52,57 +58,15 @@ async function getPreviewMessages(userId: string) {
   if (allSharedTokens.length === 0) {
     return []
   }
-  const convertedSharedTokens = allSharedTokens.map((token) => {
-    return { sharedToken: token }
-  })
-  const result = await dbAggregate({
-    collection: "messages",
-    params: [
-      { $match: { $or: [...convertedSharedTokens] } },
-      { $sort: { timestamp: -1 } },
-      {
-        $group: {
-          _id: { sharedToken: "$sharedToken" },
-          sharedToken: { $first: "$sharedToken" },
-          receiverId: { $first: "$receiverId" },
-          senderId: { $first: "$senderId" },
-          timestamp: { $first: "$timestamp" },
-          message: { $first: "$message" },
-          theirId: {
-            $first: {
-              $cond: {
-                if: { $eq: ["$receiverId", userId] },
-                then: "$senderId",
-                else: "$receiverId",
-              },
-            },
-          },
-        },
-      },
-      {
-        $project: {
-          theirId: 1,
-          sharedToken: 1,
-          senderId: 1,
-          receiverId: 1,
-          message: 1,
-          timestamp: 1,
-          profile: { picture: 1, name: 1, cityId: 1 },
-        },
-      },
-      {
-        $lookup: {
-          from: "users",
-          foreignField: "userId",
-          localField: "theirId",
-          as: "profile",
-        },
-      },
-    ],
-  })
-  console.log("getLatestMessages", result)
 
-  return result
+  // get all unread msgs ids
+  const unreadMsgsIds = await getUnreadMsgsIds(userId)
+  console.log("unreadMsgsIds", unreadMsgsIds)
+  // get all preview messages
+  const previewMsgs = getPreviewMsgs(userId, allSharedTokens)
+  console.log("getLatestMessages", previewMsgs)
+
+  return { unreadMsgsIds, previewMsgs }
 }
 
 async function getAllMessagesByUserId({ theirId, userId }) {
