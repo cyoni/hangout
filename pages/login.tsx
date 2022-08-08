@@ -2,12 +2,20 @@ import { useRouter } from "next/router"
 import HeaderImage from "../components/HeaderImage"
 import { getCsrfToken, signIn, useSession } from "next-auth/react"
 import { redirect } from "next/dist/server/api-utils"
+import { useState } from "react"
+import { flushSync } from "react-dom"
+import Spinner from "../components/Spinner"
+import Loader from "../components/Loader"
 
 export default function Login({ csrfToken, callbackUrl }) {
   const router = useRouter()
-
+  const [unathorized, setUnathorized] = useState<boolean>(false)
+  const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false)
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    setIsLoggingIn(true)
+    setUnathorized(false)
 
     const email = e.target.email.value
     const password = e.target.password.value
@@ -20,10 +28,12 @@ export default function Login({ csrfToken, callbackUrl }) {
 
     if (response.status === 200) {
       window.location = callbackUrl
+    } else if (response.status === 401) {
+      setIsLoggingIn(false)
+      setUnathorized(true)
     } else {
-      console.log("could not login in, try again")
+      console.log("error", response)
     }
-
     // const data = {
     //   email: e.target.email.value,
     //   password: e.target.password.value,
@@ -50,12 +60,20 @@ export default function Login({ csrfToken, callbackUrl }) {
     <div>
       <HeaderImage title="Log in" />
       session status: {session.status}
-      <div className="shared-frame">
+      <div className="shared-frame relative">
+        {isLoggingIn && <Loader />}
+
         <form
           onSubmit={handleSubmit}
           className="flex flex-col p-5 "
           method="post"
         >
+          {unathorized && (
+            <div className="mb-4 text-lg text-red-500">
+              Email or password is invalid.
+            </div>
+          )}
+
           <label htmlFor="email">Email</label>
           <input
             type="text"
@@ -89,7 +107,7 @@ export default function Login({ csrfToken, callbackUrl }) {
 }
 export async function getServerSideProps(context) {
   const csrfToken = await getCsrfToken(context)
-  console.log("contextcontext",context)
+  console.log("contextcontext", context)
   const callbackUrl = context.query.callbackUrl || "/"
   console.log("xxxxxxxxxxxx", callbackUrl)
   return {

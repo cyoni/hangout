@@ -8,6 +8,8 @@ import HeaderImage from "../../components/HeaderImage"
 import { formatDate } from "../../lib/dates"
 import { queryPlace } from "../../lib/place"
 import { getAllTravellingByPlace } from "../../lib/travel"
+import Tabs from "../../components/Tabs"
+import Cities from "../../components/Cities"
 
 const defaultCityCode: number = 127407
 
@@ -39,30 +41,9 @@ export default function Home({ travels, place }: Props) {
               : ""
           }
         />
-        <div className="mt-1 flex border-b pl-2 pb-1">
-          <div className="cursor-pointer rounded-xl py-1 px-2 hover:bg-gray-200">
-            item
-          </div>
-          <div className="cursor-pointer rounded-xl py-1 px-2 hover:bg-gray-200">
-            item
-          </div>
-          <div className="cursor-pointer rounded-xl py-1 px-2 hover:bg-gray-200">
-            item
-          </div>
-          <div className="cursor-pointer rounded-xl py-1 px-2 hover:bg-gray-200">
-            item
-          </div>
-          <div className="cursor-pointer rounded-xl py-1 px-2 hover:bg-gray-200">
-            item
-          </div>
-          <div className="cursor-pointer rounded-xl py-1 px-2 hover:bg-gray-200">
-            item
-          </div>
-          <div className="cursor-pointer rounded-xl py-1 px-2 hover:bg-gray-200">
-            item
-          </div>
-        </div>
 
+          <Cities />
+        <Tabs/> 
         <div className="">
           <div className="mx-auto grid w-[750px] grid-cols-2 gap-5">
             {Array.isArray(travels) &&

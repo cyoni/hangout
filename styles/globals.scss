@@ -11,6 +11,9 @@
     text-lg font-medium text-white
     hover:bg-blue-600 hover:opacity-80;
   }
+  .btn-outline {
+    @apply rounded-md px-3 transition  duration-300  hover:border-white hover:bg-blue-600 hover:text-white;
+  }
 
   .shared-frame {
     @apply mx-auto mt-20 w-[500px] rounded-md border shadow-md;

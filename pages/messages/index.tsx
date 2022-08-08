@@ -78,7 +78,7 @@ function inbox() {
       )}
 
       {!messages && <Spinner className="mt-20 flex justify-center" />}
-      <div className="mt-6 max-w-[80%]">
+      <div className="mt-6 max-w-[80%] mx-auto">
         {messages?.length > 0 && (
           <div>
             {messages.map((msg) => (
@@ -88,7 +88,7 @@ function inbox() {
             ))}
           </div>
         )}
-        {messages?.length === 0 && <div>No messages</div>}
+        {messages?.length === 0 && <div className="text-3xl text-center">No messages</div>}
       </div>
     </div>
   )
