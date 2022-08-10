@@ -19,9 +19,9 @@ export default function Home() {
         <HeaderImage title="Home" />
 
         <div className="mx-auto mt-10 grid  max-w-[60%] grid-cols-10">
-          <div className=" col-span-2">
+          <div className=" col-span-2 border-r mr-4">
             
-            <div>
+            <div className="">
               Publish new a travel
             </div>
 

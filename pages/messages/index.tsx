@@ -44,15 +44,16 @@ function inbox() {
 
     console.log("getMsgs", result)
 
-    if (Array.isArray(result)) {
-      const cities = result.map((r) => r.profile[0]?.cityId)
+    if (Array.isArray(result?.previewMsgs)) {
+      console.log("XXXXXXXXXX", result?.previewMsgs)
+      const cities = result.previewMsgs.map((r) => r.profile[0]?.cityId)
       const places = await queryPlacesFromClient(cities)
       if (places?.isError) {
         console.log("An error occured while proccessing the request")
       } else {
         setPlaces(places)
         console.log("places##", places)
-        console.log("msg msg", result)
+        console.log("msg msg", result.previewMsgs)
         setUnreadMsgs(result.unreadMsgsIds)
         setMessages(result.previewMsgs)
       }
@@ -78,7 +79,7 @@ function inbox() {
       )}
 
       {!messages && <Spinner className="mt-20 flex justify-center" />}
-      <div className="mt-6 max-w-[80%] mx-auto">
+      <div className="mx-auto mt-6 max-w-[80%]">
         {messages?.length > 0 && (
           <div>
             {messages.map((msg) => (
@@ -88,7 +89,9 @@ function inbox() {
             ))}
           </div>
         )}
-        {messages?.length === 0 && <div className="text-3xl text-center">No messages</div>}
+        {messages?.length === 0 && (
+          <div className="text-center text-3xl">No messages</div>
+        )}
       </div>
     </div>
   )

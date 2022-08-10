@@ -4,6 +4,7 @@ import React, { useEffect } from "react"
 import Avatar from "../../components/Avatar"
 import HeaderImage from "../../components/HeaderImage"
 import LocationAutoComplete from "../../components/placesAc"
+import Popup from "../../components/Popup"
 import { GET_PROFILE_METHOD } from "../../lib/consts"
 import { post } from "../../lib/postman"
 import { getProfile } from "../../lib/profileUtils"
@@ -18,24 +19,35 @@ export default function Profile({ profile }) {
   const ProfileContent = () => {
     return (
       <div>
-        <div className="flex flex-col items-center">
-          <Avatar className="h-32 w-32" />
-          <div className="mt-2 text-3xl font-medium tracking-wide">Yoni</div>
+        <div className="mt-5 flex space-x-3">
+          <Avatar className="relative bottom-12 h-32 w-32  " />
+          <div className="flex-1">
+            <p className="text-3xl font-medium tracking-wide ">Yoni</p>
+            <p>Tel Aviv, Israel</p>
+          </div>
+          <button className="btn self-start px-4">Edit Profile</button>
+          <button className="btn self-start px-4">Send Message</button>
         </div>
+        <div className="mx-auto w-[80%]">
+          <div className=" ">
+            <div className="pl-2 text-3xl ">About</div>
+            <div className="mt-2 min-h-[200px] rounded-md border p-2">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit magni
+              quasi corrupti maiores quod. Eius sequi itaque animi assumenda,
+              magni obcaecati qui, id minima iusto commodi odio provident, at
+              quasi.
+            </div>
+          </div>
 
-        <div className="mt-5 flex w-80 flex-col">
-          <label>City</label>
-          <LocationAutoComplete className="mt-2 rounded-full border px-2 py-1 outline-none" />
-
-          <label className="mt-2">Picture</label>
-          <input className="mt-2 rounded-full border px-2 py-1 outline-none" />
-
-          <label className="mt-2">About me</label>
-          <textarea className="mt-2 h-36 rounded-xl border px-2 py-1 outline-none"></textarea>
-        </div>
-
-        <div>
-          <button className="btn mt-10 px-10">Save</button>
+          <div className="mt-3">
+            <div className="pl-2 text-3xl ">Travels</div>
+            <div className="mt-2 min-h-[200px] rounded-md border p-2">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit magni
+              quasi corrupti maiores quod. Eius sequi itaque animi assumenda,
+              magni obcaecati qui, id minima iusto commodi odio provident, at
+              quasi.
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -44,9 +56,14 @@ export default function Profile({ profile }) {
   return (
     <div>
       <form action="">
-        <HeaderImage title={`Profile`} />
-        <div className="mx-auto mt-10 flex max-w-[600px] flex-col items-center">
+        <HeaderImage headerExternalClass="h-[300px]" title={null}>
+          <button className="btn-outline absolute right-10 border border-white px-4 py-1 font-bold text-gray-200 shadow-xl hover:border-blue-800">
+            Edit wrap Image
+          </button>
+        </HeaderImage>
+        <div className="mx-auto w-[80%]">
           {profile ? <ProfileContent /> : <ProfileError />}
+          <Popup />
         </div>
       </form>
     </div>

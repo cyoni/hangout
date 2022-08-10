@@ -7,6 +7,7 @@ interface Props {
   title: string
   titleExternalClass?: string
   backgroundId?: string
+  children
 }
 
 function HeaderImage({
@@ -14,6 +15,7 @@ function HeaderImage({
   titleExternalClass,
   headerExternalClass,
   backgroundId,
+  children
 }: Props) {
   console.log("backgroundId", backgroundId)
   const [backgroundUrl, setBackgroundUrl] = useState<string>()
@@ -52,6 +54,7 @@ function HeaderImage({
       >
         {title}
       </p>
+      {children}
     </div>
   )
 }

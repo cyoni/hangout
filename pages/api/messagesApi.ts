@@ -63,7 +63,7 @@ async function getPreviewMessages(userId: string) {
   const unreadMsgsIds = await getUnreadMsgsIds(userId)
   console.log("unreadMsgsIds", unreadMsgsIds)
   // get all preview messages
-  const previewMsgs = getPreviewMsgs(userId, allSharedTokens)
+  const previewMsgs = await getPreviewMsgs(userId, allSharedTokens)
   console.log("getLatestMessages", previewMsgs)
 
   return { unreadMsgsIds, previewMsgs }
