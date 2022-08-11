@@ -1,4 +1,3 @@
-require("dotenv")
 
 import "../styles/globals.scss"
 import Head from "next/head"
@@ -17,7 +16,7 @@ function App({ Component, pageProps: { session, ...pageProps } }) {
       </Head>
 
       <Header />
-      <Toaster />
+      
 
       <div>
         <div>

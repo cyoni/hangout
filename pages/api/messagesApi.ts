@@ -5,7 +5,6 @@ import {
 import { NextApiRequest, NextApiResponse } from "next"
 import { getToken } from "next-auth/jwt"
 import { GET_PREVIEW_MESSAGES_METHOD } from "../../lib/consts"
-const jwt = require("jsonwebtoken")
 import { dbAggregate, dbFind, dbUpdateOne } from "../../lib/mongoUtils"
 import { getSharedToken } from "../../lib/chat"
 import {
