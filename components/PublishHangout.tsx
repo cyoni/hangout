@@ -5,7 +5,7 @@ import "react-datepicker/dist/react-datepicker.css"
 import toast from "react-hot-toast"
 import { useRouter } from "next/router"
 import HeaderImage from "./HeaderImage"
-import LocationAutoComplete from "./placesAc"
+import LocationAutoComplete from "./LocationAutoComplete"
 import { getFullPlaceName } from "../lib/scripts/place"
 
 interface Props {

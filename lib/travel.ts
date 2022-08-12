@@ -1,4 +1,4 @@
-import { EMPTY_PROFILE_PICTURE, TRAVELLING_TABLE, USERS_TABLE } from "./consts"
+import { EMPTY_PROFILE_PICTURE, TRAVELLING_TABLE, USERS_COLLECTION } from "./consts"
 import { dbAggregate, dbFind } from "./mongoUtils"
 
 const formatDate = (date) => {
@@ -45,7 +45,7 @@ export async function getAllTravellingByPlace(cityId: number) {
           localField: "userId",
           foreignField: "userId",
           as: "profile",
-          from: USERS_TABLE,
+          from: USERS_COLLECTION,
         },
       },
       { $match: { cityId } },
@@ -93,7 +93,7 @@ export async function getTravelContent(userId) {
     return false
   }
   console.log("getTravelContent", userId)
-  const profileRaw = (await dbFind(USERS_TABLE, { userId }))[0]
+  const profileRaw = (await dbFind(USERS_COLLECTION, { userId }))[0]
   const travelsRaw = await dbFind("future_travelling", { userId })
 
   const travels = travelsRaw.map((travel) => {

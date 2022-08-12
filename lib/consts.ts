@@ -1,4 +1,4 @@
-export const USERS_TABLE = "users"
+export const USERS_COLLECTION = "users"
 export const TRAVELLING_TABLE = "future_travelling"
 export const defaultBackground = "/static/images/logo-1.jpg"
 export const GET_NOTIFICATION_METHOD = "getNotifications"

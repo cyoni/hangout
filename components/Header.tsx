@@ -6,7 +6,7 @@ import { GET_NOTIFICATION_METHOD } from "../lib/consts"
 import { post } from "../lib/postman"
 import { isAuthenticated } from "../lib/session"
 import Menubar from "./Menubar"
-import LocationAutoComplete from "./placesAc"
+import LocationAutoComplete from "./LocationAutoComplete"
 
 function Header() {
   const router = useRouter()

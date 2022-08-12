@@ -1,5 +1,5 @@
 import { useState } from "react"
-import LocationAutoComplete from "../../components/placesAc"
+import LocationAutoComplete from "../../components/LocationAutoComplete"
 import Spinner from "react-bootstrap/Spinner"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"

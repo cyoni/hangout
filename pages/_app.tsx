@@ -17,6 +17,7 @@ function App({ Component, pageProps: { session, ...pageProps } }) {
 
       <Header />
       
+      <div><Toaster/></div>
 
       <div>
         <div>

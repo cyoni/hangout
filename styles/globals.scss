@@ -8,7 +8,7 @@
   }
   .btn {
     @apply rounded-full bg-blue-600 px-2 py-1 
-    text-lg font-medium text-white
+    text-lg font-medium text-white  min-w-[100px] min-h-[35px]
     hover:bg-blue-600 hover:opacity-80;
   }
   .btn-outline {
@@ -45,6 +45,6 @@ body {
   background-color: #555;
 }
 
-.abc{
+.abc {
   background-color: "red";
 }

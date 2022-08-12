@@ -1,5 +1,5 @@
 import { useState } from "react"
-import LocationAutoComplete from "../components/placesAc"
+import LocationAutoComplete from "../components/LocationAutoComplete"
 import { useRouter } from "next/router"
 import HeaderImage from "../components/HeaderImage"
 import { signIn } from "next-auth/react"
