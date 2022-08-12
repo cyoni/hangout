@@ -1,6 +1,6 @@
 import { getToken } from "next-auth/jwt"
 import { useRouter } from "next/router"
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import Avatar from "../../components/Avatar"
 import HeaderImage from "../../components/HeaderImage"
 import LocationAutoComplete from "../../components/placesAc"
@@ -8,9 +8,15 @@ import Popup from "../../components/Popup"
 import { GET_PROFILE_METHOD } from "../../lib/consts"
 import { post } from "../../lib/postman"
 import { getProfile } from "../../lib/profileUtils"
+import Modal from "react-modal"
+
 
 export default function Profile({ profile }) {
   console.log("Profile", profile)
+  const [openEditProfile, setOpenEditProfile] = useState<boolean>(false)
+
+
+
 
   const ProfileError = () => {
     return <div>Sorry, this profile was not found</div>
@@ -19,13 +25,27 @@ export default function Profile({ profile }) {
   const ProfileContent = () => {
     return (
       <div>
+        { <Modal
+        style={{
+          overlay: {
+            background: "transparent",
+            backdropFilter: "blur(3px)",
+          },
+        }}
+        isOpen={openEditProfile}
+        onRequestClose={()=> setOpenEditProfile(false)}
+        contentLabel="My dialog"
+      >
+        <div>My modal dialog.</div>
+        <button onClick={()=> setOpenEditProfile(false)}>Close modal</button>
+      </Modal>}
         <div className="mt-5 flex space-x-3">
           <Avatar className="relative bottom-12 h-32 w-32  " />
           <div className="flex-1">
             <p className="text-3xl font-medium tracking-wide ">Yoni</p>
             <p>Tel Aviv, Israel</p>
           </div>
-          <button className="btn self-start px-4">Edit Profile</button>
+          <button className="btn self-start px-4" onClick={()=> setOpenEditProfile(true)}>Edit Profile</button>
           <button className="btn self-start px-4">Send Message</button>
         </div>
         <div className="mx-auto w-[80%]">
@@ -63,7 +83,7 @@ export default function Profile({ profile }) {
         </HeaderImage>
         <div className="mx-auto w-[80%]">
           {profile ? <ProfileContent /> : <ProfileError />}
-          <Popup />
+          
         </div>
       </form>
     </div>
