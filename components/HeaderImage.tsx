@@ -39,14 +39,14 @@ function HeaderImage({
         }')`,
         filter: backgroundId && isLoading ? `blur(8px)` : "",
       }}
-      className={`h-40 rounded-sm
+      className={`h-56 rounded-sm
        border border-transparent object-fill	
        bg-cover bg-center shadow-lg ${
          headerExternalClass ? headerExternalClass : ""
        }`}
     >
       <p
-        className={`title-shadow mt-12 w-fit 
+        className={`title-shadow mt-20 w-fit 
         pl-4 font-sans text-[40px] 
         font-medium tracking-wide text-white ${
           titleExternalClass ? titleExternalClass : ""

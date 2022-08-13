@@ -11,6 +11,7 @@ import { post } from "../../lib/postman"
 import { getProfile } from "../../lib/profileUtils"
 import EditProfile from "../../components/EditProfile"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
+import TravelTimeLine from "../../components/TravelTimeLine"
 
 interface Props {
   profile: Profile
@@ -75,9 +76,11 @@ export default function Profile({ profile }: Props) {
 
           <div className="mt-3">
             <div className="pl-2 text-3xl ">Travels</div>
-            <div className="flex flex-col justify-center items-center mt-2 min-h-[200px] rounded-md mx-auto border p-2">
-              <div className="text-lg">The timeline is empty.</div>
-              <button className="btn mt-3 px-5">Add a new travel</button>
+          
+            <div className="mt-2 min-h-[200px] rounded-md  border p-2">
+            <TravelTimeLine />
+              {/* <div className="text-lg">The timeline is empty.</div>
+              <button className="btn mt-3 px-5">Add a new travel</button> */}
             </div>
           </div>
         </div>

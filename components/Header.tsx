@@ -7,11 +7,14 @@ import { post } from "../lib/postman"
 import { isAuthenticated } from "../lib/session"
 import Menubar from "./Menubar"
 import LocationAutoComplete from "./LocationAutoComplete"
+import AutoComplete from "./AutoComplete"
+import { getCitiesAutoComplete } from "../lib/AutoCompleteUtils"
 
 function Header() {
   const router = useRouter()
   const session = useSession()
   const [newMessages, setNewMessages] = useState<number>(null)
+  const [cityId, setCityId] = useState<number>(null)
 
   useEffect(() => {
     const getInbox = async () => {
@@ -23,18 +26,29 @@ function Header() {
       console.log("getInbox result", result)
       setNewMessages(result.unreadMsgs)
     }
- 
+
     if (isAuthenticated(session)) {
       console.log("getting messages....")
       getInbox()
     }
   }, [session])
 
-  const handleSelect = (place: Place, inputRef) => {
+  const handleSelect = (place: Place) => {
     if (place && place.city_id) {
+      setCityId(place.city_id)
       router.push(`/city/${place.city_id}`)
-      inputRef.current.value = ""
     }
+  }
+  const getFullName = (place: Place) => {
+    return `${place.city}, ${place.province}, ${place.country}`
+  }
+
+  const getOptionLabel = (option: Place) => {
+    return getFullName(option)
+  }
+
+  const isOptionEqualToValue = (option: Place, value: Place) => {
+    return option.city === value.city
   }
 
   return (
@@ -46,12 +60,21 @@ function Header() {
               <a className="text-3xl font-medium">Hangouts</a>
             </Link>
           </div>
-          <div className="rounded-md bg-slate-200 py-2">
-            <LocationAutoComplete
+          <div className="rounded-md bg-slate-200 w-[400px] px-3 py-1 ">
+            {/* <LocationAutoComplete
               toggleFunction={handleSelect}
               position="top-2"
               className="w-60 bg-transparent pl-2 outline-none "
               placeholder="Where are you going?"
+            /> */}
+            <AutoComplete
+              placeholder="Where are you going?"
+              fetchFunction={getCitiesAutoComplete}
+              handleSelect={handleSelect}
+              getOptionLabel={getOptionLabel}
+              isOptionEqualToValue={isOptionEqualToValue}
+              disableUnderline
+              variant={"standard"}
             />
           </div>
         </div>

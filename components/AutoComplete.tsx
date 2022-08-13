@@ -6,11 +6,15 @@ import { isNullOrEmpty } from "../lib/scripts/strings"
 
 interface Props {
   id?: string
-  label: string
+  label?: string
   fetchFunction: Function
   getOptionLabel: any
   handleSelect: Function
   isOptionEqualToValue?: any
+  placeholder?: string
+  disableUnderline?: boolean
+  disableClearable?: boolean
+  variant?: any
 }
 export default function AutoComplete({
   id,
@@ -18,7 +22,11 @@ export default function AutoComplete({
   fetchFunction,
   getOptionLabel,
   isOptionEqualToValue,
-  handleSelect
+  handleSelect,
+  placeholder,
+  disableUnderline,
+  disableClearable,
+  variant = "outlined",
 }: Props) {
   const [open, setOpen] = React.useState(false)
   const [options, setOptions] = React.useState<readonly any[]>([])
@@ -27,7 +35,6 @@ export default function AutoComplete({
 
   React.useEffect(() => {
     if (isNullOrEmpty(input)) return
-
     ;(async () => {
       console.log("input", input)
       setLoading(true)
@@ -56,6 +63,7 @@ export default function AutoComplete({
       onClose={() => {
         setOpen(false)
       }}
+      disableClearable={disableClearable}
       onChange={(event, value) => handleSelect(value)}
       autoComplete={true}
       isOptionEqualToValue={isOptionEqualToValue}
@@ -65,11 +73,13 @@ export default function AutoComplete({
       renderInput={(params) => (
         <TextField
           {...params}
+          placeholder={placeholder}
           label={label}
- 
+          variant={variant}
           onChange={(e) => setInput(e.target.value)}
           InputProps={{
             ...params.InputProps,
+            disableUnderline,
             endAdornment: (
               <React.Fragment>
                 {loading ? (

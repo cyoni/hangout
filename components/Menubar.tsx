@@ -9,24 +9,44 @@ import {
 } from "@heroicons/react/outline"
 import Avatar from "./Avatar"
 import AvatarMenu from "./AvatarMenu"
-import { signIn, useSession } from "next-auth/react"
+import { signIn, signOut, useSession } from "next-auth/react"
 import { isAuthenticated, isNotAuthenticated } from "../lib/session"
 import { useRouter } from "next/router"
+import { ListItemIcon, MenuItem } from "@mui/material"
+import Logout from "@mui/icons-material/Logout"
 
 function Menubar({ newMessages }) {
   const router = useRouter()
   const session = useSession()
+  const renderMyAvatar = () => {
+    return (
+      <AvatarMenu>
+        <MenuItem  onClick={() => router.push("/profile")}>
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          Profile
+        </MenuItem>
+        <MenuItem onClick={() => signOut()}>
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
+      </AvatarMenu>
+    )
+  }
   return (
     <div className="col-span-2 border-gray-100">
       <div className="flex items-center space-x-2">
-        <MenubarRow title="Home" Icon={HomeIcon} link="/" />
+        <MenubarRow title="Notifications" Icon={HomeIcon} link="/" />
         <MenubarRow
           title="Messages"
           Icon={InboxIcon}
           link="/messages"
           notifications={newMessages}
         />
-        <MenubarRow title="Search" Icon={SearchIcon} link="/" />
+   
         <MenubarRow
           title="Publish hangout"
           Icon={PlusIcon}
@@ -34,7 +54,7 @@ function Menubar({ newMessages }) {
             router.query.city_id ? `city/${router.query.city_id}` : ""
           }`}
         />
-        {isAuthenticated(session) && <AvatarMenu />}
+        {isAuthenticated(session) && renderMyAvatar()}
         {isNotAuthenticated(session) && (
           <>
             <MenubarRow title="Login" onClick={() => signIn()} link="/" />

@@ -40,12 +40,14 @@ async function createSharedToken(user1: string, user2: string) {
   return result.insertedCount === 1 ? sharedToken : null
 }
 async function insertUnreadMsgToReceiver({ timestamp, receiverId, senderId }) {
+  //FIX 
   const result = await dbUpdateOne(
     USERS_COLLECTION,
     { userId: receiverId },
-    { $push: { 'unreadMsgs': { senderId: senderId, timestamp } } },
-    { multi: false, arrayFilters: [{ "elem.userId": 'senderId' }] }
+    { $push: { 'unreadMsgs.$[elem]': { senderId: senderId, timestamp } } },
+    { multi: false, arrayFilters: [{ "elem.userId": senderId }] }
   )
+  console.log("result", result)
   // await dbUpdateOne(
   //   "users",
   //   { userId: receiverId },
