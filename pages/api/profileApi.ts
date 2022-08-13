@@ -1,5 +1,5 @@
 import {
-  GET_PROFILES,
+  GET_PROFILES_METHOD,
   UPDATE_PROFILE_METHOD,
   USERS_COLLECTION,
 } from "./../../lib/consts"
@@ -56,8 +56,12 @@ export default async function handler(
       case UPDATE_PROFILE_METHOD:
         result = await saveProfile({ userId: token.userId, ...req.body })
         break
-      case GET_PROFILES:
+      case GET_PROFILES_METHOD:
         result = await getProfiles(req.body)
+        console.log("get profiles ", result)
+        break
+      default:
+        return res.status(400).json({ error: "no method was provided" })
     }
 
     if (result.error) res.status(400).json({ error: result.message })

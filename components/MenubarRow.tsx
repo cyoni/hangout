@@ -1,3 +1,4 @@
+import { Badge } from "@mui/material"
 import Link from "next/link"
 import React from "react"
 import Notification from "./Notification"
@@ -18,7 +19,7 @@ function MenubarRow({
   notifications,
   onClick,
 }: Props) {
-  console.log("linklink", link)
+
   return (
     <Link href={link}>
       <div
@@ -29,8 +30,10 @@ function MenubarRow({
       text-xl hover:bg-gray-100 hover:shadow-sm
        ${externalClass}`}
       >
-        {Icon && <Icon className="h-6" />}
-        {notifications > 0 && <Notification count={notifications} />}
+        <Badge badgeContent={notifications} color="error">
+          {Icon && <Icon className="h-6" />}
+        </Badge>
+
         <div>{title}</div>
       </div>
     </Link>

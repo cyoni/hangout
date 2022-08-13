@@ -7,6 +7,7 @@ import {
   CircularProgress,
   TextField,
 } from "@mui/material"
+import { signOut } from "next-auth/react"
 import fetch from "node-fetch"
 import React, { useState } from "react"
 import toast from "react-hot-toast"
@@ -14,6 +15,7 @@ import { getCitiesAutoComplete } from "../lib/AutoCompleteUtils"
 import { UPDATE_PROFILE_METHOD } from "../lib/consts"
 import { post } from "../lib/postman"
 import { sleep } from "../lib/scripts/general"
+import AlertDialog from "./AlertDialog"
 import AutoComplete from "./AutoComplete"
 import Avatar from "./Avatar"
 import ButtonIntegration from "./ButtonIntegration"
@@ -30,6 +32,8 @@ function EditProfile({ openEditProfile, setOpenEditProfile, profile }: Props) {
   const [name, setName] = useState<string>(profile.name)
   const [cityId, setCityId] = useState<number>(profile.cityId)
   const [aboutMe, setAboutMe] = useState<string>(profile.aboutMe)
+  const [showDeleteAccountDialog, setShowDeleteAccountDialog] =
+    useState<boolean>(false)
 
   const submitForm = async () => {
     const result = await post({
@@ -61,8 +65,28 @@ function EditProfile({ openEditProfile, setOpenEditProfile, profile }: Props) {
     return option.city === value.city
   }
 
+  const handleDeleteAccount = (e) => {
+    e.preventDefault()
+    setShowDeleteAccountDialog(true)
+  }
+
+  const handleDelete = () => {
+    signOut()
+  }
+
   return (
     <ModalWrapper isOpen={openEditProfile} onRequestClose={setOpenEditProfile}>
+      {showDeleteAccountDialog && (
+        <AlertDialog
+          open={showDeleteAccountDialog}
+          setOpen={setShowDeleteAccountDialog}
+          dialogTitle={"Delete Account"}
+          dialogText={"Are you sure you want to delete this account?"}
+          cancelText={"Cancel"}
+          okText={"Delete Account"}
+          okFunction={handleDelete}
+        />
+      )}
       <form
         className="w-[40%] mx-auto flex justify-center items-center flex-col space-y-5"
         onSubmit={submitForm}
@@ -109,7 +133,9 @@ function EditProfile({ openEditProfile, setOpenEditProfile, profile }: Props) {
         />
 
         <div className="border-b w-full mt-5 "></div>
-        <button className="btn-outline py-2 mt-5">Delete Account</button>
+        <button className="btn-outline py-2 mt-5" onClick={handleDeleteAccount}>
+          Delete Account
+        </button>
       </form>
     </ModalWrapper>
   )

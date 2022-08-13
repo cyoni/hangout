@@ -1,3 +1,4 @@
+import { GET_PROFILES_METHOD } from "./consts"
 import { PROFILE_API } from "./consts/apis"
 import { post } from "./postman"
 import { unique } from "./scripts/arrays"
@@ -13,8 +14,8 @@ export async function queryPlacesFromClient(cityCodes: string[]) {
 export async function getProfile(userIds: string[]) {
   const data = await post({
     url: PROFILE_API,
-    body: { userIds },
+    body: { method: GET_PROFILES_METHOD, userIds },
   })
-  const profiles: Profile[] = data?.profiles
+  const profiles: Profile[] = data?.result
   return profiles
 }

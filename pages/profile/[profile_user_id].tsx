@@ -20,7 +20,8 @@ export default function Profile({ profile }: Props) {
   const [openEditProfile, setOpenEditProfile] = useState<boolean>(false)
   const router = useRouter()
 
-  const handleSendMessage = () => {
+  const handleSendMessage = (e) => {
+    e.preventDefault()
     router.push(`/messages/conversation/${profile.userId}`)
   }
 
@@ -52,7 +53,7 @@ export default function Profile({ profile }: Props) {
           >
             Edit Profile
           </button>
-          <button className="btn self-start px-4" onClick={()=> handleSendMessage()}>Send Message</button>
+          <button className="btn self-start px-4" onClick={(e)=> handleSendMessage(e)}>Send Message</button>
         </div>
         <div className="mx-auto w-[80%]">
           <div className=" ">

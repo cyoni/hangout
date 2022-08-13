@@ -1,3 +1,3 @@
 export function isNullOrEmpty(value: string): boolean {
-  return value === null || value.trim() === ""
+  return !value || value === null || value.trim() === ""
 }

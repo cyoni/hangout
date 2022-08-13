@@ -7,7 +7,11 @@ import Back from "../../../components/Back"
 import HeaderImage from "../../../components/HeaderImage"
 import Refresh from "../../../components/Refresh"
 import Spinner from "../../../components/Spinner"
-import { GET_ALL_MESSAGES_BY_USER_METHOD } from "../../../lib/consts"
+import {
+  GET_ALL_MESSAGES_BY_USER_METHOD,
+  SEND_MESSAGE_API,
+  SEND_MESSAGE_METHOD,
+} from "../../../lib/consts"
 import { PROFILE_API } from "../../../lib/consts/apis"
 import { getProfile } from "../../../lib/dbClient"
 import { post } from "../../../lib/postman"
@@ -21,16 +25,14 @@ function Messages() {
   const [profile, setProfile] = useState<Profile>(null)
 
   useEffect(() => {
-    console.log("their id profile", theirId)
     const profile = async () => {
+      console.log("their id profile", theirId)
       const profiles = await getProfile([theirId])
-      console.log("profile result", profile)
+      console.log("profile result", profiles)
       if (Array.isArray(profiles) && profiles.length > 0)
         setProfile(profiles[0])
     }
-    if (theirId) {
-      profile()
-    }
+    if (theirId) profile()
   }, [theirId])
 
   const getMessages = async () => {
@@ -50,8 +52,6 @@ function Messages() {
     if (theirId) getMessages()
   }, [theirId])
 
-
-
   const inputRef = useRef()
 
   const handleMessage = async (e) => {
@@ -68,8 +68,9 @@ function Messages() {
     inputRef.current.focus()
 
     const result = await post({
-      url: "/api/sendMessage",
+      url: SEND_MESSAGE_API,
       body: {
+        method: SEND_MESSAGE_METHOD,
         theirId: theirId,
         message: input,
       },
@@ -139,7 +140,9 @@ function Messages() {
       <div className="relative mx-auto w-[55%] cursor-default rounded-md border pb-5">
         <div className="flex items-center justify-between  py-4 px-3 shadow-md">
           <div className="flex items-center space-x-1">
-            <Avatar className="h-10 w-10" picture={profile?.picture} />
+            <a href={`/profile/${theirId}`}>
+              <Avatar className="h-10 w-10" picture={profile?.picture} />
+            </a>
             <div className="text-lg font-bold capitalize">{profile?.name}</div>
           </div>
           <div>

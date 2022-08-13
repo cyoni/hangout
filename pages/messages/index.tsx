@@ -81,13 +81,13 @@ function inbox() {
       {!messages && <Spinner className="mt-20 flex justify-center" />}
       <div className="mx-auto mt-6 max-w-[80%]">
         {messages?.length > 0 && (
-          <div>
+          <>
             {messages.map((msg) => (
               <div key={msg._id}>
                 <PreviewMessage {...msg} places={places} />
               </div>
             ))}
-          </div>
+          </>
         )}
         {messages?.length === 0 && (
           <div className="text-center text-3xl">No messages</div>

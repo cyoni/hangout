@@ -1,5 +1,4 @@
 import { useState } from "react"
-import Spinner from "react-bootstrap/Spinner"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import toast from "react-hot-toast"
@@ -116,7 +115,6 @@ export default function PublishHangout({ place }: Props) {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         ></textarea>
-        <Spinner animation="border" size="sm" variant="success" />
         <button type="submit" className="btn my-5 mx-auto w-full">
           Publish
         </button>

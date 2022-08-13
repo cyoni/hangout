@@ -57,6 +57,7 @@ export async function getPreviewMsgs(
           as: "profile",
         },
       },
+      { $sort: { timestamp: -1 } },
     ],
   })
 }

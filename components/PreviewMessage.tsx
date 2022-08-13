@@ -39,7 +39,9 @@ function PreviewMessage({
         ·
       </div>
       <div className="flex gap-2">
-        <Avatar className="h-14 w-14" />
+        <a href={`/profile/${theirId}`}>
+          <Avatar className="h-14 w-14" />
+        </a>
 
         <div className="">
           <div className="font-bold capitalize">{profile[0]?.name}</div>
