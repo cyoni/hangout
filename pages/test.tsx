@@ -6,6 +6,7 @@ import { signIn, signOut, useSession } from "next-auth/react"
 import { getToken } from "next-auth/jwt"
 import { post } from "../lib/postman"
 import Modal from "react-modal"
+import AutoComplete from "../components/AutoComplete"
 
 function Test({ photo }) {
   const { data: session } = useSession()
@@ -26,20 +27,9 @@ function Test({ photo }) {
   return (
     <div>
       <button onClick={toggleModal}>Open modal</button>
-      <Modal
-        style={{
-          overlay: {
-            background: "transparent",
-            backdropFilter: "blur(3px)",
-          },
-        }}
-        isOpen={isOpen}
-        onRequestClose={toggleModal}
-        contentLabel="My dialog"
-      >
-        <div>My modal dialog.</div>
-        <button onClick={toggleModal}>Close modal</button>
-      </Modal>
+
+
+<AutoComplete />
     </div>
   )
 }

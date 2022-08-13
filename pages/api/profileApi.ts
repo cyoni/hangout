@@ -1,10 +1,15 @@
-import { USERS_COLLECTION } from "./../../lib/consts"
+import {
+  GET_PROFILES,
+  UPDATE_PROFILE_METHOD,
+  USERS_COLLECTION,
+} from "./../../lib/consts"
 import { getToken } from "next-auth/jwt"
 import type { NextApiRequest, NextApiResponse } from "next"
 import { dbAggregate, dbUpdateOne } from "../../lib/mongoUtils"
+import { isNullOrEmpty } from "../../lib/scripts/strings"
 
 type Response = {
-  profiles?: Profile[] | boolean
+  result?: Profile[]
   error?: string
 }
 
@@ -20,11 +25,17 @@ async function getProfiles({ userIds }) {
   return profiles
 }
 
-async function saveProfile({ userId, name, place, aboutMe }) {
+async function saveProfile({ userId, name, cityId, aboutMe }) {
+  const fieldsToUpdate = {}
+
+  if (isNullOrEmpty(name)) fieldsToUpdate["name"] = name
+  if (isNullOrEmpty(aboutMe)) fieldsToUpdate["aboutMe"] = aboutMe
+  if (isNullOrEmpty(cityId)) fieldsToUpdate["cityId"] = cityId
+
   const result = await dbUpdateOne(
     USERS_COLLECTION,
     { userId },
-    { $set: { name, aboutMe } },
+    { $set: { ...fieldsToUpdate } },
     {}
   )
   console.log("update profile result", result)
@@ -42,16 +53,16 @@ export default async function handler(
     let result = null
 
     switch (method) {
-      case "SAVE_PROFILE":
+      case UPDATE_PROFILE_METHOD:
         result = await saveProfile({ userId: token.userId, ...req.body })
         break
-      case "GET_PROFILES":
+      case GET_PROFILES:
         result = await getProfiles(req.body)
     }
 
-    if (result.error) res.status(400).json({ error: profiles.message })
+    if (result.error) res.status(400).json({ error: result.message })
 
-    res.status(200).json({ profiles })
+    res.status(200).json({ result })
   } catch (e) {
     res.status(500).json({ error: e.message })
   }

@@ -88,4 +88,6 @@ type Profile = {
   name: string
   picture: string
   cityId: number
+  aboutMe: string
+  timeline: any
 }

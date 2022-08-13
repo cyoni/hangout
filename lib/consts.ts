@@ -5,5 +5,7 @@ export const GET_NOTIFICATION_METHOD = "getNotifications"
 export const GET_PREVIEW_MESSAGES_METHOD = "getPrviewMessages"
 export const GET_ALL_MESSAGES_BY_USER_METHOD = "getAllMessagesByUser"
 export const GET_PROFILE_METHOD = "getProfile"
+export const UPDATE_PROFILE_METHOD = "SAVE_PROFILE"
+export const GET_PROFILES = "GET_PROFILES"
 export const EMPTY_PROFILE_PICTURE =
   "https://akadem.org.il/wp-content/uploads/2020/05/blank-profile-picture-973460_640.png"
