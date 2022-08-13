@@ -16,7 +16,8 @@ export default function ButtonIntegration({
 }: Props) {
   const [loading, setLoading] = React.useState(false)
 
-  const handleButtonClick = async () => {
+  const handleButtonClick = async (e) => {
+    e?.preventDefault()
     if (!loading) {
       setLoading(true)
       await onClick()
@@ -27,10 +28,10 @@ export default function ButtonIntegration({
   return (
     <div className={`${externalClass ? externalClass : ""}`}>
       <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Box sx={{ m: 1, position: "relative" }}></Box>
-        <Box sx={{ m: 1, position: "relative" }}>
+        <Box className="w-full" sx={{ m: 1, position: "relative" }}>
           <button
-            className={`btn ${buttonClassName ? buttonClassName : ""} ${
+          type="submit"
+            className={`btn w-full ${buttonClassName ? buttonClassName : ""} ${
               loading ? "text-transparent" : ""
             }`}
             disabled={loading}

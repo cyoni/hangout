@@ -22,7 +22,7 @@ type ResponseObject = {
   message?: string
 }
 
-interface TravellingObject {
+interface TravelingObject {
   cityId: number
   startDate: string
   endDate: string

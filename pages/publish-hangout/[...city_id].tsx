@@ -32,7 +32,7 @@ export async function getServerSideProps(context) {
         props: { place: null },
       }
     }
-    const convertedCityId = Number(cityId)
+    const convertedCityId: number = Number(cityId)
     const place: Place = await queryPlace(convertedCityId)
     return {
       props: { place: place },

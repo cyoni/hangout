@@ -70,6 +70,7 @@ export default function AutoComplete({
       getOptionLabel={getOptionLabel}
       options={options}
       loading={loading}
+      freeSolo={true}
       renderInput={(params) => (
         <TextField
           {...params}

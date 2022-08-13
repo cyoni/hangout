@@ -21,6 +21,7 @@ import Avatar from "./Avatar"
 import ButtonIntegration from "./ButtonIntegration"
 import LocationAutoComplete from "./LocationAutoComplete"
 import ModalWrapper from "./ModalWrapper"
+import { getFullPlaceName } from "../lib/scripts/place"
 
 interface Props {
   openEditProfile: boolean
@@ -53,12 +54,9 @@ function EditProfile({ openEditProfile, setOpenEditProfile, profile }: Props) {
       setCityId(place.city_id)
     }
   }
-  const getFullName = (place: Place) => {
-    return `${place.city}, ${place.province}, ${place.country}`
-  }
 
   const getOptionLabel = (option: Place) => {
-    return getFullName(option)
+    return getFullPlaceName(option)
   }
 
   const isOptionEqualToValue = (option: Place, value: Place) => {
