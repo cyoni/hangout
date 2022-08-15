@@ -3,8 +3,6 @@ import { signIn } from "next-auth/react"
 import dbFind from "../../lib/mongoUtils"
 import clientPromise from "../../lib/mongodb"
 import randomString from "../../lib/randomString"
-import { generateAccessToken } from "../../lib/jwtUtils"
-import { Client } from "@googlemaps/google-maps-services-js"
 import { prisma } from "../../prisma"
 import { queryPlace } from "../../lib/place"
 

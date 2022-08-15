@@ -12,7 +12,7 @@
     hover:bg-blue-600 hover:opacity-80;
   }
   .btn-outline {
-    @apply rounded-md px-3 transition  duration-300  hover:border-white hover:bg-blue-600 hover:text-white;
+    @apply rounded-md w-fit px-4 cursor-pointer transition  duration-300  hover:border-white hover:bg-blue-600 hover:text-white;
   }
 
   .shared-frame {

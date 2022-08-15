@@ -15,7 +15,7 @@ function HeaderImage({
   titleExternalClass,
   headerExternalClass,
   backgroundId,
-  children
+  children,
 }: Props) {
   console.log("backgroundId", backgroundId)
   const [backgroundUrl, setBackgroundUrl] = useState<string>()

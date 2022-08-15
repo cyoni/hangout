@@ -1,3 +1,4 @@
+// @deprecated 
 export default function randomString(length: number) {
   var result = ""
   var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"

@@ -7,7 +7,7 @@ import HeaderImage from "../../components/HeaderImage"
 import toast from "react-hot-toast"
 import { useRouter } from "next/router"
 import { getFullPlaceName } from "../../lib/scripts/place"
-import PublishHangout from "../../components/PublishHangout"
+import PublishHangout from "../../components/PublishHangout/PublishHangout"
 
 interface Props {
   place: Place

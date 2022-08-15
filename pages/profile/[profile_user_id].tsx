@@ -12,6 +12,7 @@ import { getProfile } from "../../lib/profileUtils"
 import EditProfile from "../../components/EditProfile"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import TravelTimeLine from "../../components/TravelTimeLine"
+import Itinerary from "../../components/Itinerary"
 
 interface Props {
   profile: Profile
@@ -54,7 +55,12 @@ export default function Profile({ profile }: Props) {
           >
             Edit Profile
           </button>
-          <button className="btn self-start px-4" onClick={(e)=> handleSendMessage(e)}>Send Message</button>
+          <button
+            className="btn self-start px-4"
+            onClick={(e) => handleSendMessage(e)}
+          >
+            Send Message
+          </button>
         </div>
         <div className="mx-auto w-[80%]">
           <div className=" ">
@@ -76,12 +82,8 @@ export default function Profile({ profile }: Props) {
 
           <div className="mt-3">
             <div className="pl-2 text-3xl ">Travels</div>
-          
-            <div className="mt-2 min-h-[200px] rounded-md  border p-2">
-            <TravelTimeLine />
-              {/* <div className="text-lg">The timeline is empty.</div>
-              <button className="btn mt-3 px-5">Add a new travel</button> */}
-            </div>
+
+                <Itinerary/>
           </div>
         </div>
       </div>
