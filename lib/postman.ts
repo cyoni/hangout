@@ -18,3 +18,18 @@ export async function post(req: PostRequest): Promise<any> {
     return res
   }
 }
+
+export async function firePost(url: string, body: {}): Promise<any> {
+  //try {
+  return await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  })
+  // } catch (e) {
+  //   const res: ResponseObject = { isSuccess: false, message: e.message }
+  //   return res
+  // }
+}

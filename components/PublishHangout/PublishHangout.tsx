@@ -19,6 +19,7 @@ import ButtonIntegration from "../ButtonIntegration"
 import { PlusIcon } from "@heroicons/react/outline"
 import generateRandomString from "../../lib/scripts/strings"
 import usePublishHangout from "./usePublishHangout"
+import { useQueryClient } from "@tanstack/react-query"
 
 interface Props {
   place?: Place
@@ -62,41 +63,13 @@ export default function PublishHangout({ place }: Props) {
     updateItinerary,
     addNewItinerary,
     handleSelectCity,
+    useSubmitItinerary,
   } = usePublishHangout()
 
+  const queryClient = useQueryClient()
+  const { status, data, error, isFetching, refetch } = useSubmitItinerary()
+
   console.log("currentItinerary client", currentItinerary)
-  const handleSubmit = async () => {
-    if (!isValidForm()) {
-      return
-    }
-
-    const refreshToast = toast.loading("Publishing hangout...")
-
-    const data: TravelingObject = {
-      startDate,
-      endDate,
-      cityId: newPlace.city_id,
-      description,
-    }
-    console.log("data", data)
-    const JSONdata = JSON.stringify(data)
-    console.log("JSONdata", JSONdata)
-
-    const endpoint = "/api/publishHangoutApi"
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSONdata,
-    }
-    const response = await fetch(endpoint, options)
-    if (response.status === 200) {
-      toast.success("Publish successfully!", { id: refreshToast })
-    } else {
-      toast.error("Hangout could not be published", { id: refreshToast })
-    }
-  }
 
   const convertDate = (date) => {
     if (date === null) return null
@@ -149,7 +122,7 @@ export default function PublishHangout({ place }: Props) {
       </div>
     )
   }
-console.log("currentItinerary?.description",currentItinerary?.description)
+  console.log("currentItinerary?.description", currentItinerary?.description)
   const handleNewItinerary = () => {
     // const newItinerary: Itinerary = {
     //   place: newPlace,
@@ -172,6 +145,11 @@ console.log("currentItinerary?.description",currentItinerary?.description)
       />
 
       {renderCities()}
+
+      <p>status: {status}</p>
+      <p>data: {JSON.stringify( data)}</p>
+      <p>error: {error}</p>
+      <p>fetching: {isFetching}</p>
 
       <form
         className="mx-auto my-10 flex w-[40%] flex-col space-y-4 rounded-md border p-3 shadow-lg"
@@ -240,7 +218,7 @@ console.log("currentItinerary?.description",currentItinerary?.description)
           <ButtonIntegration
             buttonText="Publish Itinerary Now"
             buttonClassName="px-10 "
-            onClick={(e) => handleSubmit()}
+            onClick={() => refetch()}
           />
         </div>
       </form>
