@@ -15,7 +15,7 @@ async function addTravel({ itineraries, userId }) {
 
   const res: MongoInsertRes = await dbInsertMany(
     TRAVELING_TABLE,
-    JSON.parse(JSON.stringify(dataToDb))
+    JSON.parse(JSON.stringify(data))
   )
 
   if (res.acknowledged) return { isSuccess: true }

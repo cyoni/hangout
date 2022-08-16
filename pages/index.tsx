@@ -3,7 +3,7 @@ import Avatar from "../components/Avatar"
 import Back from "../components/Back"
 import FeedPost from "../components/FeedPost"
 import HeaderImage from "../components/HeaderImage"
-import Tabs from "../components/Tabs"
+import Tabs from "../components/city/CityPageTabs"
 
 interface Props {
   place: Place
@@ -45,9 +45,10 @@ export default function Home() {
               </div>
             </div>
             <div className="">
-              <div className="mt-3 text-xl">Recent Activity</div>
+              <div className="mt-3 text-xl">Recent Posts</div>
               <div className=" mt-2 border bg-gray-50 p-3">
-                <div className="my-5 flex space-x-2 border-b pb-4">
+
+                {/* <div className="my-5 flex space-x-2 border-b pb-4">
                   <div className="flex flex-1 space-x-2 ">
                     <Avatar className="h-10 w-10" />
                     <input
@@ -56,7 +57,7 @@ export default function Home() {
                     />
                   </div>
                   <button className="btn px-4">Send</button>
-                </div>
+                </div> */}
 
                 <FeedPost />
                 <FeedPost />

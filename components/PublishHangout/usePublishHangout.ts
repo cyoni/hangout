@@ -75,11 +75,15 @@ function usePublishHangout() {
     // }
     console.log("send", JSON.stringify(itineraries))
 
-    return useQuery(["publish-itinerary"], async () => {
-      return await firePost(PUBLISH_TRAVEL_API, {
-        itineraries,
-      })
-    })
+    return useQuery(
+      ["publish-itinerary"],
+      async () => {
+        return await firePost(PUBLISH_TRAVEL_API, {
+          itineraries,
+        })
+      },
+      { enabled: false }
+    )
 
     // const data: TravelingObject = {
     //   startDate,

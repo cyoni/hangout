@@ -176,13 +176,14 @@ export default function PublishHangout({ place }: Props) {
             isOptionEqualToValue={isOptionEqualToValue}
           />
         </div>
-
+{console.log("currentItinerary?.startDate", currentItinerary?.startDate)}
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Stack spacing={3}>
             <MobileDatePicker
               label="When are you arriving?"
               value={currentItinerary?.startDate}
               onChange={(newValue) => {
+                console.log("newValue", newValue)
                 updateItinerary("startDate", newValue) //setStartDate(newValue)
               }}
               renderInput={(params) => <TextField {...params} />}

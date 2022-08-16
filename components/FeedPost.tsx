@@ -4,7 +4,7 @@ import Avatar from "./Avatar"
 
 function FeedPost() {
   return (
-    <div className="mt-4 rounded-md bg-white p-2 shadow-sm">
+    <div className="mt-4 rounded-md bg-white p-2 shadow-sm cursor-pointer hover:shadow-md">
       <div className="flex justify-between">
         <div className="flex space-x-2">
           <Avatar className="h-11 w-11" />

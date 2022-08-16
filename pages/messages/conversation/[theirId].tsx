@@ -1,4 +1,5 @@
 import { DotsCircleHorizontalIcon } from "@heroicons/react/outline"
+import { useQuery } from "@tanstack/react-query"
 import Head from "next/head"
 import { useRouter } from "next/router"
 import React, { createRef, useEffect, useRef, useState } from "react"
@@ -17,9 +18,8 @@ import { getProfile } from "../../../lib/dbClient"
 import { post } from "../../../lib/postman"
 import randomString from "../../../lib/randomString"
 
-function Messages() {
-  const router = useRouter()
-  const theirId = router.query.theirId
+function Messages({ theirId }) {
+
   const [messages, setMessages] = useState(null)
   const [input, setInput] = useState<string>("")
   const [profile, setProfile] = useState<Profile>(null)
@@ -35,6 +35,26 @@ function Messages() {
     if (theirId) profile()
   }, [theirId])
 
+  const { isLoading, data, isError, error, isFetching } = useQuery(
+    ["get-chat-messages"],
+    async () => {
+      return await post({
+        url: "/api/messagesApi",
+        body: {
+          method: GET_ALL_MESSAGES_BY_USER_METHOD,
+          theirId: theirId,
+        },
+      })
+    },
+    {
+      refetchInterval: 6000,
+    }
+  )
+
+  useEffect(() => {
+    setMessages(data)
+  }, [data])
+
   const getMessages = async () => {
     console.log("getting messages....")
     const messages = await post({
@@ -48,9 +68,9 @@ function Messages() {
     setMessages(messages)
   }
 
-  useEffect(() => {
-    if (theirId) getMessages()
-  }, [theirId])
+  // useEffect(() => {
+  //   if (theirId) getMessages()
+  // }, [theirId])
 
   const inputRef = useRef()
 
@@ -146,14 +166,15 @@ function Messages() {
             <div className="text-lg font-bold capitalize">{profile?.name}</div>
           </div>
           <div>
-            <button className="btn flex items-center justify-between space-x-2 border border-gray-300 bg-white px-4 text-purple-700 hover:bg-gray-200">
+            <button className="btn flex items-center justify-between space-x-2 border border-gray-300 bg-white px-4 text-blue-600 hover:bg-gray-200">
               <DotsCircleHorizontalIcon className="h-6" /> <span>Options</span>
             </button>
           </div>
         </div>
         <div className="h-[500px] overflow-y-auto">
           <div className="mt-2 flex min-h-[500px] flex-col justify-end rounded-md  p-3">
-            {messages &&
+            {console.log("messagesmessages", messages)}
+            {Array.isArray(messages) &&
               messages.map((msg) => <Msg key={msg._id} data={msg} />)}
             <div ref={messagesEndRef} />
           </div>
@@ -185,3 +206,13 @@ function Messages() {
 }
 
 export default Messages
+
+export async function getServerSideProps(context) {
+  const { theirId } = context.params
+
+  return {
+    props: {
+      theirId: theirId,
+    },
+  }
+}
