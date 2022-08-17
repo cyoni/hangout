@@ -8,32 +8,18 @@ function useTravelers() {
     return `/intro?userId=${userId}`
   }
 
-  const renderPosts = () => {
-    return (
-      <div className="w-[50%] mx-auto">
-        <div className="text-2xl">Posts</div>
-        <div className=" mx-auto bg-gray-50 p-5 rounded-md shadow-md mt-4 px-14">
-          <FeedPost />
-          <FeedPost />
-          <FeedPost />
-          <FeedPost />
-          <FeedPost />
-          <FeedPost />
-          <FeedPost />
-        </div>
-      </div>
-    )
-  }
 
-  const renderTravelers = (travelers) => {
+
+  const Travelers = ({ travelers }) => {
     return (
-      <div className="">
-        <div className="mx-auto grid w-[60%] grid-cols-2 gap-5">
+      <div className=" w-[60%] mx-auto">
+        <div className="text-2xl">Travelers</div>
+        <div className=" grid grid-cols-2 gap-5 py-5 px-10 rounded-md shadow-md mt-4 bg-gray-50">
           {Array.isArray(travelers) &&
             travelers.map((item, i) => {
               return (
                 <Link key={i} href={handleTravelRoute(item.userId)}>
-                  <div className="mt-5 flex cursor-pointer flex-col rounded-md p-2 shadow-md hover:shadow-lg">
+                  <div className="mt-5 flex cursor-pointer flex-col rounded-md px-5 py-5 shadow-md hover:shadow-lg bg-white">
                     <div className="flex items-center justify-between ">
                       <div className="font-bold capitalize">
                         {item.profile.name}
@@ -84,7 +70,7 @@ function useTravelers() {
     )
   }
 
-  return { renderTravelers, renderPosts }
+  return { Travelers }
 }
 
 export default useTravelers

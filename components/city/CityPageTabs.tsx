@@ -4,6 +4,8 @@ import Tab from "@mui/material/Tab"
 import Typography from "@mui/material/Typography"
 import Box from "@mui/material/Box"
 import useTravelers from "./useTravelers"
+import FeedPost from "../FeedPost"
+import CityPosts from "./CityPosts"
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -22,11 +24,7 @@ function TabPanel(props: TabPanelProps) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   )
 }
@@ -45,7 +43,7 @@ export default function CityPageTabs({ travelers, posts }) {
     setValue(newValue)
   }
 
-  const { renderTravelers, renderPosts } = useTravelers()
+  const { Travelers } = useTravelers()
 
   return (
     <Box
@@ -68,11 +66,11 @@ export default function CityPageTabs({ travelers, posts }) {
       </Box>
 
       <TabPanel value={value} index={0}>
-        {renderPosts(posts)}
+        {<CityPosts posts={posts} />}
       </TabPanel>
 
       <TabPanel value={value} index={1}>
-        {renderTravelers(travelers)}
+        {<Travelers travelers={travelers} />}
       </TabPanel>
     </Box>
   )

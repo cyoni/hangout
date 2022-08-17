@@ -7,12 +7,12 @@
     @apply cursor-pointer hover:underline;
   }
   .btn {
-    @apply rounded-full bg-blue-600 px-2 py-1 
+    @apply rounded-full bg-blue-600 px-5 py-1 
     text-lg font-medium text-white  min-w-[100px] min-h-[35px]
     hover:bg-blue-600 hover:opacity-80;
   }
   .btn-outline {
-    @apply rounded-md w-fit px-4 cursor-pointer transition  duration-300  hover:border-white hover:bg-blue-600 hover:text-white;
+    @apply h-8 rounded-md w-fit px-4 cursor-pointer transition  duration-300  hover:border-white hover:bg-blue-600 hover:text-white;
   }
 
   .shared-frame {
@@ -44,4 +44,3 @@ body {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: #555;
 }
-

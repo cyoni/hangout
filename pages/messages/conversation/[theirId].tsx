@@ -19,7 +19,6 @@ import { post } from "../../../lib/postman"
 import randomString from "../../../lib/randomString"
 
 function Messages({ theirId }) {
-
   const [messages, setMessages] = useState(null)
   const [input, setInput] = useState<string>("")
   const [profile, setProfile] = useState<Profile>(null)
@@ -158,12 +157,14 @@ function Messages({ theirId }) {
         />
       </div>
       <div className="relative mx-auto w-[55%] cursor-default rounded-md border pb-5">
-        <div className="flex items-center justify-between  py-4 px-3 shadow-md">
-          <div className="flex items-center space-x-1">
-            <a href={`/profile/${theirId}`}>
+        <div className="flex items-center justify-between  py-3 px-3 shadow-md">
+          <div className=" hover:bg-gray-100 cursor-pointer p-1 px-2 rounded-md">
+            <a className="flex items-center space-x-1" href={`/profile/${theirId}`}>
               <Avatar className="h-10 w-10" picture={profile?.picture} />
+              <div className="text-lg font-bold capitalize">
+                {profile?.name}
+              </div>
             </a>
-            <div className="text-lg font-bold capitalize">{profile?.name}</div>
           </div>
           <div>
             <button className="btn flex items-center justify-between space-x-2 border border-gray-300 bg-white px-4 text-blue-600 hover:bg-gray-200">
