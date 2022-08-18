@@ -59,9 +59,6 @@ export default function Home() {
                   <button className="btn px-4">Send</button>
                 </div> */}
 
-                <FeedPost />
-                <FeedPost />
-                <FeedPost />
               </div>
             </div>
 

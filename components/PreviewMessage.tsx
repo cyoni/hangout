@@ -1,6 +1,7 @@
 import React from "react"
 import Avatar from "./Avatar"
 import moment from "moment"
+import { getPastTime } from "../lib/scripts/general"
 
 interface Props {
   _id: string
@@ -30,7 +31,7 @@ function PreviewMessage({
       return `${place.city}, ${place.province_short}, ${place.country}`
     }
   }
-  const time = timestamp > 0 ? moment(timestamp).fromNow() : ""
+  const time = getPastTime(timestamp)
   console.log("place", profile[0]?.cityId)
   console.log("got places:", places)
   return (

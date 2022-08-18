@@ -43,7 +43,7 @@ export default function Home({ travels, place }: Props) {
 
         <Cities />
 
-        <CityPageTabs travelers={travels} />
+        <CityPageTabs travelers={travels} place={place} />
 
 
         <div></div>

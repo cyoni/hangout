@@ -3,32 +3,38 @@ import React, { useEffect } from "react"
 import Modal from "react-modal"
 interface Props {
   isOpen: boolean
+  className?: string
   onRequestClose: Function
   children: React.ReactNode
 }
 
-function ModalWrapper({ isOpen, onRequestClose, children }: Props) {
+function ModalWrapper({ isOpen, onRequestClose, children, className }: Props) {
   useEffect(() => {
     Modal.setAppElement("body")
   }, [])
 
   return (
     <Modal
-      portalClassName="test"
+      bodyOpenClassName="overflow-hidden"
       onAfterClose={() => console.log("exited")}
       style={{
         overlay: {
           background: "transparent",
           backdropFilter: "blur(3px)",
+          zIndex: 99999,
         },
       }}
       isOpen={isOpen}
-      onRequestClose={() => onRequestClose(false)}
+      className={`fixed p-3 outline-none rounded-md shadow-lg
+                h-[90%] w-[50%] top-1/2 left-1/2
+               translate-x-[-50%] translate-y-[-50%]
+               overflow-auto bg-white ${className ? className : ""}`}
+      onRequestClose={onRequestClose}
       contentLabel="My dialog"
     >
       <XIcon
         className="h-6 sticky top-1 cursor-pointer text-gray-400 hover:text-gray-300  "
-        onClick={() => onRequestClose(false)}
+        onClick={onRequestClose}
       />
       {children}
     </Modal>
