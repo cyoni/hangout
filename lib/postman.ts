@@ -27,6 +27,7 @@ export async function get(url, params = null): Promise<ResponseObject> {
     })
     if (data.status == 200) {
       const json = await data.json()
+      console.log("JSON", json)
       return { data: json }
     }
     throw Error("bad request")

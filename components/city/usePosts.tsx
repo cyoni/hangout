@@ -8,7 +8,7 @@ import { isNullOrEmpty } from "../../lib/scripts/strings"
 function usePosts(place: Place) {
   const [messageInput, setMessageInput] = useState<string>("")
 
-  const postQuery = useQuery(
+  const newPostQuery = useQuery(
     ["city-post-message"],
     async () => {
       return await post({
@@ -33,12 +33,12 @@ function usePosts(place: Place) {
   const sendPost = async () => {
     if (isNullOrEmpty(messageInput)) return
     const refreshToast = toast.loading("Posting...")
-    await postQuery.refetch()
+    await newPostQuery.refetch()
     setMessageInput("")
     toast.success("Post was successfully posted!", { id: refreshToast })
   }
 
-  return { messageInput, setMessageInput, sendPost, postQuery, getPostsQuery }
+  return { messageInput, setMessageInput, sendPost, newPostQuery, getPostsQuery }
 }
 
 export default usePosts

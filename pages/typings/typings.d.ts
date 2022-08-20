@@ -99,3 +99,9 @@ type Profile = {
   aboutMe: string
   timeline: any
 }
+
+type Post = {
+  userId: string
+  timestamp: number
+  message: string
+}

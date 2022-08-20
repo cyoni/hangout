@@ -13,29 +13,31 @@ import { dbAggregate, dbFind, dbInsertOne } from "../../lib/mongoUtils"
 import { queryPlace, queryPlaces } from "../../lib/place"
 import { getObjectKeys } from "../../lib/scripts/objects"
 
-async function getValidCities(cityIds: string[] | number[])  {
+async function getValidCities(cityIds) {
   const validCities = await queryPlaces(cityIds)
   return validCities
 }
 
 async function PostMessage({ message, cityId }, userId) {
   const validPlaces = await getValidCities([cityId])
-  if (getObjectKeys(validPlaces).length === 0) return { error: "invalid city." }
+  const keys = getObjectKeys(validPlaces)
+  if (keys.length === 0) return { error: "invalid city." }
 
   const result = await dbInsertOne(CITY_POSTS_TABLE, {
     timestamp: Date.now(),
     userId,
     message,
-    cityId: validPlaces[0],
+    cityId: Number(keys[0]),
   })
-  if (!result.acknowledged) return { error: "Error updating city table" }
+  if (!result.upsertedCount) return { error: "Error updating city table" }
 
   return { message: "post uploaded successfully" }
 }
 
 async function GetPosts(cityId) {
   const validPlaces = await getValidCities([cityId])
-  if (getObjectKeys(validPlaces).length === 0) return { error: "invalid city." }
+  const keys = getObjectKeys(validPlaces)
+  if (keys.length === 0) return { error: "invalid city." }
 
   const request: AggregateReq = {
     collection: CITY_POSTS_TABLE,
@@ -48,7 +50,7 @@ async function GetPosts(cityId) {
           from: USERS_COLLECTION,
         },
       },
-      { $match: { cityId: validPlaces[0].key } },
+      { $match: { cityId: Number(keys[0]) } },
       {
         $project: {
           timestamp: 1,
@@ -99,7 +101,7 @@ export default async function handler(
 
     console.log("request message", req.body)
 
-    // controller
+    // Controller
     switch (method) {
       case POST_MESSAGE:
         result = await PostMessage(req.body, userId)

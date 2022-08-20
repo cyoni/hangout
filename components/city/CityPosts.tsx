@@ -6,7 +6,7 @@ import Spinner from "../Spinner"
 import usePosts from "./usePosts"
 
 function CityPosts({ place }) {
-  const { sendPost, messageInput, setMessageInput, getPostsQuery } =
+  const { sendPost, messageInput, setMessageInput, newPostQuery, getPostsQuery } =
     usePosts(place)
   return (
     <div className="w-[60%] mx-auto">
@@ -41,9 +41,9 @@ function CityPosts({ place }) {
           </div>
         )}
         {console.log("getPostsQuery.data", getPostsQuery.data)}
-        {getPostsQuery.isSuccess && (
+        {getPostsQuery?.data && (
           <div>
-            {getPostsQuery.data.map((post) => (
+            {getPostsQuery.data.data.map((post) => (
               <div key={post._id}>
                 <FeedPost post={post} />
               </div>
