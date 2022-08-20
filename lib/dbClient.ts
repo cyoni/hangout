@@ -37,11 +37,14 @@ export async function getPlace(cityIds: string[]) {
 
   let convertedCitiesFromStorage = {}
   let citiesFromStorage: number[] = []
+
   const citiesFromStorageRaw = getValue("places")
   console.log("citiesFromStorageRaw", citiesFromStorageRaw)
   try {
     convertedCitiesFromStorage = await JSON.parse(citiesFromStorageRaw)
+
     console.log("json", convertedCitiesFromStorage)
+
     citiesFromStorage = convertStringArrToNumber(
       getObjectKeys(convertedCitiesFromStorage)
     )
@@ -54,8 +57,10 @@ export async function getPlace(cityIds: string[]) {
   console.log("missingCities", missingCities)
   console.log("citiesFromStorage", citiesFromStorage)
 
+  // if we have all data we need return data
   if (missingCities.length === 0) return convertedCitiesFromStorage
 
+  // bring the missing data we don't have
   const result = await get(
     CITY_API,
     `method=${GET_CITY_DATA}&cityIds=${missingCities.toString()}`
