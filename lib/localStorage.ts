@@ -3,5 +3,6 @@ export function getValue(key: string) {
 }
 
 export function setValue(key: string, value: string) {
+  console.log("setValue", "key", key, "value", value)
   localStorage.setItem(key, value)
 }

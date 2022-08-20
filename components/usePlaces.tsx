@@ -19,6 +19,7 @@ function usePlaces(cityIds) {
   }, [cityIds])
 
   const getPlaceFromObject = (id) => {
+    console.log("getPlaceFromObject", places)
     return places ? places[id] : null
   }
 

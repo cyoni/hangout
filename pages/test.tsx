@@ -10,40 +10,25 @@ import ContentCut from '@mui/icons-material/ContentCut';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 import ContentPaste from '@mui/icons-material/ContentPaste';
 import Cloud from '@mui/icons-material/Cloud';
+import { getPlace } from '../lib/dbClient';
 
 export default function Test() {
+  const [result, setResult] = React.useState<string>()
+
+  React.useEffect(()=>{
+    const xx = async () => {
+      const rst = await getPlace([500])
+      console.log("rst: " + rst)
+      setResult(rst)
+    }
+     xx()
+  },[])
+
+
+ 
   return (
-    <Paper sx={{ width: 250, maxWidth: '100%' }}>
-      <MenuList>
-        <MenuItem>
-          <ListItemIcon>
-            <ContentCut fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Cut</ListItemText>
-          <Typography variant="body2" color="text.secondary">
-            ⌘X
-          </Typography>
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <ContentCopy fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Copy</ListItemText>
-          <Typography variant="body2" color="text.secondary">
-            ⌘C
-          </Typography>
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <ContentPaste fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Paste</ListItemText>
-          <Typography variant="body2" color="text.secondary">
-            ⌘V
-          </Typography>
-        </MenuItem>
-     
-      </MenuList>
-    </Paper>
+   <div>
+    {JSON.stringify( result ) }
+   </div>
   );
 }
