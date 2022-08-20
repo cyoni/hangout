@@ -27,13 +27,12 @@ export default function AlertDialog({
   return (
     <Dialog
       open={open}
+      className="z-[11]"
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">
-        {dialogTitle}
-      </DialogTitle>
+      <DialogTitle id="alert-dialog-title">{dialogTitle}</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
           {dialogText}

@@ -14,6 +14,7 @@ interface Props {
   placeholder?: string
   disableUnderline?: boolean
   disableClearable?: boolean
+  defaultValue?: string
   variant?: any
 }
 export default function AutoComplete({
@@ -26,6 +27,7 @@ export default function AutoComplete({
   placeholder,
   disableUnderline,
   disableClearable,
+  defaultValue,
   variant = "outlined",
 }: Props) {
   const [open, setOpen] = React.useState(false)
@@ -63,6 +65,7 @@ export default function AutoComplete({
       onClose={() => {
         setOpen(false)
       }}
+      defaultValue={defaultValue}
       disableClearable={disableClearable}
       onChange={(event, value) => handleSelect(value)}
       autoComplete={true}

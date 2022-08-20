@@ -21,11 +21,11 @@ function ModalWrapper({ isOpen, onRequestClose, children, className }: Props) {
         overlay: {
           background: "transparent",
           backdropFilter: "blur(3px)",
-          zIndex: 99999,
+          zIndex: 10,
         },
       }}
       isOpen={isOpen}
-      className={`fixed p-3 outline-none rounded-md shadow-lg
+      className={`fixed p-3 outline-none border rounded-md shadow-lg
                 h-[90%] w-[50%] top-1/2 left-1/2
                translate-x-[-50%] translate-y-[-50%]
                overflow-auto bg-white ${className ? className : ""}`}

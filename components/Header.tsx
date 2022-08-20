@@ -73,7 +73,7 @@ function Header() {
               handleSelect={handleSelect}
               getOptionLabel={getOptionLabel}
               isOptionEqualToValue={isOptionEqualToValue}
-              disableUnderline
+              disableUnderline={true}
               variant={"standard"}
             />
           </div>

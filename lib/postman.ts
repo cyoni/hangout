@@ -14,24 +14,24 @@ export async function post(req: PostRequest): Promise<any> {
     }
     throw Error("bad request")
   } catch (e) {
-    const res: ResponseObject = { isSuccess: false, message: e.message }
+    const res = { error: e.message }
     return res
   }
 }
 
-export async function get(url, params = null): Promise<any> {
+export async function get(url, params = null): Promise<ResponseObject> {
   try {
     const serviceUrl = `${url}?${params}`
     const data = await fetch(serviceUrl, {
       method: "GET",
     })
     if (data.status == 200) {
-      const result: ResponseObject = await data.json()
-      return result
+      const json = await data.json()
+      return { data: json }
     }
     throw Error("bad request")
   } catch (e) {
-    const res: ResponseObject = { isSuccess: false, message: e.message }
+    const res: ResponseObject = { error: e.message }
     return res
   }
 }

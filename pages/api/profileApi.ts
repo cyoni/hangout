@@ -28,9 +28,9 @@ async function getProfiles({ userIds }) {
 async function saveProfile({ userId, name, cityId, aboutMe }) {
   const fieldsToUpdate = {}
 
-  if (isNullOrEmpty(name)) fieldsToUpdate["name"] = name
-  if (isNullOrEmpty(aboutMe)) fieldsToUpdate["aboutMe"] = aboutMe
-  if (isNullOrEmpty(cityId)) fieldsToUpdate["cityId"] = cityId
+  if (!isNullOrEmpty(name)) fieldsToUpdate["name"] = name
+  if (!isNullOrEmpty(aboutMe)) fieldsToUpdate["aboutMe"] = aboutMe
+  if (!isNullOrEmpty(cityId)) fieldsToUpdate["cityId"] = cityId
 
   const result = await dbUpdateOne(
     USERS_COLLECTION,
@@ -39,6 +39,11 @@ async function saveProfile({ userId, name, cityId, aboutMe }) {
     {}
   )
   console.log("update profile result", result)
+  if (result.acknowledged) {
+    return { message: "update success" }
+  } else {
+    return { error: "update failure" }
+  }
 }
 
 export default async function handler(
@@ -46,10 +51,11 @@ export default async function handler(
   res: NextApiResponse<Response>
 ) {
   try {
+
     const { method } = req.body
     const token = await getToken({ req })
     if (!token) return { error: "true", message: "Invalid token" }
-
+ 
     let result = null
 
     switch (method) {
@@ -64,7 +70,7 @@ export default async function handler(
         return res.status(400).json({ error: "no method was provided" })
     }
 
-    if (result.error) res.status(400).json({ error: result.message })
+    if (result?.error) res.status(400).json({ error: result.message })
 
     res.status(200).json({ result })
   } catch (e) {

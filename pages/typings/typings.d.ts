@@ -14,12 +14,11 @@ type Province = {
   province_short: string
 }
 
-type Place = {} & City & Country & Province
+type Place = {} & City & Province & Country 
 
 type ResponseObject = {
-  isSuccess: boolean
   data?: any
-  message?: string
+  error?: string
 }
 
 interface TravelingObject {
@@ -72,8 +71,17 @@ interface MongoInsertRes {
   acknowledged?: boolean
   insertedCount?: number
   insertedIds?: {}
-  error?: {}
-}
+  error?: string
+} 
+
+interface MongoUpdateRes {
+  acknowledged?: boolean
+  matchedCount?: number
+  modifiedCount?: number
+  upsertedCount?: number
+  error?: string
+
+} 
 
 interface IUser {
   id: string

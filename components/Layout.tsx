@@ -1,7 +1,7 @@
-function Layout({ Component, pageProps }) {
+function Layout({ Component, pageProps, session }) {
   return (
     <main>
-      <Component {...pageProps}  />
+      <Component {...pageProps} session={session} />
     </main>
   )
 }

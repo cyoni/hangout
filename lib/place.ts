@@ -1,4 +1,5 @@
 import { prisma } from "../prisma"
+import { unique } from "./scripts/arrays"
 export async function queryPlace(cityId: number) {
   const rawPlace = await prisma.cities.findUnique({
     where: {
@@ -26,12 +27,20 @@ export async function queryPlace(cityId: number) {
   return place
 }
 
-export async function queryPlaces(codes: number[]) {
-  console.log("here")
+export async function queryPlaces(
+  cityIds: number[]
+): Promise<{ [id: number]: Place; error?: string }> {
+  if (!Array.isArray(cityIds)) return { error: "bad input" }
+  const numbers = cityIds.map((cityId) => {
+    return Number(cityId)
+  })
+  const uniqueIds = unique(numbers)
+  const idsToQuery = uniqueIds.filter((number) => !isNaN(number))
+
   const rawPlaces = await prisma.cities.findMany({
     where: {
       id: {
-        in: codes,
+        in: idsToQuery,
       },
     },
     include: {
@@ -45,12 +54,12 @@ export async function queryPlaces(codes: number[]) {
     (acc, curr) => ({
       ...acc,
       [curr.id]: {
-        city: curr.name,
+        city: curr?.name,
         provinenceId: curr.state_id,
         province_short: curr.state_code,
         countryId: curr.country_code,
-        country: curr.country.name,
-        province_long: curr.state.name,
+        country: curr.country?.name,
+        province_long: curr.state?.name,
       },
     }),
     {}

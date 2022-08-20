@@ -1,5 +1,6 @@
 import {
   CityPostsTable as CITY_POSTS_TABLE,
+  GET_CITY_DATA,
   GET_MESSAGES,
   POST_MESSAGE,
   ProfileParams,
@@ -9,14 +10,23 @@ import { getToken } from "next-auth/jwt"
 import { NextApiResponse } from "next"
 import { NextApiRequest } from "next"
 import { dbAggregate, dbFind, dbInsertOne } from "../../lib/mongoUtils"
-import { queryPlace } from "../../lib/place"
+import { queryPlace, queryPlaces } from "../../lib/place"
+import { getObjectKeys } from "../../lib/scripts/objects"
 
-async function Post({ userId, message, cityId }) {
+async function getValidCities(cityIds: string[] | number[])  {
+  const validCities = await queryPlaces(cityIds)
+  return validCities
+}
+
+async function PostMessage({ message, cityId }, userId) {
+  const validPlaces = await getValidCities([cityId])
+  if (getObjectKeys(validPlaces).length === 0) return { error: "invalid city." }
+
   const result = await dbInsertOne(CITY_POSTS_TABLE, {
     timestamp: Date.now(),
     userId,
     message,
-    cityId,
+    cityId: validPlaces[0],
   })
   if (!result.acknowledged) return { error: "Error updating city table" }
 
@@ -24,7 +34,8 @@ async function Post({ userId, message, cityId }) {
 }
 
 async function GetPosts(cityId) {
-  if (!cityId) return { error: "city id is invalid" }
+  const validPlaces = await getValidCities([cityId])
+  if (getObjectKeys(validPlaces).length === 0) return { error: "invalid city." }
 
   const request: AggregateReq = {
     collection: CITY_POSTS_TABLE,
@@ -37,7 +48,7 @@ async function GetPosts(cityId) {
           from: USERS_COLLECTION,
         },
       },
-      { $match: { cityId } },
+      { $match: { cityId: validPlaces[0].key } },
       {
         $project: {
           timestamp: 1,
@@ -54,13 +65,24 @@ async function GetPosts(cityId) {
   return await dbAggregate(request)
 }
 
+async function getCityData(cityIdsInput: string | string[]) {
+  const cityIds = String(cityIdsInput)
+  const cityIdsArray = cityIds.split(",")
+  const validPlaces = await getValidCities(cityIdsArray)
+  if (
+    !validPlaces ||
+    validPlaces.error ||
+    getObjectKeys(validPlaces).length === 0
+  )
+    return { error: "invalid cities." }
+
+  return validPlaces
+}
+
 type Response = {
   error?: string
 }
 
-function badRequest(res, message) {
-  return res.status(400).json(message)
-}
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Response>
@@ -77,23 +99,16 @@ export default async function handler(
 
     console.log("request message", req.body)
 
-    const { cityId } = req.body || req.query
-
-    if (!Number(cityId)) return badRequest(res, "invalid city id")
-    const convertedCityId = Number(cityId)
-    const place: Place = await queryPlace(convertedCityId)
-    if (!place) return badRequest(res, "invalid place")
-
+    // controller
     switch (method) {
       case POST_MESSAGE:
-        result = await Post({
-          message: req.body.message,
-          userId,
-          cityId: convertedCityId,
-        })
+        result = await PostMessage(req.body, userId)
         break
       case GET_MESSAGES:
-        result = await GetPosts(convertedCityId)
+        result = await GetPosts(req.query.cityId)
+        break
+      case GET_CITY_DATA:
+        result = await getCityData(req.query.cityIds)
         break
     }
 

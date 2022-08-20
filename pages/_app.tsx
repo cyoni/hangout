@@ -31,7 +31,11 @@ function App({ Component, pageProps: { session, ...pageProps } }) {
 
         <div>
           <div>
-            <Layout Component={Component} pageProps={pageProps} />
+            <Layout
+              Component={Component}
+              pageProps={pageProps}
+              session={session}
+            />
           </div>
           <Footer />
         </div>
