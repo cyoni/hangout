@@ -7,12 +7,14 @@ interface Props {
   onClick: Function
   externalClass?: string
   buttonClassName?: string
+  disabled?: boolean
 }
 export default function ButtonIntegration({
   buttonText,
   onClick,
   externalClass,
   buttonClassName,
+  disabled,
 }: Props) {
   const [loading, setLoading] = React.useState(false)
 
@@ -30,11 +32,11 @@ export default function ButtonIntegration({
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <Box className="w-full" sx={{ m: 1, position: "relative" }}>
           <button
-          type="submit"
+            type="submit"
             className={`btn w-full ${buttonClassName ? buttonClassName : ""} ${
               loading ? "text-transparent" : ""
-            }`}
-            disabled={loading}
+            } ${disabled ? "opacity-60 hover:opacity-60" : ""}`}
+            disabled={disabled || loading}
             onClick={handleButtonClick}
           >
             {buttonText}

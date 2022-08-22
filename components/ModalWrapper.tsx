@@ -6,9 +6,18 @@ interface Props {
   className?: string
   onRequestClose: Function
   children: React.ReactNode
+  height?: string
+  width?: string
 }
 
-function ModalWrapper({ isOpen, onRequestClose, children, className }: Props) {
+function ModalWrapper({
+  isOpen,
+  onRequestClose,
+  children,
+  className,
+  height,
+  width,
+}: Props) {
   useEffect(() => {
     Modal.setAppElement("body")
   }, [])
@@ -26,7 +35,9 @@ function ModalWrapper({ isOpen, onRequestClose, children, className }: Props) {
       }}
       isOpen={isOpen}
       className={`fixed p-3 outline-none border rounded-md shadow-lg
-                h-[90%] w-[50%] top-1/2 left-1/2
+               ${height ? height : "h-[90%]"}
+               ${width ? width : "w-[50%]"}
+               top-1/2 left-1/2
                translate-x-[-50%] translate-y-[-50%]
                overflow-auto bg-white ${className ? className : ""}`}
       onRequestClose={onRequestClose}

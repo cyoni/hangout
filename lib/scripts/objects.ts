@@ -3,5 +3,5 @@ export function convertObjectToDictionary(object: Object) {
 }
 
 export function getObjectKeys(object: Object) {
-  return Object.keys(object)
+  return object ? Object.keys(object) : []
 }

@@ -5,7 +5,7 @@ import { getProfile } from "../../lib/profileUtils"
 import useEditProfile from "../../components/Profile/EditProfile/useEditProfile"
 import EditProfile from "../../components/Profile/EditProfile/EditProfile"
 import ProfileContent from "../../components/Profile/ProfileContent"
-import usePlaces from "../../components/usePlaces"
+import usePlace from "../../components/usePlace"
 
 interface Props {
   profile: Profile
@@ -14,7 +14,7 @@ export default function Profile({ profile }: Props) {
   console.log("Profile", profile)
   const editProfileParams = useEditProfile(profile)
 
-  const { places, getPlaceFromObject } = usePlaces(profile?.cityId)
+  const { places, getPlaceFromObject } = usePlace(profile?.cityId)
   const place = getPlaceFromObject(profile?.cityId)
 
   console.log("new places", places)

@@ -39,7 +39,7 @@ function HeaderImage({
         }')`,
         filter: backgroundId && isLoading ? `blur(8px)` : "",
       }}
-      className={`h-56 rounded-sm
+      className={`h-56 rounded-sm relative
        border border-transparent object-fill	
        bg-cover bg-center shadow-lg ${
          headerExternalClass ? headerExternalClass : ""

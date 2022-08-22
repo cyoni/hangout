@@ -12,6 +12,7 @@ export const GET_CITY_DATA = "GET_CITY_DATA"
 export const POST_MESSAGE = "POST_MESSAGE"
 export const GET_MESSAGES = "GET_MESSAGES"
 export const CityPostsTable = "city_posts"
+export const START_FOLLOW = "START_FOLLOW"
 export const EMPTY_PROFILE_PICTURE =
   "https://akadem.org.il/wp-content/uploads/2020/05/blank-profile-picture-973460_640.png"
 

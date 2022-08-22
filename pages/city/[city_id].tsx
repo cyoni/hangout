@@ -39,12 +39,15 @@ export default function Home({ travels, place }: Props) {
               ? `${place.city}, ${place.province_short}, ${place.country}`
               : ""
           }
-        />
+        >
+          <button className="btn font-bold border   absolute right-10 top-[40%] px-7">
+            Follow City
+          </button>
+        </HeaderImage>
 
         <Cities />
 
         <CityPageTabs travelers={travels} place={place} />
-
 
         <div></div>
       </main>

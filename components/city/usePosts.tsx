@@ -36,9 +36,16 @@ function usePosts(place: Place) {
     await newPostQuery.refetch()
     setMessageInput("")
     toast.success("Post was successfully posted!", { id: refreshToast })
+    getPostsQuery.refetch()
   }
 
-  return { messageInput, setMessageInput, sendPost, newPostQuery, getPostsQuery }
+  return {
+    messageInput,
+    setMessageInput,
+    sendPost,
+    newPostQuery,
+    getPostsQuery,
+  }
 }
 
 export default usePosts
