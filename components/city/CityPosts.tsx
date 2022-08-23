@@ -35,12 +35,13 @@ function CityPosts({ place }) {
         />
         <div className="flex mt-2">
           <ButtonIntegration
-            buttonText="Post"
             externalClass="ml-auto"
             buttonClassName="px-10"
             disabled={isNullOrEmpty(messageInput)}
             onClick={() => sendPost()}
-          />
+          >
+            Post
+          </ButtonIntegration>
         </div>
 
         <div className="border-t mt-5 mb-10"></div>

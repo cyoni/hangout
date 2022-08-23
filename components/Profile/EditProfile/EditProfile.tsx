@@ -86,11 +86,12 @@ function EditProfile({ editProfileParams, place }) {
         />
 
         <ButtonIntegration
-          buttonText="Save"
           externalClass="mt-24"
           buttonClassName="px-10"
           onClick={submitForm}
-        />
+        >
+          Save
+        </ButtonIntegration>
 
         <div className="border-b w-full mt-5 "></div>
         <button className="btn-outline py-2 mt-5" onClick={handleDeleteAccount}>

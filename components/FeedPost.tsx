@@ -2,18 +2,21 @@ import { EmojiHappyIcon, PlusIcon, ThumbUpIcon } from "@heroicons/react/outline"
 import React, { useState } from "react"
 import { getPastTime } from "../lib/scripts/general"
 import Avatar from "./Avatar"
+import ButtonIntegration from "./ButtonIntegration"
 import ModalWrapper from "./ModalWrapper"
 import useFollow from "./useFollow"
 import usePlace from "./usePlace"
 
-function FeedPost({ post }) {
+interface Props {
+  post: Post
+}
+function FeedPost({ post }: Props) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { getFirstPlace } = usePlace([post.profile[0].cityId])
   const place = getFirstPlace()
 
-  const { follow } = useFollow()
- 
-  follow({userId: "cc"})
+  const { follow, followMutation } = useFollow()
+
   return (
     <div className="mt-4 rounded-md bg-white p-2 shadow-sm cursor-pointer hover:shadow-md">
       <div className="flex justify-between">
@@ -26,14 +29,12 @@ function FeedPost({ post }) {
           </div>
         </div>
 
-        <div className="flex space-x-2 justify-self-center">
-          <button className="btn-outline">
-            <div className="flex items-center space-x-2">
-              <PlusIcon className="h-5" />
-              <span>Follow</span>
-            </div>
-          </button>
-        </div>
+        <ButtonIntegration onClick={() => follow({ userId: post.userId })}>
+          <div className="flex space-x-2 items-center justify-center ">
+            <PlusIcon className="h-6" />
+            <span>Follow</span>
+          </div>
+        </ButtonIntegration>
       </div>
       <div
         className="my-2 max-h-[700px] min-h-[100px] pl-2"

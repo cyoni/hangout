@@ -3,14 +3,14 @@ import Box from "@mui/material/Box"
 import CircularProgress from "@mui/material/CircularProgress"
 
 interface Props {
-  buttonText: string
   onClick: Function
   externalClass?: string
   buttonClassName?: string
   disabled?: boolean
+  children:any
 }
 export default function ButtonIntegration({
-  buttonText,
+  children,
   onClick,
   externalClass,
   buttonClassName,
@@ -39,7 +39,7 @@ export default function ButtonIntegration({
             disabled={disabled || loading}
             onClick={handleButtonClick}
           >
-            {buttonText}
+            {children}
           </button>
           {loading && (
             <CircularProgress

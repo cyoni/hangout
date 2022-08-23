@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import React from "react"
+import toast from "react-hot-toast"
 import { START_FOLLOW } from "../lib/consts"
 import { post } from "../lib/postman"
 
@@ -16,7 +17,10 @@ function useFollow() {
   }
   const followMutation = useMutation(startFollowMutation)
 
-  const follow = (req) => followMutation.mutate(req)
+  const follow = async (req) => {
+    await followMutation.mutateAsync(req)
+    toast.success("Great!")
+  }
 
   return { follow, followMutation }
 }

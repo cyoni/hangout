@@ -214,7 +214,7 @@ export default async function handler(
         break
       }
       case GET_PREVIEW_MESSAGES_METHOD:
-        result = await await getPreviewMessages(userId)
+        result = await getPreviewMessages(userId)
         break
       case GET_ALL_MESSAGES_BY_USER_METHOD:
         result = await getAllMessagesByUserId({ ...req.body, userId })

@@ -147,7 +147,7 @@ export default function PublishHangout({ place }: Props) {
       {renderCities()}
 
       <p>status: {status}</p>
-      <p>data: {JSON.stringify( data)}</p>
+      <p>data: {JSON.stringify(data)}</p>
       <p>error: {error}</p>
       <p>fetching: {isFetching}</p>
 
@@ -176,7 +176,10 @@ export default function PublishHangout({ place }: Props) {
             isOptionEqualToValue={isOptionEqualToValue}
           />
         </div>
-{console.log("currentItinerary?.startDate", currentItinerary?.startDate)}
+        {console.log(
+          "currentItinerary?.startDate",
+          currentItinerary?.startDate
+        )}
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Stack spacing={3}>
             <MobileDatePicker
@@ -216,11 +219,9 @@ export default function PublishHangout({ place }: Props) {
         />
 
         <div className="mt-24">
-          <ButtonIntegration
-            buttonText="Publish Itinerary Now"
-            buttonClassName="px-10 "
-            onClick={() => refetch()}
-          />
+          <ButtonIntegration buttonClassName="px-10 " onClick={() => refetch()}>
+            Publish Itinerary Now
+          </ButtonIntegration>
         </div>
       </form>
     </div>
