@@ -1,3 +1,6 @@
+import { access } from "fs"
+import { convertObjectToDictionary } from "./scripts/objects"
+
 export async function post(req: PostRequest): Promise<any> {
   try {
     const data = await fetch(req.url, {
@@ -19,17 +22,25 @@ export async function post(req: PostRequest): Promise<any> {
   }
 }
 
-
-export async function newGet(url, params = null): Promise<ResponseObject> {
+export async function newGet(url, params: {} = null): Promise<ResponseObject> {
   try {
-    const serviceUrl = `${url}?${params}`
+    let ans = ""
+    const paramsDictionary = convertObjectToDictionary(params)
+
+    const convertedParams = paramsDictionary.reduce(
+      (prev, curr) => `${prev}${curr[1] ? `${curr[0]}=${curr[1]}&` : ""}`,
+      ""
+    )
+
+    console.log("convertedParams", convertedParams)
+    const serviceUrl = `${url}?${convertedParams}`
     const data = await fetch(serviceUrl, {
       method: "GET",
     })
     if (data.status == 200) {
       const json = await data.json()
       console.log("JSON", json)
-      return { data: json }
+      return json
     }
     throw Error("bad request")
   } catch (e) {
@@ -37,7 +48,6 @@ export async function newGet(url, params = null): Promise<ResponseObject> {
     return res
   }
 }
-
 
 export async function get(url, params = null): Promise<ResponseObject> {
   try {

@@ -8,7 +8,9 @@ interface Props {
   buttonClassName?: string
   disabled?: boolean
   onFinishText?: string | JSX.Element
-  children: string | JSX.Element 
+  children: string | JSX.Element
+  callback?: Function
+  circularProgressColor?: string
 }
 export default function ButtonIntegration({
   children,
@@ -17,6 +19,8 @@ export default function ButtonIntegration({
   buttonClassName,
   onFinishText,
   disabled,
+  callback,
+  circularProgressColor,
 }: Props) {
   const [loading, setLoading] = React.useState(false)
   const [isDone, setIsDone] = React.useState(false)
@@ -28,6 +32,7 @@ export default function ButtonIntegration({
       await onClick()
       setLoading(false)
       setIsDone(true)
+      callback?.()
     }
   }
 
@@ -39,20 +44,30 @@ export default function ButtonIntegration({
             type="submit"
             className={`btn w-full transition-all duration-500 ${
               buttonClassName ? buttonClassName : ""
-            } ${loading ? "text-transparent" : ""} ${
-              disabled ? "opacity-60 hover:opacity-60" : ""
+            } ${
+              disabled
+                ? `opacity-60 ${
+                    loading ? "bg-transparent" : "hover:opacity-60"
+                  }`
+                : ""
             }`}
             disabled={disabled || loading}
             onClick={handleButtonClick}
           >
-            {isDone && onFinishText ? onFinishText : children}
+            {isDone && onFinishText ? (
+              onFinishText
+            ) : (
+              <div className={`${loading ? "text-transparent" : ""}`}>
+                {children}
+              </div>
+            )}
           </button>
 
           {loading && (
             <CircularProgress
               size={24}
               sx={{
-                color: "white",
+                color: circularProgressColor ?? "white",
                 position: "absolute",
                 top: "50%",
                 left: "50%",

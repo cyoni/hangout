@@ -6,7 +6,9 @@ import { GET_FOLLOWING } from "../lib/consts"
 import { FollowingQuery } from "../lib/queries"
 
 function useServices() {
-  const followService = useQuery([my_following_list], () => FollowingQuery())
+  const followService = useQuery([my_following_list], () => FollowingQuery(), {
+    staleTime: 50000,
+  })
 
   return { followService }
 }

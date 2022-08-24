@@ -14,7 +14,7 @@ type Province = {
   province_short: string
 }
 
-type Place = {} & City & Province & Country 
+type Place = {} & City & Province & Country
 
 type ResponseObject = {
   data?: any
@@ -72,7 +72,7 @@ interface MongoInsertRes {
   insertedCount?: number
   insertedIds?: {}
   error?: string
-} 
+}
 
 interface MongoUpdateRes {
   acknowledged?: boolean
@@ -80,8 +80,7 @@ interface MongoUpdateRes {
   modifiedCount?: number
   upsertedCount?: number
   error?: string
-
-} 
+}
 
 interface IUser {
   id: string
@@ -101,6 +100,7 @@ type Profile = {
 }
 
 type Post = {
+  name: string
   userId: string
   timestamp: number
   message: string

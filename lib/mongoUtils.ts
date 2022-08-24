@@ -78,3 +78,10 @@ export async function dbUpdateOne(
     return { error: e.message }
   }
 }
+
+export async function dbDeleteOne(database: string, query) {
+  const client = await clientPromise
+  const db = client.db()
+  const result = await db.collection(database).deleteOne(query)
+  return result
+}

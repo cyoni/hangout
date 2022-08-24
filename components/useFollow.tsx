@@ -1,7 +1,8 @@
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query"
 import React from "react"
 import toast from "react-hot-toast"
-import { START_FOLLOW } from "../lib/consts"
+import { START_FOLLOW, STOP_FOLLOW } from "../lib/consts"
+import { my_following_list } from "../lib/consts/query"
 import { post } from "../lib/postman"
 
 interface followReq {
@@ -10,20 +11,53 @@ interface followReq {
 }
 function useFollow() {
   const followers = []
+
+  const followQuery: UseQueryResult<string[], {}> = useQuery([
+    my_following_list,
+  ])
+
   const startFollowMutation = (body: followReq) => {
     return post({
       url: "/api/followApi",
-      body: { method: START_FOLLOW, ...body },
+      body: { ...body },
     })
   }
   const followMutation = useMutation(startFollowMutation)
 
   const follow = async (req) => {
-    await followMutation.mutateAsync(req)
-    toast.success("Great!")
+    await followMutation.mutateAsync({
+      userId: req.userId,
+      method: START_FOLLOW,
+    })
+    toast.success("New following!")
   }
 
-  return { follow, followMutation, followers }
+  const unFollow = async (req) => {
+    await followMutation.mutateAsync({
+      userId: req.userId,
+      method: STOP_FOLLOW,
+    })
+    toast.success(`You stopped following ${req.name}`)
+  }
+
+  const isFollowing = (id: string) => {
+    console.log("followQuery.data", followQuery.data)
+    return followQuery?.data?.some((userId) => userId === id)
+  }
+
+  const refreshFollowings = () => {
+    followQuery.refetch()
+  }
+
+  return {
+    follow,
+    unFollow,
+    followMutation,
+    followQuery,
+    followers,
+    isFollowing,
+    refreshFollowings,
+  }
 }
 
 export default useFollow

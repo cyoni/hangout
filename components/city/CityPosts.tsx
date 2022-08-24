@@ -16,11 +16,6 @@ function CityPosts({ place, myFollowing }) {
   } = usePosts(place)
 
   const { isLoading, data: result } = getPostsQuery
-  const isFollowing = (userId) =>{ 
-    console.log("myFollowing111111",myFollowing)
-    console.log("userId",userId)
-    console.log("myFollowing[userId]", myFollowing[userId])
-    return myFollowing && myFollowing[userId]}
 
   return (
     <div className="w-[60%] mx-auto">
@@ -63,7 +58,6 @@ function CityPosts({ place, myFollowing }) {
               <div key={post._id}>
                 <FeedPost
                   post={post}
-                  isFollowing={() => isFollowing(post.userId)}
                 />
               </div>
             ))}

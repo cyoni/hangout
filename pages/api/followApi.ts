@@ -1,7 +1,13 @@
+import { STOP_FOLLOW } from "./../../lib/consts"
 import { getToken } from "next-auth/jwt"
 import { NextApiRequest, NextApiResponse } from "next"
 import { GET_FOLLOWING, START_FOLLOW } from "../../lib/consts"
-import { dbAggregate, dbFind, dbUpdateOne } from "../../lib/mongoUtils"
+import {
+  dbAggregate,
+  dbDeleteOne,
+  dbFind,
+  dbUpdateOne,
+} from "../../lib/mongoUtils"
 import { FOLLOW_TABLE } from "../../lib/consts/tables"
 import { convertArrayToDictionary } from "../../lib/scripts/arrays"
 import { queryPlace } from "../../lib/place"
@@ -45,6 +51,41 @@ async function follow(body, me: string) {
   return { result: "OK" }
 }
 
+async function unFollow(body, me: string) {
+  const { userId } = body
+
+  const data = await dbFind(FOLLOW_TABLE, {
+    $or: [{ user1: userId }, { user2: userId }],
+    $and: [
+      { $or: [{ method: X_FOLLOWS_Y }, { method: XY_FOLLOW_EACH_OTHER }] },
+    ],
+  })
+
+  const filter = {
+    $or: [
+      { $and: [{ user1: me }, { user2: userId }] },
+      { $and: [{ user1: userId }, { user2: me }] },
+    ],
+  }
+
+  if (data.length === 1) {
+    const result = data[0]
+    if (result.method == X_FOLLOWS_Y) {
+      // DELETE
+      const removeDocument = await dbDeleteOne(FOLLOW_TABLE, filter)
+      console.log("removeDocument", removeDocument)
+    } else {
+      const r = await dbUpdateOne(
+        FOLLOW_TABLE,
+        filter,
+        { $set: { user1: userId, user2: me, method: X_FOLLOWS_Y } },
+        {}
+      )
+    }
+  }
+  return { message: "success" }
+}
+
 export async function getFollowing(userId) {
   console.log("getFollowing userId", userId)
   const data = await dbFind(FOLLOW_TABLE, {
@@ -84,10 +125,11 @@ export default async function handler(
       case START_FOLLOW:
         result = await follow(req.body, userId)
         break
+      case STOP_FOLLOW:
+        result = await unFollow(req.body, userId)
+        break
       case GET_FOLLOWING: {
-        result = await getFollowing(
-          req.query.userId ?? userId
-        )
+        result = await getFollowing(req.query.userId ?? userId)
         break
       }
     }
