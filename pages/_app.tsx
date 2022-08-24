@@ -25,20 +25,13 @@ function App({ Component, pageProps: { session, ...pageProps } }) {
 
         <Header />
 
-        <div>
-          <Toaster />
-        </div>
+        <Toaster />
 
         <div>
-          <div>
-            <Layout
-              Component={Component}
-              pageProps={pageProps}
-              session={session}
-            />
-          </div>
+          <Layout Component={Component} pageProps={pageProps} />
           <Footer />
         </div>
+        
         <ReactQueryDevtools />
       </QueryClientProvider>
     </SessionProvider>

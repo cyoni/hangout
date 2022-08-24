@@ -19,3 +19,4 @@ export const EMPTY_PROFILE_PICTURE =
 export const SEND_MESSAGE_API = "/api/messagesApi"
 
 export const ProfileParams = { name: 1, picture: 1, cityId: 1 }
+export const GET_FOLLOWING = "GET_FOLLOWING"

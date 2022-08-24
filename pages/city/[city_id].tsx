@@ -11,15 +11,20 @@ import { getAllTravellingByPlace } from "../../lib/travel"
 import Tabs from "../../components/city/CityPageTabs"
 import Cities from "../../components/Cities"
 import CityPageTabs from "../../components/city/CityPageTabs"
+import { getFollowing } from "../api/followApi"
+import { getToken } from "next-auth/jwt"
 
 const defaultCityCode: number = 127407
 
 interface Props {
   travels
   place: Place
+  myFollowing: any
 }
-export default function Home({ travels, place }: Props) {
+export default function Home({ travels, place, myFollowing }: Props) {
   const [location, setLocation] = useState(null)
+
+  console.log("myFollowing", myFollowing)
 
   const router = useRouter()
 
@@ -47,9 +52,7 @@ export default function Home({ travels, place }: Props) {
 
         <Cities />
 
-        <CityPageTabs travelers={travels} place={place} />
-
-        <div></div>
+        <CityPageTabs travelers={travels} place={place} myFollowing={myFollowing} />
       </main>
     </div>
   )
@@ -57,6 +60,8 @@ export default function Home({ travels, place }: Props) {
 
 export async function getServerSideProps(context) {
   try {
+    const token = await getToken(context)
+
     let cityQueryCode = 0
     const city_id = Number(context.params.city_id)
 
@@ -71,8 +76,11 @@ export async function getServerSideProps(context) {
     const place = await queryPlace(cityQueryCode)
     console.log("placeplace", place)
     const travels = await getAllTravellingByPlace(cityQueryCode)
+
+    const myFollowing = await getFollowing(token.userId)
+
     return {
-      props: { place, travels },
+      props: { place, travels, myFollowing },
     }
   } catch (e) {
     console.error(e)

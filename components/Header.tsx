@@ -60,7 +60,13 @@ function Header() {
               <a className="text-3xl font-medium">Hangouts</a>
             </Link>
           </div>
-          <div className="rounded-md bg-slate-200 w-[300px] hover:w-[450px] transition-all duration-500 px-3 py-1 ">
+          <div
+            className="
+            rounded-md focus-within:w-[450px] focus-within:outline
+            hover:outline bg-slate-200 w-[300px]
+            hover:w-[450px] transition-width 
+            duration-500 px-3 py-1"
+          >
             <AutoComplete
               placeholder="Where are you going?"
               fetchFunction={getCitiesAutoComplete}

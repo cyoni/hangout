@@ -28,7 +28,7 @@ function usePosts(place: Place) {
       "/api/cityApi",
       `method=${GET_MESSAGES}&cityId=${place.city_id}`
     )
-  })
+  }) 
 
   const sendPost = async () => {
     if (isNullOrEmpty(messageInput)) return

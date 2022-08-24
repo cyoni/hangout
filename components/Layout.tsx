@@ -1,7 +1,12 @@
-function Layout({ Component, pageProps, session }) {
+import useServices from "./useServices"
+
+function Layout({ Component, pageProps }) {
+
+  useServices()
+
   return (
     <main>
-      <Component {...pageProps} session={session} />
+      <Component {...pageProps} />
     </main>
   )
 }

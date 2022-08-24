@@ -7,16 +7,19 @@ interface Props {
   externalClass?: string
   buttonClassName?: string
   disabled?: boolean
-  children:any
+  onFinishText?: string | JSX.Element
+  children: string | JSX.Element 
 }
 export default function ButtonIntegration({
   children,
   onClick,
   externalClass,
   buttonClassName,
+  onFinishText,
   disabled,
 }: Props) {
   const [loading, setLoading] = React.useState(false)
+  const [isDone, setIsDone] = React.useState(false)
 
   const handleButtonClick = async (e) => {
     e?.preventDefault()
@@ -24,23 +27,27 @@ export default function ButtonIntegration({
       setLoading(true)
       await onClick()
       setLoading(false)
+      setIsDone(true)
     }
   }
 
   return (
     <div className={`${externalClass ? externalClass : ""}`}>
       <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Box className="w-full" sx={{ m: 1, position: "relative" }}>
+        <Box className="w-full" sx={{ position: "relative" }}>
           <button
             type="submit"
-            className={`btn w-full ${buttonClassName ? buttonClassName : ""} ${
-              loading ? "text-transparent" : ""
-            } ${disabled ? "opacity-60 hover:opacity-60" : ""}`}
+            className={`btn w-full transition-all duration-500 ${
+              buttonClassName ? buttonClassName : ""
+            } ${loading ? "text-transparent" : ""} ${
+              disabled ? "opacity-60 hover:opacity-60" : ""
+            }`}
             disabled={disabled || loading}
             onClick={handleButtonClick}
           >
-            {children}
+            {isDone && onFinishText ? onFinishText : children}
           </button>
+
           {loading && (
             <CircularProgress
               size={24}

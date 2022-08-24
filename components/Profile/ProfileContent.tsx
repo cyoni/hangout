@@ -6,6 +6,8 @@ import { isNullOrEmpty } from "../../lib/scripts/strings"
 import Avatar from "../Avatar"
 import Itinerary from "../Itinerary"
 import { isAuthenticated, isAuthor } from "../../lib/session"
+import ButtonIntegration from "../ButtonIntegration"
+import useFollow from "../useFollow"
 
 interface Props {
   profile: Profile
@@ -15,6 +17,8 @@ interface Props {
 
 const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
   const session = useSession()
+  const { follow } = useFollow()
+
   console.log("session: ", session)
   const router = useRouter()
   console.log("profile content place", place)
@@ -49,6 +53,12 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
         >
           Send Message
         </button>
+        <ButtonIntegration
+          onClick={() => follow({ userId: "123" })}
+          onFinishText={<>Following</>}
+        >
+          Follow me
+        </ButtonIntegration>
       </div>
       <div className="mx-auto w-[80%]">
         <div className=" ">

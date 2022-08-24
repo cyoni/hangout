@@ -29,7 +29,7 @@ function ModalWrapper({
       style={{
         overlay: {
           background: "transparent",
-          backdropFilter: "blur(3px)",
+          backdropFilter: "blur(12px)",
           zIndex: 10,
         },
       }}

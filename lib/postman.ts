@@ -19,6 +19,26 @@ export async function post(req: PostRequest): Promise<any> {
   }
 }
 
+
+export async function newGet(url, params = null): Promise<ResponseObject> {
+  try {
+    const serviceUrl = `${url}?${params}`
+    const data = await fetch(serviceUrl, {
+      method: "GET",
+    })
+    if (data.status == 200) {
+      const json = await data.json()
+      console.log("JSON", json)
+      return { data: json }
+    }
+    throw Error("bad request")
+  } catch (e) {
+    const res: ResponseObject = { error: e.message }
+    return res
+  }
+}
+
+
 export async function get(url, params = null): Promise<ResponseObject> {
   try {
     const serviceUrl = `${url}?${params}`

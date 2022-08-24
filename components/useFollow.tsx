@@ -9,6 +9,7 @@ interface followReq {
   method: string
 }
 function useFollow() {
+  const followers = []
   const startFollowMutation = (body: followReq) => {
     return post({
       url: "/api/followApi",
@@ -22,7 +23,7 @@ function useFollow() {
     toast.success("Great!")
   }
 
-  return { follow, followMutation }
+  return { follow, followMutation, followers }
 }
 
 export default useFollow

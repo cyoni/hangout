@@ -6,12 +6,15 @@ import useEditProfile from "../../components/Profile/EditProfile/useEditProfile"
 import EditProfile from "../../components/Profile/EditProfile/EditProfile"
 import ProfileContent from "../../components/Profile/ProfileContent"
 import usePlace from "../../components/usePlace"
+import ButtonIntegration from "../../components/ButtonIntegration"
 
 interface Props {
   profile: Profile
+  followServiceProps: any
 }
 export default function Profile({ profile }: Props) {
   console.log("Profile", profile)
+
   const editProfileParams = useEditProfile(profile)
 
   const { places, getPlaceFromObject } = usePlace(profile?.cityId)
@@ -31,7 +34,7 @@ export default function Profile({ profile }: Props) {
   }
 
   return (
-    <div>
+    <>
       <HeaderImage headerExternalClass="h-96" title={null}>
         <button className="btn-outline  absolute right-10 border border-white px-4 py-1 font-bold text-gray-200 shadow-xl hover:border-blue-800">
           Edit wrap Image
@@ -51,7 +54,7 @@ export default function Profile({ profile }: Props) {
           <ProfileError />
         )}
       </div>
-    </div>
+    </>
   )
 }
 

@@ -10,7 +10,7 @@ import usePlace from "./usePlace"
 interface Props {
   post: Post
 }
-function FeedPost({ post }: Props) {
+function FeedPost({ post, isFollowing }: Props) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { getFirstPlace } = usePlace([post.profile[0].cityId])
   const place = getFirstPlace()
@@ -29,12 +29,27 @@ function FeedPost({ post }: Props) {
           </div>
         </div>
 
-        <ButtonIntegration onClick={() => follow({ userId: post.userId })}>
-          <div className="flex space-x-2 items-center justify-center ">
-            <PlusIcon className="h-6" />
-            <span>Follow</span>
-          </div>
-        </ButtonIntegration>
+        {isFollowing() ? (
+          <ButtonIntegration
+            onClick={() => follow({ userId: post.userId })}
+            onFinishText="Following"
+          >
+            <div className="flex space-x-2 items-center justify-center ">
+              <PlusIcon className="h-6" />
+              <span>Following..!</span>
+            </div>
+          </ButtonIntegration>
+        ) : (
+          <ButtonIntegration
+            onClick={() => follow({ userId: post.userId })}
+            onFinishText="Following"
+          >
+            <div className="flex space-x-2 items-center justify-center ">
+              <PlusIcon className="h-6" />
+              <span>Follow</span>
+            </div>
+          </ButtonIntegration>
+        )}
       </div>
       <div
         className="my-2 max-h-[700px] min-h-[100px] pl-2"

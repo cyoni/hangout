@@ -6,7 +6,7 @@ import FeedPost from "../FeedPost"
 import Spinner from "../Spinner"
 import usePosts from "./usePosts"
 
-function CityPosts({ place }) {
+function CityPosts({ place, myFollowing }) {
   const {
     sendPost,
     messageInput,
@@ -16,6 +16,11 @@ function CityPosts({ place }) {
   } = usePosts(place)
 
   const { isLoading, data: result } = getPostsQuery
+  const isFollowing = (userId) =>{ 
+    console.log("myFollowing111111",myFollowing)
+    console.log("userId",userId)
+    console.log("myFollowing[userId]", myFollowing[userId])
+    return myFollowing && myFollowing[userId]}
 
   return (
     <div className="w-[60%] mx-auto">
@@ -56,7 +61,10 @@ function CityPosts({ place }) {
           <div>
             {result.data.map((post) => (
               <div key={post._id}>
-                <FeedPost post={post} />
+                <FeedPost
+                  post={post}
+                  isFollowing={() => isFollowing(post.userId)}
+                />
               </div>
             ))}
             {getPostsQuery.data.data.length === 0 && (
