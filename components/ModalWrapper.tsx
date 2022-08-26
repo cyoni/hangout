@@ -1,4 +1,4 @@
-import { XIcon } from "@heroicons/react/outline"
+import { XMarkIcon } from "@heroicons/react/24/outline"
 import React, { useEffect } from "react"
 import Modal from "react-modal"
 interface Props {
@@ -43,7 +43,7 @@ function ModalWrapper({
       onRequestClose={onRequestClose}
       contentLabel="My dialog"
     >
-      <XIcon
+      <XMarkIcon
         className="h-6 sticky top-1 cursor-pointer text-gray-400 hover:text-gray-300  "
         onClick={onRequestClose}
       />

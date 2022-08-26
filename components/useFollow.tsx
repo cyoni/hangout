@@ -6,46 +6,56 @@ import { my_following_list } from "../lib/consts/query"
 import { post } from "../lib/postman"
 
 interface followReq {
-  userId: string
+  userId?: string
+  cityId?: number
   method: string
+  type: "FOLLOW" | "CITY"
 }
 function useFollow() {
   const followers = []
 
-  const followQuery: UseQueryResult<string[], {}> = useQuery([
+  const followQuery: UseQueryResult<MyFollowing, {}> = useQuery([
     my_following_list,
   ])
 
-  const startFollowMutation = (body: followReq) => {
+  const triggerFollowMutation = (body: followReq) => {
     return post({
       url: "/api/followApi",
       body: { ...body },
     })
   }
-  const followMutation = useMutation(startFollowMutation)
+  const followMutation = useMutation(triggerFollowMutation)
 
   const follow = async (req) => {
     await followMutation.mutateAsync({
       userId: req.userId,
+      cityId: req.cityId,
       method: START_FOLLOW,
+      type: req.type,
     })
-    toast.success("New following!")
+    toast.success(`You started following ${req.name}`)
   }
 
   const unFollow = async (req) => {
     await followMutation.mutateAsync({
       userId: req.userId,
+      cityId: req.cityId,
       method: STOP_FOLLOW,
+      type: req.type,
     })
     toast.success(`You stopped following ${req.name}`)
   }
 
-  const isFollowing = (id: string) => {
+  const isFollowing = (id: string | number) => {
     console.log("followQuery.data", followQuery.data)
-    return followQuery?.data?.some((userId) => userId === id)
+    if (followQuery.data == null) return false
+    return (
+      followQuery.data.membersImFollowing.some((userId) => userId === id) ||
+      followQuery.data.favoriteCities.some((cityId) => cityId === Number(id))
+    )
   }
 
-  const refreshFollowings = () => {
+  const getMyFollowingList = () => {
     followQuery.refetch()
   }
 
@@ -56,7 +66,7 @@ function useFollow() {
     followQuery,
     followers,
     isFollowing,
-    refreshFollowings,
+    getMyFollowingList,
   }
 }
 

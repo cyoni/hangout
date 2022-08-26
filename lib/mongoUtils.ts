@@ -85,3 +85,12 @@ export async function dbDeleteOne(database: string, query) {
   const result = await db.collection(database).deleteOne(query)
   return result
 }
+
+export function findTwoUsers(user1: string, user2: string) {
+  return {
+    $or: [
+      { $and: [{ user1 }, { user2 }] },
+      { $and: [{ user1: user2 }, { user2: user1 }] },
+    ],
+  }
+}

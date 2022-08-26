@@ -1,9 +1,13 @@
 import {
-  CheckIcon,
-  EmojiHappyIcon,
   PlusIcon,
-  ThumbUpIcon,
-} from "@heroicons/react/outline"
+  ChatBubbleBottomCenterTextIcon,
+  EllipsisHorizontalCircleIcon,
+  CheckCircleIcon,
+  CheckIcon,
+} from "@heroicons/react/24/outline"
+import SendRoundedIcon from "@mui/icons-material/SendRounded"
+
+import { CircularProgress, IconButton, TextField, Tooltip } from "@mui/material"
 import React, { useState } from "react"
 import { getPastTime } from "../lib/scripts/general"
 import Avatar from "./Avatar"
@@ -11,6 +15,11 @@ import ButtonIntegration from "./ButtonIntegration"
 import ModalWrapper from "./ModalWrapper"
 import useFollow from "./useFollow"
 import usePlace from "./usePlace"
+import DeleteIcon from "@mui/icons-material/Delete"
+import ChatRoundedIcon from "@mui/icons-material/ChatRounded"
+import CircularButton from "./CircularButton"
+import Spinner from "./Spinner"
+import { FOLLOW } from "../lib/consts"
 
 interface Props {
   post: Post
@@ -20,16 +29,55 @@ function FeedPost({ post }: Props) {
   const { getFirstPlace } = usePlace([post.profile[0].cityId])
   const place = getFirstPlace()
 
+  const [input, setInput] = useState<string>("")
+
   const {
     follow,
     unFollow,
     followMutation,
     followQuery,
     isFollowing,
-    refreshFollowings,
+    getMyFollowingList,
   } = useFollow()
+
+  const renderOptions = () => {
+    return (
+      <div className="flex  items-center ">
+        <CircularButton
+          tooltip="Follow"
+          circularProgressColor="text-blue-500"
+          onClick={
+            following
+              ? () => unFollow({ userId: post.userId, name, type: FOLLOW })
+              : () => follow({ userId: post.userId, name, type: FOLLOW })
+          }
+          callback={getMyFollowingList}
+        >
+          {following ? (
+            <CheckIcon className="h-5" />
+          ) : (
+            <PlusIcon className="h-6" />
+          )}
+        </CircularButton>
+
+        <Tooltip title="Chat">
+          <IconButton>
+            <ChatBubbleBottomCenterTextIcon className="h-6" />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title="Options">
+          <IconButton>
+            <EllipsisHorizontalCircleIcon className="h-6" />
+          </IconButton>
+        </Tooltip>
+      </div>
+    )
+  }
+
   console.log("followingData", followQuery.data)
   const followingData: string[] = followQuery.data
+  const moreButtonsStyle = "p-3 hover:bg-slate-100 rounded-full"
 
   const following = isFollowing(post.userId)
   const name = post.profile[0].name
@@ -44,31 +92,7 @@ function FeedPost({ post }: Props) {
             <div className="text-xs">{getPastTime(post.timestamp)}</div>
           </div>
         </div>
-
-        <ButtonIntegration
-          circularProgressColor="bg-blue-600"
-          buttonClassName="hover:bg-blue-600 bg-white text-gray-500 btn-outline font-normal  "
-          onClick={
-            following
-              ? () => unFollow({ userId: post.userId, name })
-              : () => follow({ userId: post.userId, name })
-          }
-          callback={refreshFollowings}
-        >
-          <div className="flex  space-x-2 items-center justify-center   ">
-            {following ? (
-              <>
-                <CheckIcon className="h-5" />
-                <span>Following</span>
-              </>
-            ) : (
-              <>
-                <PlusIcon className="h-5" />
-                <span>Follow</span>
-              </>
-            )}
-          </div>
-        </ButtonIntegration>
+        {renderOptions()}
       </div>
       <div
         className="my-2 max-h-[700px] min-h-[100px] pl-2"
@@ -77,12 +101,51 @@ function FeedPost({ post }: Props) {
         {post.message}
       </div>
       <ModalWrapper
-        height={"  h-[60%]"}
+        height={"  h-[80%]"}
         isOpen={isOpen}
         onRequestClose={() => setIsOpen(false)}
       >
-        <div className="border p-2 min-h-[200px] rounded-md mt-10">
+        <div className="flex justify-between ml-2">
+          <div className="flex space-x-2 mt-4">
+            <Avatar className="h-24 w-24" />
+            <div>
+              <div className="text-3xl  mt-2 ">Yoni</div>
+              <p className="text-sm leading-5	">Tel Aviv, Israel</p>
+              <p className="text-sm leading-3	">2 hours ago</p>
+            </div>
+          </div>
+          <div>{renderOptions()}</div>
+        </div>
+
+        <div className=" border rounded-md p-2 min-h-[150px] my-5">
           {post.message}
+        </div>
+
+        <div className="text-2xl">Discussion</div>
+
+        <div className="  min-h-[150px]  mt-3">
+          <TextField
+            id="outlined-multiline-flexible"
+            label="Join the conversation!"
+            className="w-full bg-white"
+            multiline
+            minRows={2}
+            maxRows={4}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+          />
+
+          <div className="flex mt-2 justify-end">
+            <CircularButton>
+              <SendRoundedIcon className="h-6" />
+            </CircularButton>
+          </div>
+
+          <div className="  rounded-md p-2 min-h-[150px] my-5">
+            <div className="flex justify-center mt-8">
+              <Spinner />
+            </div>
+          </div>
         </div>
       </ModalWrapper>
     </div>

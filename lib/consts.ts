@@ -21,3 +21,5 @@ export const SEND_MESSAGE_API = "/api/messagesApi"
 
 export const ProfileParams = { name: 1, picture: 1, cityId: 1 }
 export const GET_FOLLOWING = "GET_FOLLOWING"
+export const CITY = "CITY"
+export const FOLLOW = "FOLLOW"

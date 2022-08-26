@@ -1,6 +1,6 @@
 export function isNullOrEmpty(value: string | number): boolean {
   return (
-    value === null ||
+    value == null ||
     (typeof value === "string" && value.trim() === "")
   )
 }

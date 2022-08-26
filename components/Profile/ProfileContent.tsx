@@ -8,6 +8,7 @@ import Itinerary from "../Itinerary"
 import { isAuthenticated, isAuthor } from "../../lib/session"
 import ButtonIntegration from "../ButtonIntegration"
 import useFollow from "../useFollow"
+import HeaderImage from "../HeaderImage"
 
 interface Props {
   profile: Profile

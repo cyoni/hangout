@@ -1,4 +1,4 @@
-import { STOP_FOLLOW } from "./../../lib/consts"
+import { CITY, FOLLOW, STOP_FOLLOW } from "./../../lib/consts"
 import { getToken } from "next-auth/jwt"
 import { NextApiRequest, NextApiResponse } from "next"
 import { GET_FOLLOWING, START_FOLLOW } from "../../lib/consts"
@@ -6,11 +6,13 @@ import {
   dbAggregate,
   dbDeleteOne,
   dbFind,
+  dbInsertOne,
   dbUpdateOne,
+  findTwoUsers as getFindTwoUsersFilter,
 } from "../../lib/mongoUtils"
 import { FOLLOW_TABLE } from "../../lib/consts/tables"
 import { convertArrayToDictionary } from "../../lib/scripts/arrays"
-import { queryPlace } from "../../lib/place"
+import { queryPlace, queryPlaces } from "../../lib/place"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 
 type Response = {
@@ -20,15 +22,142 @@ type Response = {
 const X_FOLLOWS_Y = 1
 const XY_FOLLOW_EACH_OTHER = 2
 async function follow(body, me: string) {
-  const { userId } = body
+  const { userId, cityId, type } = body
+
+  let result = null
+  switch (type) {
+    case FOLLOW:
+      result = await followMember(userId, me)
+      break
+    case CITY:
+      result = await followCity(cityId, me)
+      break
+    default:
+      result = { error: "INVALID TYPE" }
+  }
+
+  return result
+}
+
+async function unFollow(body, me: string) {
+  const { userId, type } = body
+
+  let result = null
+
+  switch (type) {
+    case FOLLOW:
+      result = await unfollowMember(userId, me)
+      break
+    case CITY:
+      result = await unfollowCity(body, me)
+      break
+    default:
+      return { error: "INVALID TYPE" }
+  }
+
+  return result
+}
+async function unfollowCity({ cityId }, userId: string) {
+  if (isNullOrEmpty(cityId) || isNullOrEmpty(userId))
+    return { error: "bad request. userId or cityId is required" }
+
+  const result: MongoUpdateRes = await dbUpdateOne(
+    FOLLOW_TABLE,
+    { cityId, type: CITY },
+    { $pull: { userIds: { $in: [userId] } } },
+    {}
+  )
+  if (result.acknowledged) return { message: "success" }
+  else return { error: "could not update in unfollow city" }
+}
+async function unfollowMember(userId: string, me: string) {
+  if (isNullOrEmpty(userId)) {
+    return { error: "INVALID USER" }
+  }
+
+  const data = await dbFind(FOLLOW_TABLE, {
+    $or: [{ user1: userId }, { user2: userId }],
+    $and: [
+      { $or: [{ method: X_FOLLOWS_Y }, { method: XY_FOLLOW_EACH_OTHER }] },
+    ],
+  })
+
+  if (data.length === 1) {
+    const result = data[0]
+    if (result.method == X_FOLLOWS_Y) {
+      // DELETE
+      const removeDocument = await dbDeleteOne(
+        FOLLOW_TABLE,
+        getFindTwoUsersFilter(me, userId)
+      )
+      console.log("removeDocument", removeDocument)
+    } else {
+      const r = await dbUpdateOne(
+        FOLLOW_TABLE,
+        getFindTwoUsersFilter(me, userId),
+        { $set: { user1: userId, user2: me, method: X_FOLLOWS_Y } },
+        {}
+      )
+    }
+  }
+  return { message: "success" }
+}
+export async function getFollowing(userId) {
+  console.log("getFollowing userId", userId)
+  const data = await dbAggregate({
+    collection: FOLLOW_TABLE,
+    params: [
+      {
+        $match: {
+          $or: [
+            { type: CITY, userIds: { $in: [userId] } },
+            {
+              type: FOLLOW,
+              $or: [{ user1: userId }, { user2: userId }],
+              $and: [
+                {
+                  $or: [
+                    { method: X_FOLLOWS_Y },
+                    { method: XY_FOLLOW_EACH_OTHER },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ],
+  })
+
+  console.log("getFollowing", data)
+
+  const result = data.reduce(
+    (acc, curr) => {
+      if (curr.type === CITY) {
+        acc.favoriteCities.push(curr.cityId)
+      } else if (curr.type === FOLLOW) {
+        const followerId = curr.user1 === userId ? curr.user2 : curr.user1
+        acc.membersImFollowing.push(followerId)
+      }
+      return acc
+    },
+    { favoriteCities: [], membersImFollowing: [] }
+  )
+
+  console.log("following result", result)
+
+  return result
+}
+
+async function followMember(userId: any, me: string) {
+  if (isNullOrEmpty(userId)) {
+    return { error: "no userId found." }
+  }
 
   // check if the requester already follows
-  const filter = {
-    $or: [
-      { $and: [{ user1: me }, { user2: userId }] },
-      { $and: [{ user1: userId }, { user2: me }] },
-    ],
-  }
+  const filter = getFindTwoUsersFilter(userId, me)
+
+  // const isUserValid = await validateUser()
 
   let newMethod = X_FOLLOWS_Y
   const response = await dbAggregate({
@@ -43,67 +172,55 @@ async function follow(body, me: string) {
   const r = await dbUpdateOne(
     FOLLOW_TABLE,
     filter,
-    { $set: { user1: me, user2: userId, method: newMethod } },
+    { $set: { user1: me, user2: userId, method: newMethod, type: FOLLOW } },
     { upsert: true }
   )
 
   console.log("r", r)
   return { result: "OK" }
 }
+async function followCity(cityId: number, me: string) {
+  if (isNullOrEmpty(cityId)) return { error: "city id id empty" }
+  const type = CITY
 
-async function unFollow(body, me: string) {
-  const { userId } = body
+  // city check
+  const place: Place = await queryPlace(cityId)
+  if (place == null) return { error: "city is invalid" }
 
-  const data = await dbFind(FOLLOW_TABLE, {
-    $or: [{ user1: userId }, { user2: userId }],
-    $and: [
-      { $or: [{ method: X_FOLLOWS_Y }, { method: XY_FOLLOW_EACH_OTHER }] },
-    ],
-  })
-
-  const filter = {
-    $or: [
-      { $and: [{ user1: me }, { user2: userId }] },
-      { $and: [{ user1: userId }, { user2: me }] },
-    ],
-  }
-
-  if (data.length === 1) {
-    const result = data[0]
-    if (result.method == X_FOLLOWS_Y) {
-      // DELETE
-      const removeDocument = await dbDeleteOne(FOLLOW_TABLE, filter)
-      console.log("removeDocument", removeDocument)
-    } else {
-      const r = await dbUpdateOne(
-        FOLLOW_TABLE,
-        filter,
-        { $set: { user1: userId, user2: me, method: X_FOLLOWS_Y } },
-        {}
-      )
-    }
-  }
-  return { message: "success" }
-}
-
-export async function getFollowing(userId) {
-  console.log("getFollowing userId", userId)
-  const data = await dbFind(FOLLOW_TABLE, {
-    $or: [{ user1: userId }, { user2: userId }],
-    $and: [
-      { $or: [{ method: X_FOLLOWS_Y }, { method: XY_FOLLOW_EACH_OTHER }] },
-    ],
-  })
-
-  console.log("getFollowing", data)
-
-  const result = data.map((item) =>
-    item.user1 === userId ? item.user2 : item.user1
+  const result: MongoUpdateRes = await dbUpdateOne(
+    FOLLOW_TABLE,
+    { cityId, type },
+    { $addToSet: { userIds: me }, $set: { cityId, type } },
+    { upsert: true }
   )
 
-  return result
+  if (result.acknowledged) return { message: "success" }
+  else return { error: "could not update db" }
+
+  // // check if the user already follows the city
+  // const dbCheck = await dbFind(FOLLOW_TABLE, {
+  //   cityId: cityId,
+  //   type: CITY,
+  //   $in: { userIds: me },
+  // })
+
+  // create a new document
+
+  // if (dbCheck.length == 0) {
+  //   //const r =
+
+  //   const result: MongoInsertOneRes = await dbInsertOne(FOLLOW_TABLE, {
+  //     userId: me,
+  //     type: CITY,
+  //     cityId,
+  //   })
+  //   console.log("follow result", result)
+  //   if (result.acknowledged) return { message: "Success" }
+  //   else return { error: "could not insert a new document in follow table" }
+  // } else return { message: "Already following city" }
 }
 
+// Controller
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Response>
@@ -120,7 +237,6 @@ export default async function handler(
 
     console.log("request message", req.body)
 
-    // Controller
     switch (method) {
       case START_FOLLOW:
         result = await follow(req.body, userId)

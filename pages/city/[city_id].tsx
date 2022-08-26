@@ -13,6 +13,9 @@ import Cities from "../../components/Cities"
 import CityPageTabs from "../../components/city/CityPageTabs"
 import { getFollowing } from "../api/followApi"
 import { getToken } from "next-auth/jwt"
+import ButtonIntegration from "../../components/ButtonIntegration"
+import useFollow from "../../components/useFollow"
+import { CITY } from "../../lib/consts"
 
 const defaultCityCode: number = 127407
 
@@ -25,11 +28,13 @@ export default function Home({ travels, place, myFollowing }: Props) {
   const [location, setLocation] = useState(null)
 
   console.log("myFollowing", myFollowing)
+  console.log("place", place)
+  const { follow, unFollow, isFollowing, getMyFollowingList } = useFollow()
 
   const router = useRouter()
 
   console.log("travelstravels", travels)
-
+  const isFollowingCity = isFollowing(place.city_id)
   return (
     <div>
       <Head>
@@ -45,14 +50,39 @@ export default function Home({ travels, place, myFollowing }: Props) {
               : ""
           }
         >
-          <button className="btn font-bold border   absolute right-10 top-[40%] px-7">
-            Follow City
-          </button>
+          <ButtonIntegration
+            externalClass="absolute right-10 top-[40%]"
+            buttonClassName="btn text-white w-[200px]
+                            right-10 top-0 font-bold hover:bg-blue-700
+                             px-7"
+            onClick={() =>
+              isFollowingCity
+                ? unFollow({
+                    cityId: place.city_id,
+                    name: place.city,
+                    type: CITY,
+                  })
+                : follow({
+                    cityId: place.city_id,
+                    name: place.city,
+                    type: CITY,
+                  })
+            }
+            callback={() => {
+              getMyFollowingList()
+            }}
+          >
+            {isFollowingCity ? <>Following City</> : <>Follow City</>}
+          </ButtonIntegration>
         </HeaderImage>
 
         <Cities />
 
-        <CityPageTabs travelers={travels} place={place} myFollowing={myFollowing} />
+        <CityPageTabs
+          travelers={travels}
+          place={place}
+          myFollowing={myFollowing}
+        />
       </main>
     </div>
   )
@@ -78,6 +108,7 @@ export async function getServerSideProps(context) {
     const travels = await getAllTravellingByPlace(cityQueryCode)
 
     const myFollowing = await getFollowing(token.userId)
+    console.log("myFollowing", myFollowing)
 
     return {
       props: { place, travels, myFollowing },

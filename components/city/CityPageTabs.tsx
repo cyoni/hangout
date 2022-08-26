@@ -40,6 +40,7 @@ interface Props {
   travelers: any
   posts: any
   place: Place
+  myFollowing: MyFollowing
 }
 export default function CityPageTabs({ travelers, posts, place, myFollowing }: Props) {
   const [value, setValue] = React.useState(0)

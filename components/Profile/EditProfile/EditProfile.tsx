@@ -6,6 +6,7 @@ import AlertDialog from "../../AlertDialog"
 import AutoComplete from "../../AutoComplete"
 import Avatar from "../../Avatar"
 import ButtonIntegration from "../../ButtonIntegration"
+import HeaderImage from "../../HeaderImage"
 import ModalWrapper from "../../ModalWrapper"
 
 function EditProfile({ editProfileParams, place }) {
@@ -31,6 +32,7 @@ function EditProfile({ editProfileParams, place }) {
   console.log("real", getFullPlaceName(place))
   return (
     <ModalWrapper
+      height="h-[95%]"
       className="w-[60%]"
       isOpen={openEditProfile}
       onRequestClose={() => setOpenEditProfile(false)}
@@ -46,6 +48,9 @@ function EditProfile({ editProfileParams, place }) {
           okFunction={handleDelete}
         />
       )}
+
+      <HeaderImage title="test test" />
+
       <form
         className="w-[40%] mx-auto flex justify-center items-center flex-col space-y-5"
         onSubmit={submitForm}

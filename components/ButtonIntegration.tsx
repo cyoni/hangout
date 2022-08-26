@@ -42,15 +42,9 @@ export default function ButtonIntegration({
         <Box className="w-full" sx={{ position: "relative" }}>
           <button
             type="submit"
-            className={`btn w-full transition-all duration-500 ${
+            className={`w-full transition-all duration-500 ${
               buttonClassName ? buttonClassName : ""
-            } ${
-              disabled
-                ? `opacity-60 ${
-                    loading ? "bg-transparent" : "hover:opacity-60"
-                  }`
-                : ""
-            }`}
+            } ${disabled ? ` ${loading ? "bg-transparent" : ""}` : ""}`}
             disabled={disabled || loading}
             onClick={handleButtonClick}
           >

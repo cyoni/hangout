@@ -2,11 +2,12 @@ import { TextField } from "@mui/material"
 import React, { useState } from "react"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import ButtonIntegration from "../ButtonIntegration"
+import CircularButton from "../CircularButton"
 import FeedPost from "../FeedPost"
 import Spinner from "../Spinner"
 import usePosts from "./usePosts"
-
-function CityPosts({ place, myFollowing }) {
+import SendRoundedIcon from "@mui/icons-material/SendRounded"
+function CityPosts({ place }) {
   const {
     sendPost,
     messageInput,
@@ -33,15 +34,12 @@ function CityPosts({ place, myFollowing }) {
           value={messageInput}
           onChange={(e) => setMessageInput(e.target.value)}
         />
-        <div className="flex mt-2">
-          <ButtonIntegration
-            externalClass="ml-auto"
-            buttonClassName="px-10"
-            disabled={isNullOrEmpty(messageInput)}
+        <div className="flex mt-2 justify-end">
+          <CircularButton
             onClick={() => sendPost()}
           >
-            Post
-          </ButtonIntegration>
+            <SendRoundedIcon className="h-6" />
+          </CircularButton>
         </div>
 
         <div className="border-t mt-5 mb-10"></div>
@@ -56,9 +54,7 @@ function CityPosts({ place, myFollowing }) {
           <div>
             {result.data.map((post) => (
               <div key={post._id}>
-                <FeedPost
-                  post={post}
-                />
+                <FeedPost post={post} />
               </div>
             ))}
             {getPostsQuery.data.data.length === 0 && (

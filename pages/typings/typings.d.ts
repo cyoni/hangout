@@ -74,6 +74,11 @@ interface MongoInsertRes {
   error?: string
 }
 
+interface MongoInsertOneRes {
+  acknowledged: boolean
+  insertedId: string
+}
+
 interface MongoUpdateRes {
   acknowledged?: boolean
   matchedCount?: number
@@ -104,4 +109,9 @@ type Post = {
   userId: string
   timestamp: number
   message: string
+}
+
+type MyFollowing = {
+  favoriteCities: number[]
+  membersImFollowing: string[]
 }
