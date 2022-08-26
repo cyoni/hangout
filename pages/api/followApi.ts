@@ -1,4 +1,10 @@
-import { CITY, FOLLOW, STOP_FOLLOW } from "./../../lib/consts"
+import {
+  CITY,
+  FOLLOW,
+  ProfileParams,
+  STOP_FOLLOW,
+  USERS_COLLECTION,
+} from "./../../lib/consts"
 import { getToken } from "next-auth/jwt"
 import { NextApiRequest, NextApiResponse } from "next"
 import { GET_FOLLOWING, START_FOLLOW } from "../../lib/consts"
@@ -104,32 +110,86 @@ async function unfollowMember(userId: string, me: string) {
 }
 export async function getFollowing(userId) {
   console.log("getFollowing userId", userId)
-  const data = await dbAggregate({
-    collection: FOLLOW_TABLE,
-    params: [
-      {
-        $match: {
-          $or: [
-            { type: CITY, userIds: { $in: [userId] } },
-            {
-              type: FOLLOW,
-              $or: [{ user1: userId }, { user2: userId }],
-              $and: [
-                {
-                  $or: [
-                    { method: X_FOLLOWS_Y },
-                    { method: XY_FOLLOW_EACH_OTHER },
+  let data = null
+  try {
+    data = await dbAggregate({
+      collection: FOLLOW_TABLE,
+      params: [
+        {
+          $facet: {
+            members: [
+              {
+                $match: {
+                  type: FOLLOW,
+                  $or: [{ user1: userId }, { user2: userId }],
+                  $and: [
+                    {
+                      $or: [
+                        { method: X_FOLLOWS_Y },
+                        { method: XY_FOLLOW_EACH_OTHER },
+                      ],
+                    },
                   ],
                 },
-              ],
-            },
-          ],
+              },
+              {
+                $lookup: {
+                  from: USERS_COLLECTION,
+                  let: {
+                    localField: {
+                      $cond: {
+                        if: { $eq: ["$user1", userId] },
+                        then: "$user2",
+                        else: "$user1",
+                      },
+                    },
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: { $eq: ["$$localField", "$userId"] },
+                      },
+                    },
+                  ],
+                  as: "profile",
+                },
+              },
+              {
+                $project: {
+                  userId: {
+                    $cond: {
+                      if: { $eq: ["$user1", userId] },
+                      then: "$user2",
+                      else: "$user1",
+                    },
+                  },
+                  profile: ProfileParams,
+                },
+              },
+            ],
+            cities: [
+              {
+                $match: {
+                  type: CITY,
+                  userIds: { $in: [userId] },
+                },
+              },
+              {
+                $project: {
+                  _id: 0,
+                  cityId: 1,
+                },
+              },
+            ],
+          },
         },
-      },
-    ],
-  })
+      ],
+    })
+  } catch (e) {
+    console.log("getFollowing MONGO ERROR: ", e.message)
+  }
 
-  console.log("getFollowing", data)
+  console.log("getFollowing", JSON.stringify(data))
 
   const result = data.reduce(
     (acc, curr) => {

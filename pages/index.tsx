@@ -4,11 +4,14 @@ import Back from "../components/Back"
 import FeedPost from "../components/FeedPost"
 import HeaderImage from "../components/HeaderImage"
 import Tabs from "../components/city/CityPageTabs"
+import useFollow from "../components/useFollow"
+import generateRandomString from "../lib/scripts/strings"
 
 interface Props {
   place: Place
 }
 export default function Home() {
+  const { followQuery } = useFollow()
   return (
     <div>
       <Head>
@@ -20,12 +23,7 @@ export default function Home() {
 
         <div className="mx-auto mt-10 grid  max-w-[60%] grid-cols-10">
           <div className=" col-span-2 border-r mr-4">
-            
-            <div className="">
-              Publish new a travel
-            </div>
-
-
+            <div className="">Publish new a travel</div>
           </div>
           <div className=" col-span-6 min-h-[400px] ">
             <div>
@@ -47,7 +45,6 @@ export default function Home() {
             <div className="">
               <div className="mt-3 text-xl">Recent Posts</div>
               <div className=" mt-2 border bg-gray-50 p-3">
-
                 {/* <div className="my-5 flex space-x-2 border-b pb-4">
                   <div className="flex flex-1 space-x-2 ">
                     <Avatar className="h-10 w-10" />
@@ -58,7 +55,6 @@ export default function Home() {
                   </div>
                   <button className="btn px-4">Send</button>
                 </div> */}
-
               </div>
             </div>
 
@@ -80,25 +76,14 @@ export default function Home() {
           </div>
           <div className=" col-span-2 ml-3 border-l p-2 pl-2">
             <div className="mb-2 text-xl">Favorite Cities</div>
-
-            <div className="cursor-pointer mt-2 rounded-md hover:border p-1 text-lg hover:bg-gray-100">
-              Tel Aviv
-            </div>
-            <div className="cursor-pointer mt-1 rounded-md hover:border p-1 text-lg hover:bg-gray-100">
-              Tel Aviv
-            </div>
-            <div className="cursor-pointer mt-1 rounded-md hover:border p-1 text-lg hover:bg-gray-100">
-              Tel Aviv
-            </div>
-            <div className="cursor-pointer mt-1 rounded-md hover:border p-1 text-lg hover:bg-gray-100">
-              Tel Aviv
-            </div>
-            <div className="cursor-pointer mt-1 rounded-md hover:border p-1 text-lg hover:bg-gray-100">
-              Tel Aviv
-            </div>
-            <div className="cursor-pointer mt-1 rounded-md hover:border p-1 text-lg hover:bg-gray-100">
-              Tel Aviv
-            </div>
+            {followQuery.data?.favoriteCities.map((follow) => {
+              return (
+                <div key={generateRandomString(3)}>
+                  hello: {JSON.stringify(follow)}
+                </div>
+              )
+            })}
+            {console.log("followQuery333", followQuery.data)}
           </div>
         </div>
       </main>
