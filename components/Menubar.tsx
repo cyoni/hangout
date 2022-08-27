@@ -5,8 +5,7 @@ import {
   HomeIcon,
   InboxIcon,
   PlusIcon,
-  SearchIcon,
-} from "@heroicons/react/outline"
+} from "@heroicons/react/24/outline"
 import Avatar from "./Avatar"
 import AvatarMenu from "./AvatarMenu"
 import { signIn, signOut, useSession } from "next-auth/react"

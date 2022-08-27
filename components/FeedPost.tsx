@@ -75,8 +75,6 @@ function FeedPost({ post }: Props) {
     )
   }
 
-  console.log("followingData", followQuery.data)
-  const followingData: string[] = followQuery.data
   const moreButtonsStyle = "p-3 hover:bg-slate-100 rounded-full"
 
   const following = isFollowing(post.userId)

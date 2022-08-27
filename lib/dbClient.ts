@@ -27,6 +27,7 @@ export async function getProfile(userIds: string[]) {
   return profiles
 }
 
+
 export async function getPlace(cityIds: string[]) {
   console.log("get place start. input:", cityIds)
 

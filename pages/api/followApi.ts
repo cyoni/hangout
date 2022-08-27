@@ -175,11 +175,17 @@ export async function getFollowing(userId) {
                 },
               },
               {
-                $project: {
-                  _id: 0,
-                  cityId: 1,
+                $group: {
+                  _id: null,
+                  cityIds: { $push: "$cityId" },
                 },
               },
+              {
+                $project: {
+                  _id: 0,
+                  cityIds: 1,
+                },
+              }
             ],
           },
         },
@@ -191,22 +197,20 @@ export async function getFollowing(userId) {
 
   console.log("getFollowing", JSON.stringify(data))
 
-  const result = data.reduce(
-    (acc, curr) => {
-      if (curr.type === CITY) {
-        acc.favoriteCities.push(curr.cityId)
-      } else if (curr.type === FOLLOW) {
-        const followerId = curr.user1 === userId ? curr.user2 : curr.user1
-        acc.membersImFollowing.push(followerId)
-      }
-      return acc
-    },
-    { favoriteCities: [], membersImFollowing: [] }
-  )
+  // const result = data.reduce(
+  //   (acc, curr) => {
+  //     if (curr.type === CITY) {
+  //       acc.favoriteCities.push(curr.cityId)
+  //     } else if (curr.type === FOLLOW) {
+  //       const followerId = curr.user1 === userId ? curr.user2 : curr.user1
+  //       acc.membersImFollowing.push(followerId)
+  //     }
+  //     return acc
+  //   },
+  //   { favoriteCities: [], membersImFollowing: [] }
+  // )
 
-  console.log("following result", result)
-
-  return result
+  return data[0]
 }
 
 async function followMember(userId: any, me: string) {

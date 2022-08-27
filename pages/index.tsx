@@ -6,12 +6,20 @@ import HeaderImage from "../components/HeaderImage"
 import Tabs from "../components/city/CityPageTabs"
 import useFollow from "../components/useFollow"
 import generateRandomString from "../lib/scripts/strings"
+import usePlace from "../components/usePlace"
+import { useEffect } from "react"
 
 interface Props {
   place: Place
 }
-export default function Home() {
+export default function Home({session}) {
+  console.log("My session prop", session)
   const { followQuery } = useFollow()
+
+  const cityIds = followQuery.data?.cities?.[0]?.cityIds
+
+  const { getFirstPlace, places, getPlaceFromObject } = usePlace(cityIds)
+  console.log("places index", places)
   return (
     <div>
       <Head>
@@ -75,14 +83,19 @@ export default function Home() {
             </div>
           </div>
           <div className=" col-span-2 ml-3 border-l p-2 pl-2">
-            <div className="mb-2 text-xl">Favorite Cities</div>
-            {followQuery.data?.favoriteCities.map((follow) => {
-              return (
-                <div key={generateRandomString(3)}>
-                  hello: {JSON.stringify(follow)}
-                </div>
-              )
-            })}
+            <div className="mb-3 text-xl ">Favorite Cities</div>
+            {places &&
+              cityIds &&
+              cityIds.map((city) => {
+                const place = getPlaceFromObject(city)
+                return (
+                  <a key={generateRandomString(3)} href={`/city/${place?.city_id}`}>
+                    <div className="p-2 rounded-md cursor-pointer hover:bg-gray-100 hover:border-gray-300 hover:text-blue-500">
+                      {place?.city}
+                    </div>
+                  </a>
+                )
+              })}
             {console.log("followQuery333", followQuery.data)}
           </div>
         </div>

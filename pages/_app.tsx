@@ -5,7 +5,7 @@ import Footer from "../components/Footer"
 import Layout from "../components/Layout"
 import Header from "../components/Header"
 import { Toaster } from "react-hot-toast"
-import { SessionProvider } from "next-auth/react"
+import { getSession, SessionProvider } from "next-auth/react"
 import {
   useQuery,
   useQueryClient,
@@ -15,7 +15,8 @@ import {
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 const queryClient = new QueryClient()
-function App({ Component, pageProps: { session, ...pageProps } }) {
+
+const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
   return (
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
@@ -27,15 +28,19 @@ function App({ Component, pageProps: { session, ...pageProps } }) {
 
         <Toaster />
 
-        <div>
-          <Layout Component={Component} pageProps={pageProps} />
-          <Footer />
-        </div>
-        
+        <Layout Component={Component} pageProps={pageProps} />
+        <Footer />
+
         <ReactQueryDevtools />
       </QueryClientProvider>
     </SessionProvider>
   )
 }
+MyApp.getInitialProps = async (context) => {
+  const session = await getSession(context)
 
-export default App
+  return {
+    pageProps: { session },
+  }
+}
+export default MyApp

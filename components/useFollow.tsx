@@ -4,6 +4,7 @@ import toast from "react-hot-toast"
 import { START_FOLLOW, STOP_FOLLOW } from "../lib/consts"
 import { my_following_list } from "../lib/consts/query"
 import { post } from "../lib/postman"
+import { FollowingQuery } from "../lib/queries"
 
 interface followReq {
   userId?: string
@@ -14,9 +15,13 @@ interface followReq {
 function useFollow() {
   const followers = []
 
-  const followQuery: UseQueryResult<MyFollowing, {}> = useQuery([
-    my_following_list,
-  ])
+  const followQuery: UseQueryResult<MyFollowing, {}> = useQuery(
+    [my_following_list, null],
+    async () => await FollowingQuery(null),
+    {
+      enabled: true,
+    }
+  )
 
   const triggerFollowMutation = (body: followReq) => {
     return post({
@@ -48,10 +53,14 @@ function useFollow() {
 
   const isFollowing = (id: string | number) => {
     console.log("followQuery.data", followQuery.data)
-    if (followQuery.data == null) return false
+
     return (
-      followQuery.data.membersImFollowing.some((userId) => userId === id) ||
-      followQuery.data.favoriteCities.some((cityId) => cityId === Number(id))
+      followQuery.data?.members?.some(
+        (member) => member.userId == String(id)
+      ) ||
+      followQuery.data?.cities?.[0]?.cityIds?.some(
+        (cityId) => cityId === Number(id)
+      )
     )
   }
 

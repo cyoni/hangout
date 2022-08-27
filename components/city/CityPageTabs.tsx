@@ -40,9 +40,8 @@ interface Props {
   travelers: any
   posts: any
   place: Place
-  myFollowing: MyFollowing
 }
-export default function CityPageTabs({ travelers, posts, place, myFollowing }: Props) {
+export default function CityPageTabs({ travelers, posts, place }: Props) {
   const [value, setValue] = React.useState(0)
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -72,7 +71,7 @@ export default function CityPageTabs({ travelers, posts, place, myFollowing }: P
       </Box>
 
       <TabPanel value={value} index={0}>
-        {<CityPosts place={place} myFollowing={myFollowing} />}
+        {<CityPosts place={place} />}
       </TabPanel>
 
       <TabPanel value={value} index={1}>

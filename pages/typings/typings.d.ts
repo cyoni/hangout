@@ -112,6 +112,6 @@ type Post = {
 }
 
 type MyFollowing = {
-  favoriteCities: number[]
-  membersImFollowing: string[]
+  members: { _id: string; profile: Profile; userId: string }[]
+  cities: { cityIds: number[] }
 }
