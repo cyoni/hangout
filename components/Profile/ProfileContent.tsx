@@ -9,6 +9,7 @@ import { isAuthenticated, isAuthor } from "../../lib/session"
 import ButtonIntegration from "../ButtonIntegration"
 import useFollow from "../useFollow"
 import HeaderImage from "../HeaderImage"
+import { FOLLOW } from "../../lib/consts"
 
 interface Props {
   profile: Profile
@@ -55,7 +56,10 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
           Send Message
         </button>
         <ButtonIntegration
-          onClick={() => follow({ userId: "123" })}
+          buttonClassName="btn"
+          onClick={() =>
+            follow({ userId: profile.userId, type: FOLLOW, name: profile.name })
+          }
           onFinishText={<>Following</>}
         >
           Follow me

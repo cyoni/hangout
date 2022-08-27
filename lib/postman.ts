@@ -15,7 +15,7 @@ export async function post(req: PostRequest): Promise<any> {
 
       return result
     }
-    throw Error("bad request")
+    throw Error("(post) - bad request")
   } catch (e) {
     const res = { error: e.message }
     return res
@@ -42,7 +42,8 @@ export async function newGet(url, params: {} = null): Promise<ResponseObject> {
       console.log("JSON", json)
       return json
     }
-    throw Error("bad request")
+    const json = await data.json()
+    throw Error(`(newGet) - bad request, statue: ${data.status}, json: ${JSON.stringify( json)}`)
   } catch (e) {
     const res: ResponseObject = { error: e.message }
     return res
@@ -60,7 +61,7 @@ export async function get(url, params = null): Promise<ResponseObject> {
       console.log("JSON", json)
       return { data: json }
     }
-    throw Error("bad request")
+    throw Error("(get) - bad request")
   } catch (e) {
     const res: ResponseObject = { error: e.message }
     return res

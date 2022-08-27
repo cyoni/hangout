@@ -17,6 +17,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 const queryClient = new QueryClient()
 
 const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
+  console.log("my app session", session)
   return (
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>

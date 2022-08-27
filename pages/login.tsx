@@ -6,8 +6,9 @@ import { useState } from "react"
 import { flushSync } from "react-dom"
 import Spinner from "../components/Spinner"
 import Loader from "../components/Loader"
+import toast from "react-hot-toast"
 
-export default function Login({ csrfToken, callbackUrl }) {
+export default function Login({ csrfToken, callbackUrl, session }) {
   const router = useRouter()
   const [unathorized, setUnathorized] = useState<boolean>(false)
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false)
@@ -27,40 +28,32 @@ export default function Login({ csrfToken, callbackUrl }) {
     console.log("res", response)
 
     if (response.status === 200) {
-      window.location = callbackUrl
+      router.push(callbackUrl)
+      //window.location = callbackUrl
+      toast.success(`Welcome back!`)
     } else if (response.status === 401) {
       setIsLoggingIn(false)
       setUnathorized(true)
+      renderFailureToast()
     } else {
       console.log("error", response)
     }
-    // const data = {
-    //   email: e.target.email.value,
-    //   password: e.target.password.value,
-    //   csrfToken,
-    // }
-
-    // const JSONdata = JSON.stringify(data)
-    // const endpoint = "/api/auth/callback/credentials"
-
-    // const options = {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSONdata,
-    // }
-
-    // const response = await fetch(endpoint, options)
   }
   console.log("csrfToken", csrfToken)
-  const session = useSession()
+
+  const renderFailureToast = () => {
+    toast.error("Email or password is invalid.")
+  }
 
   return (
     <div>
       <HeaderImage title="Log in" />
-      session status: {session.status}
-      <div className="shared-frame relative">
+      session status: {session?.status}
+      <div
+        className={`shared-frame ${
+          unathorized ? " shadow-red-500 shadow-sm border-red-500" : ""
+        } relative`}
+      >
         {isLoggingIn && <Loader />}
 
         <form
@@ -68,16 +61,10 @@ export default function Login({ csrfToken, callbackUrl }) {
           className="flex flex-col p-5 "
           method="post"
         >
-          {unathorized && (
-            <div className="mb-4 text-lg text-red-500">
-              Email or password is invalid.
-            </div>
-          )}
-
           <label htmlFor="email">Email</label>
           <input
             type="text"
-            className="mt-2 rounded-full border p-2 text-gray-400 outline-none"
+            className="px-4 mt-2 rounded-full border py-2 text-gray-400 outline-none"
             name="email"
             id="email"
           />
@@ -87,16 +74,17 @@ export default function Login({ csrfToken, callbackUrl }) {
           </label>
           <input
             type="password"
-            className="mt-2 rounded-full border p-2 text-gray-400 outline-none"
+            className="px-4 mt-2 rounded-full border p-2 text-gray-400 outline-none"
             name="password"
             id="password"
           />
 
           <button
             type="submit"
-            className="mt-5 rounded-full bg-blue-600 px-2 py-1 
-          text-lg font-medium text-white
-          hover:opacity-80"
+            className={`mt-5 rounded-full 
+              bg-blue-600 px-2 py-1 
+              text-lg font-medium text-white
+              hover:opacity-80`}
           >
             Log in
           </button>
@@ -107,9 +95,7 @@ export default function Login({ csrfToken, callbackUrl }) {
 }
 export async function getServerSideProps(context) {
   const csrfToken = await getCsrfToken(context)
-  console.log("contextcontext", context)
   const callbackUrl = context.query.callbackUrl || "/"
-  console.log("xxxxxxxxxxxx", callbackUrl)
   return {
     props: { csrfToken, callbackUrl },
   }

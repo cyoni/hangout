@@ -56,7 +56,7 @@ function Header() {
       <div className="mx-auto flex items-center justify-between  text-gray-700 ">
         <div className="flex items-center space-x-4">
           <div className="px-7 ">
-            <Link href="/">
+            <Link href="/" shallow={false}>
               <a className="text-3xl font-medium">Hangouts</a>
             </Link>
           </div>

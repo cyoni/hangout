@@ -12,14 +12,17 @@ interface followReq {
   method: string
   type: "FOLLOW" | "CITY"
 }
-function useFollow() {
+function useFollow(initialData = null) {
   const followers = []
-
+  console.log("initialData",initialData)
+  
   const followQuery: UseQueryResult<MyFollowing, {}> = useQuery(
     [my_following_list, null],
     async () => await FollowingQuery(null),
     {
       enabled: true,
+      staleTime: 30000,
+      initialData: initialData,
     }
   )
 

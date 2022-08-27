@@ -8,13 +8,19 @@ import useFollow from "../components/useFollow"
 import generateRandomString from "../lib/scripts/strings"
 import usePlace from "../components/usePlace"
 import { useEffect } from "react"
+import { getCsrfToken } from "next-auth/react"
+import { getToken } from "next-auth/jwt"
+import { dehydrate, QueryClient, useQuery, UseQueryResult } from "@tanstack/react-query"
+import { my_following_list } from "../lib/consts/query"
+import { FollowingQuery } from "../lib/queries"
+import { getFollowing } from "./api/followApi"
 
 interface Props {
   place: Place
 }
-export default function Home({session}) {
-  console.log("My session prop", session)
-  const { followQuery } = useFollow()
+export default function Home({ session,myTest }) {
+  console.log("My myTest prop", myTest)
+  const { followQuery } = useFollow(myTest)
 
   const cityIds = followQuery.data?.cities?.[0]?.cityIds
 
@@ -89,7 +95,10 @@ export default function Home({session}) {
               cityIds.map((city) => {
                 const place = getPlaceFromObject(city)
                 return (
-                  <a key={generateRandomString(3)} href={`/city/${place?.city_id}`}>
+                  <a
+                    key={generateRandomString(3)}
+                    href={`/city/${place?.city_id}`}
+                  >
                     <div className="p-2 rounded-md cursor-pointer hover:bg-gray-100 hover:border-gray-300 hover:text-blue-500">
                       {place?.city}
                     </div>
@@ -102,4 +111,21 @@ export default function Home({session}) {
       </main>
     </div>
   )
+}
+
+export async function getServerSideProps(context) {
+  const user = await getToken(context)
+  if (!user) {
+    return {
+      props: {
+        following: null,
+      },
+    }
+  }
+
+  const followData = await getFollowing(user.userId)
+
+  return {
+    props: { myTest: followData },
+  }
 }
