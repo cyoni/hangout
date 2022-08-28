@@ -25,15 +25,14 @@ interface Props {
   myFollowing: any
 }
 export default function Home({ travels, place, myFollowing }: Props) {
-  const [location, setLocation] = useState(null)
 
   console.log("myFollowing", myFollowing)
   console.log("place", place)
-  const { follow, unFollow, isFollowing, getMyFollowingList } = useFollow()
+  const { follow, unFollow, isFollowing, getMyFollowingList } = useFollow(myFollowing)
 
   const router = useRouter()
 
-  console.log("travelstravels", travels)
+  console.log("travels", travels)
   const isFollowingCity = isFollowing(place.city_id)
   return (
     <div>
@@ -81,7 +80,6 @@ export default function Home({ travels, place, myFollowing }: Props) {
         <CityPageTabs
           travelers={travels}
           place={place}
-          myFollowing={myFollowing}
         />
       </main>
     </div>
@@ -104,7 +102,7 @@ export async function getServerSideProps(context) {
     console.log("cityQueryCode", cityQueryCode)
 
     const place = await queryPlace(cityQueryCode)
-    console.log("placeplace", place)
+
     const travels = await getAllTravellingByPlace(cityQueryCode)
 
     const myFollowing = await getFollowing(token.userId)

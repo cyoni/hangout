@@ -68,26 +68,6 @@ export async function getAllTravellingByPlace(cityId: number) {
   return data
 }
 
-// export async function getAllHangouts() {
-//   const travelling = await dbFind("hangout", {})
-//   console.log("travellingtravelling", travelling)
-//   const userIds = travelling.map((x, i) => {
-//     return x.userId
-//   })
-//   console.log("userIds", userIds)
-//   const profiles = await dbFind("users", { userId: { $in: userIds } })
-//   console.log("profiles", profiles)
-
-//   const result = travelling.map((item) => {
-//     const picture =
-//       profiles.filter((curr) => curr.userId === item.userId)[0]?.picture ||
-//       "https://www.innovaxn.eu/wp-content/uploads/blank-profile-picture-973460_1280.png"
-//     return { ...item, picture }
-//   })
-//   console.log("result",result)
-//   return result
-// }
-
 export async function getTravelContent(userId) {
   if (!userId || userId === undefined) {
     return false

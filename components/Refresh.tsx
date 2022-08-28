@@ -1,16 +1,12 @@
-import { RefreshIcon } from "@heroicons/react/outline"
 import React from "react"
+import RefreshIcon from "@mui/icons-material/Refresh"
 
 interface Props {
   className: string
   onClick: Function
 }
 function Refresh({ className, onClick }: Props) {
-  return (
-    <div>
-      <RefreshIcon onClick={() => onClick()} className={className} />
-    </div>
-  )
+  return <RefreshIcon onClick={() => onClick()} className={className} />
 }
 
 export default Refresh

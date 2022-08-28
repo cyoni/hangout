@@ -30,6 +30,7 @@ function FeedPost({ post }: Props) {
   const place = getFirstPlace()
 
   const [input, setInput] = useState<string>("")
+  const userId = post?.userId
 
   const {
     follow,
@@ -62,7 +63,9 @@ function FeedPost({ post }: Props) {
 
         <Tooltip title="Chat">
           <IconButton>
-            <ChatBubbleBottomCenterTextIcon className="h-6" />
+            <a href={`/messages/conversation/${userId}`}>
+              <ChatBubbleBottomCenterTextIcon className="h-6" />
+            </a>
           </IconButton>
         </Tooltip>
 
@@ -150,4 +153,4 @@ function FeedPost({ post }: Props) {
   )
 }
 
-export default FeedPost
+export default React.memo(FeedPost)

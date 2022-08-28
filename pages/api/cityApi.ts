@@ -34,14 +34,26 @@ async function PostMessage({ message, cityId }, userId) {
   return { message: "post uploaded successfully" }
 }
 
-async function GetPosts(cityId) {
+async function GetPosts({ cityId, page }) {
   const validPlaces = await getValidCities([cityId])
   const keys = getObjectKeys(validPlaces)
   if (keys.length === 0) return { error: "invalid city." }
 
+  console.log("cityapi page:", page)
+  const takeFrom = page > 0 ? page : Date.now()
+  console.log("takeFrom", Number(takeFrom))
+
   const request: AggregateReq = {
     collection: CITY_POSTS_TABLE,
     params: [
+      { $sort: { timestamp: -1 } },
+      {
+        $match: {
+          cityId: Number(keys[0]),
+          timestamp: { $lt: Number(takeFrom) },
+        },
+      },
+      { $limit: 2 },
       {
         $lookup: {
           localField: "userId",
@@ -50,7 +62,6 @@ async function GetPosts(cityId) {
           from: USERS_COLLECTION,
         },
       },
-      { $match: { cityId: Number(keys[0]) } },
       {
         $project: {
           timestamp: 1,
@@ -58,9 +69,6 @@ async function GetPosts(cityId) {
           userId: 1,
           profile: ProfileParams,
         },
-      },
-      {
-        $sort: { timestamp: -1 },
       },
     ],
   }
@@ -107,7 +115,10 @@ export default async function handler(
         result = await PostMessage(req.body, userId)
         break
       case GET_MESSAGES:
-        result = await GetPosts(req.query.cityId)
+        result = await GetPosts({
+          cityId: req.query.cityId,
+          page: req.query.page,
+        })
         break
       case GET_CITY_DATA:
         result = await getCityData(req.query.cityIds)

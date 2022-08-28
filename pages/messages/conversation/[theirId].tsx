@@ -1,4 +1,4 @@
-import { DotsCircleHorizontalIcon } from "@heroicons/react/outline"
+
 import { useQuery } from "@tanstack/react-query"
 import Head from "next/head"
 import { useRouter } from "next/router"
@@ -150,7 +150,7 @@ function Messages({ theirId }) {
       <div className="ml-7 mt-5 flex items-center space-x-2">
         <Back className="" url="/messages" />
         <Refresh
-          className=" h-10 cursor-pointer rounded-full p-2
+          className=" h-10  w-10 cursor-pointer rounded-full p-2
                    text-gray-400 transition duration-150 hover:rotate-180
                    hover:bg-gray-100"
           onClick={handleRefresh}
@@ -168,7 +168,7 @@ function Messages({ theirId }) {
           </div>
           <div>
             <button className="btn flex items-center justify-between space-x-2 border border-gray-300 bg-white px-4 text-blue-600 hover:bg-gray-200">
-              <DotsCircleHorizontalIcon className="h-6" /> <span>Options</span>
+               <span>Options</span>
             </button>
           </div>
         </div>

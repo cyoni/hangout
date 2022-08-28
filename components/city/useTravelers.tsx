@@ -1,14 +1,12 @@
 import React from "react"
 import Link from "next/link"
-import { InboxIcon } from "@heroicons/react/outline"
+import { InboxIcon } from "@heroicons/react/24/outline"
 import { formatDate } from "../../lib/dates"
 import FeedPost from "../FeedPost"
 function useTravelers() {
   const handleTravelRoute = (userId) => {
     return `/intro?userId=${userId}`
   }
-
-
 
   const Travelers = ({ travelers }) => {
     return (

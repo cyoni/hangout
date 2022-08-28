@@ -10,20 +10,21 @@ import SendRoundedIcon from "@mui/icons-material/SendRounded"
 function CityPosts({ place }) {
   const {
     sendPost,
+    getPostsQuery,
     messageInput,
     setMessageInput,
-    newPostQuery,
-    getPostsQuery,
+    bringMore
   } = usePosts(place)
 
-  const { isLoading, data: result } = getPostsQuery
+  const { isFetching,  data: result } = getPostsQuery
 
   return (
     <div className="w-[60%] mx-auto">
       <div className="flex justify-between">
-        <div className="text-2xl">Posts</div>
+        <div className="text-2xl">Discussion</div>
       </div>
-      <div className=" mx-auto bg-gray-50 p-5 rounded-md shadow-md mt-4 px-36">
+
+      <div className="mx-auto bg-gray-50 p-5 rounded-md shadow-md mt-4 px-36">
         <TextField
           id="outlined-multiline-flexible"
           label="Write your post here"
@@ -35,16 +36,14 @@ function CityPosts({ place }) {
           onChange={(e) => setMessageInput(e.target.value)}
         />
         <div className="flex mt-2 justify-end">
-          <CircularButton
-            onClick={() => sendPost()}
-          >
+          <CircularButton onClick={() => sendPost()}>
             <SendRoundedIcon className="h-6" />
           </CircularButton>
         </div>
 
         <div className="border-t mt-5 mb-10"></div>
 
-        {isLoading && (
+        {isFetching && (
           <div className="flex my-10">
             <Spinner className="mx-auto" />
           </div>
@@ -62,8 +61,12 @@ function CityPosts({ place }) {
                 No discussions found
               </div>
             )}
+            <div className="mt-10">
+          </div>
           </div>
         )}
+                  <ButtonIntegration buttonClassName="btn" onClick={bringMore}>Bring More</ButtonIntegration>
+
       </div>
     </div>
   )

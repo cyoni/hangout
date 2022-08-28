@@ -14,16 +14,21 @@ interface followReq {
 }
 function useFollow(initialData = null) {
   const followers = []
-  console.log("initialData",initialData)
-  
+  console.log("initialData", initialData)
+
+  const getOptions = () => {
+    const options: { enabled: boolean; staleTime: number; initialData?: {} } = {
+      enabled: true,
+      staleTime: 900000,
+    }
+    if (initialData) options.initialData = initialData
+    return options
+  }
+
   const followQuery: UseQueryResult<MyFollowing, {}> = useQuery(
     [my_following_list, null],
     async () => await FollowingQuery(null),
-    {
-      enabled: true,
-      staleTime: 30000,
-      initialData: initialData,
-    }
+    getOptions()
   )
 
   const triggerFollowMutation = (body: followReq) => {
