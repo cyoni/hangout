@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query"
 import React, { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { GET_MESSAGES, POST_MESSAGE } from "../../lib/consts"
@@ -21,20 +21,21 @@ function usePosts(place: Place) {
     })
   )
 
+  const fetchPosts = (pageParam: number) =>
+    get(
+      "/api/cityApi",
+      `method=${GET_MESSAGES}&cityId=${place.city_id}&page=${pageParam}`
+    )
 
-  const getPostsQuery = useQuery(
-    ["city-fetch-posts", pointer],
-    async () => {
-      return await get(
-        "/api/cityApi",
-        `method=${GET_MESSAGES}&cityId=${place.city_id}&page=${pointer}`
-      )
-    },
+  const getPostsQuery = useInfiniteQuery(
+    ["city-fetch-posts"],
+    ({ pageParam = 1 }) => fetchPosts(pageParam),
     {
       staleTime: 5000,
       refetchOnWindowFocus: false,
-      keepPreviousData: true,
-   
+      ///keepPreviousData: true,
+      getNextPageParam: (lastPage, allPages) => lastPage.data.nextPage,
+      // getPreviousPageParam: (firstPage, allPages) => firstPage.prevCursor,
     }
   )
 
@@ -47,20 +48,11 @@ function usePosts(place: Place) {
     getPostsQuery.refetch()
   }
 
-  const bringMore = () => {
-    const posts:Post[] = getPostsQuery.data.data
-    console.log("posts",posts)
-    const takeFrom = posts[posts.length - 1].timestamp
-    console.log("takeFrom", takeFrom)
-    setPointer(takeFrom)
-  }
-
   return {
     sendPost,
     getPostsQuery,
     messageInput,
     setMessageInput,
-    bringMore
   }
 }
 

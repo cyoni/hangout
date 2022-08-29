@@ -1,3 +1,4 @@
+import { LongWithoutOverridesClass } from "bson"
 import { access } from "fs"
 import { convertObjectToDictionary } from "./scripts/objects"
 
@@ -56,6 +57,7 @@ export async function get(url, params = null): Promise<ResponseObject> {
     const data = await fetch(serviceUrl, {
       method: "GET",
     })
+    console.log("service url: " + serviceUrl)
     if (data.status == 200) {
       const json = await data.json()
       console.log("JSON", json)

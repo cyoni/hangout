@@ -37,11 +37,15 @@ async function PostMessage({ message, cityId }, userId) {
 async function GetPosts({ cityId, page }) {
   const validPlaces = await getValidCities([cityId])
   const keys = getObjectKeys(validPlaces)
+  const limit = 2
   if (keys.length === 0) return { error: "invalid city." }
 
   console.log("cityapi page:", page)
-  const takeFrom = page > 0 ? page : Date.now()
-  console.log("takeFrom", Number(takeFrom))
+  const pageNumber = Number(page)
+  if (pageNumber < 1) return { error: "page number must be greater than 0" }
+
+  //const takeFrom = page > 0 ? page : Date.now()
+  // console.log("takeFrom", Number(takeFrom))
 
   const request: AggregateReq = {
     collection: CITY_POSTS_TABLE,
@@ -50,10 +54,13 @@ async function GetPosts({ cityId, page }) {
       {
         $match: {
           cityId: Number(keys[0]),
-          timestamp: { $lt: Number(takeFrom) },
+          //  timestamp: { $lt: Number(takeFrom) },
         },
       },
-      { $limit: 2 },
+      {
+        $skip: (pageNumber - 1) * limit,
+      },
+      { $limit: limit },
       {
         $lookup: {
           localField: "userId",
@@ -72,7 +79,15 @@ async function GetPosts({ cityId, page }) {
       },
     ],
   }
-  return await dbAggregate(request)
+  const posts = await dbAggregate(request)
+  const nextPage = posts.length - limit === 0 ? pageNumber + 1 : undefined
+
+  const result = {
+    posts,
+    nextPage,
+  }
+
+  return result
 }
 
 async function getCityData(cityIdsInput: string | string[]) {

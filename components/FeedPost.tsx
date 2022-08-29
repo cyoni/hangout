@@ -77,7 +77,6 @@ function FeedPost({ post }: Props) {
       </div>
     )
   }
-
   const moreButtonsStyle = "p-3 hover:bg-slate-100 rounded-full"
 
   const following = isFollowing(post.userId)
