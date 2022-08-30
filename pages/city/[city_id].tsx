@@ -16,6 +16,7 @@ import { getToken } from "next-auth/jwt"
 import ButtonIntegration from "../../components/ButtonIntegration"
 import useFollow from "../../components/useFollow"
 import { CITY } from "../../lib/consts"
+import { getSession, useSession } from "next-auth/react"
 
 const defaultCityCode: number = 127407
 
@@ -24,23 +25,24 @@ interface Props {
   place: Place
   myFollowing: any
 }
-export default function Home({ travels, place, myFollowing }: Props) {
-
+export default function Home({ travels, place, myFollowing, user }: Props) {
+  console.log("user44", user)
   console.log("myFollowing", myFollowing)
   console.log("place", place)
-  const { follow, unFollow, isFollowing, getMyFollowingList } = useFollow(myFollowing)
-
-  const router = useRouter()
+  const { follow, unFollow, isFollowing, getMyFollowingList } =
+    useFollow(myFollowing)
 
   console.log("travels", travels)
   const isFollowingCity = isFollowing(place.city_id)
+  const isShowFollowCityBtn =
+    !user || (user && user.place.city_id !== place.city_id)
   return (
     <div>
       <Head>
         <title>Hangouts - {place?.city}</title>
       </Head>
 
-      <main className="">
+      <main>
         <HeaderImage
           backgroundId={place?.city}
           title={
@@ -49,38 +51,37 @@ export default function Home({ travels, place, myFollowing }: Props) {
               : ""
           }
         >
-          <ButtonIntegration
-            externalClass="absolute right-10 top-[40%]"
-            buttonClassName="btn text-white w-[200px]
+          {isShowFollowCityBtn && (
+            <ButtonIntegration
+              externalClass="absolute right-10 top-[40%]"
+              buttonClassName="btn text-white w-[200px]
                             right-10 top-0 font-bold hover:bg-blue-700
                              px-7"
-            onClick={() =>
-              isFollowingCity
-                ? unFollow({
-                    cityId: place.city_id,
-                    name: place.city,
-                    type: CITY,
-                  })
-                : follow({
-                    cityId: place.city_id,
-                    name: place.city,
-                    type: CITY,
-                  })
-            }
-            callback={() => {
-              getMyFollowingList()
-            }}
-          >
-            {isFollowingCity ? <>Following City</> : <>Follow City</>}
-          </ButtonIntegration>
+              onClick={() =>
+                isFollowingCity
+                  ? unFollow({
+                      cityId: place.city_id,
+                      name: place.city,
+                      type: CITY,
+                    })
+                  : follow({
+                      cityId: place.city_id,
+                      name: place.city,
+                      type: CITY,
+                    })
+              }
+              callback={() => {
+                getMyFollowingList()
+              }}
+            >
+              {isFollowingCity ? <>Following City</> : <>Follow City</>}
+            </ButtonIntegration>
+          )}
         </HeaderImage>
 
         <Cities />
 
-        <CityPageTabs
-          travelers={travels}
-          place={place}
-        />
+        <CityPageTabs travelers={travels} place={place} />
       </main>
     </div>
   )
@@ -98,18 +99,20 @@ export async function getServerSideProps(context) {
     } else {
       cityQueryCode = city_id
     }
+    const user = await getToken(context)
 
     console.log("cityQueryCode", cityQueryCode)
 
     const place = await queryPlace(cityQueryCode)
 
     const travels = await getAllTravellingByPlace(cityQueryCode)
+    console.log("travels", JSON.stringify(travels))
 
     const myFollowing = await getFollowing(token.userId)
     console.log("myFollowing", myFollowing)
 
     return {
-      props: { place, travels, myFollowing },
+      props: { place, travels, myFollowing, user },
     }
   } catch (e) {
     console.error(e)

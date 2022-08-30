@@ -1,4 +1,8 @@
-import { EMPTY_PROFILE_PICTURE, TRAVELLING_TABLE, USERS_COLLECTION } from "./consts"
+import {
+  EMPTY_PROFILE_PICTURE,
+  TRAVELLING_TABLE,
+  USERS_COLLECTION,
+} from "./consts"
 import { dbAggregate, dbFind } from "./mongoUtils"
 
 const formatDate = (date) => {
@@ -41,6 +45,11 @@ export async function getAllTravellingByPlace(cityId: number) {
     collection: TRAVELLING_TABLE,
     params: [
       {
+        $match: {
+          "itineraries.place.city_id": Number(cityId),
+        },
+      },
+      {
         $lookup: {
           localField: "userId",
           foreignField: "userId",
@@ -48,14 +57,20 @@ export async function getAllTravellingByPlace(cityId: number) {
           from: USERS_COLLECTION,
         },
       },
-      { $match: { cityId } },
       {
         $project: {
           startDate: 1,
           endDate: 1,
           userId: 1,
           description: 1,
-          profile: { name: 1, picture: 1 },
+          profile: { name: 1, picture: 1, cityId: 1 },
+          itineraries: {
+            $filter: {
+              input: "$itineraries",
+              as: "itinerary",
+              cond: { $eq: ["$$itinerary.place.city_id", Number(cityId)] },
+            },
+          },
         },
       },
     ],

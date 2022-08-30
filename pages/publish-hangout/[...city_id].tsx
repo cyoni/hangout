@@ -1,7 +1,5 @@
 import { useState } from "react"
 import LocationAutoComplete from "../../components/LocationAutoComplete"
-import DatePicker from "react-datepicker"
-import "react-datepicker/dist/react-datepicker.css"
 import { queryPlace } from "../../lib/place"
 import HeaderImage from "../../components/HeaderImage"
 import toast from "react-hot-toast"

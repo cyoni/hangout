@@ -7,7 +7,6 @@ import { signIn } from "next-auth/react"
 export default function Signup() {
   const [placeId, setPlaceId] = useState(null)
   const [place, setPlace] = useState<Place>(null)
-  const router = useRouter()
 
   const handleSelect = (place) => {
     setPlace(place)
@@ -57,7 +56,7 @@ export default function Signup() {
         password,
         redirect: false,
       })
-      // window.location.href = "/"
+      window.location.href = "/"
     }
 
     console.log("response", result)

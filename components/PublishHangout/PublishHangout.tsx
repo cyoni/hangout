@@ -2,24 +2,19 @@ import React, { useState } from "react"
 import toast from "react-hot-toast"
 import { useRouter } from "next/router"
 import HeaderImage from "../HeaderImage"
-import LocationAutoComplete from "../LocationAutoComplete"
 import { getFullPlaceName } from "../../lib/scripts/place"
 import TextField from "@mui/material/TextField"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
-import { DatePicker } from "@mui/x-date-pickers/DatePicker"
-import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker"
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker"
 import Stack from "@mui/material/Stack"
-
-import Box from "@mui/material/Box"
 import AutoComplete from "../AutoComplete"
 import { getCitiesAutoComplete } from "../../lib/AutoCompleteUtils"
 import ButtonIntegration from "../ButtonIntegration"
-import { PlusIcon } from "@heroicons/react/outline"
+import { PlusIcon } from "@heroicons/react/24/outline"
 import generateRandomString from "../../lib/scripts/strings"
 import usePublishHangout from "./usePublishHangout"
 import { useQueryClient } from "@tanstack/react-query"
+import { MobileDatePicker } from "@mui/x-date-pickers"
 
 interface Props {
   place?: Place
@@ -71,10 +66,6 @@ export default function PublishHangout({ place }: Props) {
 
   console.log("currentItinerary client", currentItinerary)
 
-  const convertDate = (date) => {
-    if (date === null) return null
-    return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`
-  }
 
   const handleOnChange = (ref) => {
     // if (newPlace) {

@@ -15,6 +15,7 @@ interface Itinerary {
 function usePublishHangout() {
   const [itineraries, setItineraries] = useState<Itinerary[]>([])
   const [currentIndex, setCurrentIndex] = useState<number>(0)
+  
 
   console.log("XXXXXXXXX", itineraries)
 

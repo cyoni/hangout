@@ -83,7 +83,7 @@ async function signup(req) {
 
 export default async function handler(req, res) {
   const body = req.body
-  const result = await signup(req)
+  const result = await  signup(req)
   if (result?.isSuccess) res.status(200).json(result)
   else res.status(400).json(result)
 }
