@@ -29,12 +29,12 @@ function ModalWrapper({
       style={{
         overlay: {
           background: "transparent",
-          backdropFilter: "blur(12px)",
+          backdropFilter: "blur(15px)",
           zIndex: 10,
         },
       }}
       isOpen={isOpen}
-      className={`fixed p-3 outline-none border rounded-md shadow-lg
+      className={`fixed p-3 outline-none border rounded-md shadow-xl
                ${height ? height : "h-[90%]"}
                ${width ? width : "w-[50%]"}
                top-1/2 left-1/2

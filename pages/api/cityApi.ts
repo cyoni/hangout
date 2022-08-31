@@ -12,6 +12,8 @@ import { NextApiRequest } from "next"
 import { dbAggregate, dbFind, dbInsertOne } from "../../lib/mongoUtils"
 import { queryPlace, queryPlaces } from "../../lib/place"
 import { getObjectKeys } from "../../lib/scripts/objects"
+import { isNullOrEmpty } from "../../lib/scripts/strings"
+import { MESSAGE_EMPTY } from "../../lib/consts/error"
 
 async function getValidCities(cityIds) {
   const validCities = await queryPlaces(cityIds)
@@ -19,6 +21,8 @@ async function getValidCities(cityIds) {
 }
 
 async function PostMessage({ message, cityId }, userId) {
+  if (isNullOrEmpty(String(message).trim()))
+    return { error: "post is empty", id: MESSAGE_EMPTY }
   const validPlaces = await getValidCities([cityId])
   const keys = getObjectKeys(validPlaces)
   if (keys.length === 0) return { error: "invalid city." }
@@ -50,38 +54,61 @@ async function GetPosts({ cityId, page }) {
   const request: AggregateReq = {
     collection: CITY_POSTS_TABLE,
     params: [
-      { $sort: { timestamp: -1 } },
       {
-        $match: {
-          cityId: Number(keys[0]),
-          //  timestamp: { $lt: Number(takeFrom) },
-        },
-      },
-      {
-        $skip: (pageNumber - 1) * limit,
-      },
-      { $limit: limit },
-      {
-        $lookup: {
-          localField: "userId",
-          foreignField: "userId",
-          as: "profile",
-          from: USERS_COLLECTION,
-        },
-      },
-      {
-        $project: {
-          timestamp: 1,
-          message: 1,
-          userId: 1,
-          profile: ProfileParams,
+        $facet: {
+          metadata: [
+            {
+              $match: {
+                cityId: Number(keys[0]),
+              },
+            },
+            {
+              $count: "count",
+            },
+          ],
+          posts: [
+            { $sort: { timestamp: -1 } },
+            {
+              $match: {
+                cityId: Number(keys[0]),
+                //  timestamp: { $lt: Number(takeFrom) },
+              },
+            },
+            {
+              $skip: (pageNumber - 1) * limit,
+            },
+            { $limit: limit },
+            {
+              $lookup: {
+                localField: "userId",
+                foreignField: "userId",
+                as: "profile",
+                from: USERS_COLLECTION,
+              },
+            },
+            {
+              $project: {
+                timestamp: 1,
+                message: 1,
+                userId: 1,
+                profile: ProfileParams,
+              },
+            },
+          ],
         },
       },
     ],
   }
-  const posts = await dbAggregate(request)
-  const nextPage = posts.length - limit === 0 ? pageNumber + 1 : undefined
+  const data = (await dbAggregate(request))?.[0]
 
+  const posts = data.posts
+
+  const nextPage =
+    data.metadata.length > 0 &&
+    (pageNumber - 1) * limit + posts.length !== data.metadata[0].count
+      ? pageNumber + 1
+      : undefined
+  console.log("posts follow", posts)
   const result = {
     posts,
     nextPage,

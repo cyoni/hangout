@@ -7,6 +7,7 @@ import EditProfile from "../../components/Profile/EditProfile/EditProfile"
 import ProfileContent from "../../components/Profile/ProfileContent"
 import usePlace from "../../components/usePlace"
 import ButtonIntegration from "../../components/ButtonIntegration"
+import { Box, Tab, Tabs } from "@mui/material"
 
 interface Props {
   profile: Profile
@@ -33,6 +34,12 @@ export default function Profile({ profile }: Props) {
     )
   }
 
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
   return (
     <>
       <HeaderImage headerExternalClass="h-96" title={null}>
@@ -42,6 +49,9 @@ export default function Profile({ profile }: Props) {
       </HeaderImage>
       {console.log("profile_user_ place:", place)}
       <EditProfile editProfileParams={editProfileParams} place={place} />
+
+
+
 
       <div className="mx-auto w-[80%]">
         {profile ? (

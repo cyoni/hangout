@@ -20,12 +20,15 @@ import ChatRoundedIcon from "@mui/icons-material/ChatRounded"
 import CircularButton from "./CircularButton"
 import Spinner from "./Spinner"
 import { FOLLOW } from "../lib/consts"
+import SendMessage from "./SendMessage"
 
 interface Props {
   post: Post
 }
 function FeedPost({ post }: Props) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [isModalMessageOpen, setIsModalMessageOpen] = useState<boolean>(false)
+
   const { getFirstPlace } = usePlace([post.profile[0].cityId])
   const place = getFirstPlace()
 
@@ -40,6 +43,11 @@ function FeedPost({ post }: Props) {
     isFollowing,
     getMyFollowingList,
   } = useFollow()
+
+  const handleMessageModal = () => {
+    console.log("$$")
+    setIsModalMessageOpen(true)
+  }
 
   const renderOptions = () => {
     return (
@@ -62,10 +70,8 @@ function FeedPost({ post }: Props) {
         </CircularButton>
 
         <Tooltip title="Chat">
-          <IconButton>
-            <a href={`/messages/conversation/${userId}`}>
-              <ChatBubbleBottomCenterTextIcon className="h-6" />
-            </a>
+          <IconButton onClick={handleMessageModal}>
+            <ChatBubbleBottomCenterTextIcon className="h-6" />
           </IconButton>
         </Tooltip>
 
@@ -141,11 +147,22 @@ function FeedPost({ post }: Props) {
             </CircularButton>
           </div>
 
-          <div className="  rounded-md p-2 min-h-[150px] my-5">
+          <div className="rounded-md p-2 min-h-[150px] my-5">
             <div className="flex justify-center mt-8">
               <Spinner />
             </div>
           </div>
+        </div>
+      </ModalWrapper>
+
+      <ModalWrapper
+        height={"h-[52%]"}
+        width={"w-[40%]"}
+        isOpen={isModalMessageOpen}
+        onRequestClose={() => setIsModalMessageOpen(false)}
+      >
+        <div className="flex justify-center px-10 mt-5 ">
+        <SendMessage />
         </div>
       </ModalWrapper>
     </div>

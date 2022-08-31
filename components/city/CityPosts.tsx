@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material"
+import { TextField, Tooltip } from "@mui/material"
 import React, { Fragment, useState } from "react"
 import generateRandomString, { isNullOrEmpty } from "../../lib/scripts/strings"
 import ButtonIntegration from "../ButtonIntegration"
@@ -8,15 +8,17 @@ import Spinner from "../Spinner"
 import usePosts from "./usePosts"
 import SendRoundedIcon from "@mui/icons-material/SendRounded"
 function CityPosts({ place }) {
-  const { sendPost, getPostsQuery, messageInput, setMessageInput } =
-    usePosts(place)
+  const {
+    sendPost,
+    getPostsQuery,
+    messageInput,
+    setMessageInput,
+    noContent,
+    pages,
+  } = usePosts(place)
 
   const { isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } =
     getPostsQuery
-
-  console.log("hasNextPage", hasNextPage)
-  console.log("isFetchingNextPage", isFetchingNextPage)
-  const pages = getPostsQuery.data?.pages
 
   return (
     <div className="w-[60%] mx-auto">
@@ -40,41 +42,46 @@ function CityPosts({ place }) {
           </CircularButton>
         </div>
 
-        <div className="border-t mt-5 mb-10"></div>
-
         {isFetching && !isFetchingNextPage && (
           <div className="flex my-10">
             <Spinner className="mx-auto" />
           </div>
         )}
-        
 
-        {!pages && !isFetching && (
-          <div className="text-center my-10 text-3xl border-t py-10">
+        {noContent ? (
+          <div className="text-center text-3xl my-16 ">
             No discussions found
           </div>
-        )}
-        {console.log("getPostsQuery.pages", getPostsQuery.data?.pages)}
+        ) : (
+          pages && (
+            <>
+              <div className="border-t mt-5 mb-10"></div>
 
-        {pages && (
-          <>
-            {pages.map((group, index) => {
-              console.log("group", group)
-              console.log("group.data.posts", group.data.posts)
-              return (
-                <Fragment key={index}>
-                  {group.data.posts.map((post) => (
-                    <div key={post._id}>
-                      <FeedPost post={post} />
-                    </div>
-                  ))}
-                </Fragment>
-              )
-            })}
-            <ButtonIntegration buttonClassName="btn" onClick={fetchNextPage}>
-              Bring More
-            </ButtonIntegration>
-          </>
+              {pages.map((group, index) => {
+                console.log("group", group)
+                console.log("group.data.posts", group.data.posts)
+                return (
+                  <Fragment key={index}>
+                    {group.data.posts.map((post) => (
+                      <div key={post._id}>
+                        <FeedPost post={post} />
+                      </div>
+                    ))}
+                  </Fragment>
+                )
+              })}
+
+              <ButtonIntegration
+                buttonClassName={`btn mt-10 mb-2 ${
+                  !hasNextPage ? "opacity-60 bg-blue-500" : ""
+                }`}
+                onClick={fetchNextPage}
+                disabled={!hasNextPage}
+              >
+                Load More
+              </ButtonIntegration>
+            </>
+          )
         )}
       </div>
     </div>

@@ -35,6 +35,7 @@ function usePosts(place: Place) {
       refetchOnWindowFocus: false,
       ///keepPreviousData: true,
       getNextPageParam: (lastPage, allPages) => lastPage.data.nextPage,
+      
       // getPreviousPageParam: (firstPage, allPages) => firstPage.prevCursor,
     }
   )
@@ -48,11 +49,21 @@ function usePosts(place: Place) {
     getPostsQuery.refetch()
   }
 
+  const pages = getPostsQuery.data?.pages
+
+  const noContent =
+    !getPostsQuery.isFetching &&
+    Array.isArray(pages) &&
+    pages.length > 0 &&
+    pages[0].data?.posts?.length === 0
+
   return {
     sendPost,
     getPostsQuery,
     messageInput,
     setMessageInput,
+    pages,
+    noContent,
   }
 }
 

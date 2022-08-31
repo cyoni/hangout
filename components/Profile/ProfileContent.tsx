@@ -10,6 +10,7 @@ import ButtonIntegration from "../ButtonIntegration"
 import useFollow from "../useFollow"
 import HeaderImage from "../HeaderImage"
 import { FOLLOW } from "../../lib/consts"
+import { Box, Tab, Tabs } from "@mui/material"
 
 interface Props {
   profile: Profile
@@ -27,6 +28,35 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
   const handleSendMessage = (e) => {
     e.preventDefault()
     router.push(`/messages/conversation/${profile.userId}`)
+  }
+
+  const [value, setValue] = React.useState(0)
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue)
+  }
+
+  function TabPanel(props: TabPanelProps) {
+    const { children, value, index, ...other } = props
+
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      </div>
+    )
+  }
+
+  function a11yProps(index: number) {
+    return {
+      id: `simple-tab-${index}`,
+      "aria-controls": `simple-tabpanel-${index}`,
+    }
   }
 
   return (
@@ -66,28 +96,61 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
         </ButtonIntegration>
       </div>
       <div className="mx-auto w-[80%]">
-        <div className=" ">
-          <div className="pl-2 text-3xl ">About</div>
-          <div
-            className={`mt-2 min-h-[200px] rounded-md border p-2 ${
-              isNullOrEmpty(profile.aboutMe)
-                ? "flex items-center justify-center"
-                : ""
-            }`}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            bgcolor: "background.paper",
+            marginBottom: "10px",
+          }}
+        >
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            variant="scrollable"
+            scrollButtons={false}
+            aria-label="scrollable prevent tabs example"
           >
-            {profile.aboutMe ? (
-              <p className="text-lg">{profile.aboutMe}</p>
-            ) : (
-              <p className="text-lg ">No about yet.</p>
-            )}
+            <Tab label="About" />
+            <Tab label="Itinerary" />
+            <Tab label="Pictures" />
+          </Tabs>
+        </Box>
+
+        <TabPanel value={value} index={0}>
+          <div>
+            <div className="pl-2 text-3xl ">About</div>
+            <div
+              className={`mt-2 min-h-[400px] rounded-md border p-2 ${
+                isNullOrEmpty(profile.aboutMe)
+                  ? "flex justify-center items-center"
+                  : ""
+              }`}
+            >
+              {profile.aboutMe ? (
+                <p className="text-lg">{profile.aboutMe}</p>
+              ) : (
+                <p className="text-2xl">No about yet.</p>
+              )}
+            </div>
           </div>
-        </div>
+        </TabPanel>
 
-        <div className="mt-3">
-          <div className="pl-2 text-3xl ">Travels</div>
+        <TabPanel value={value} index={1}>
+          <div>
+            <div className="pl-2 text-3xl ">Travels</div>
+            <Itinerary />
+          </div>
+        </TabPanel>
 
-          <Itinerary />
-        </div>
+        <TabPanel value={value} index={2}>
+          <div>
+            <div className="pl-2 text-3xl ">Pictures</div>
+            <div className="mt-2 min-h-[400px] rounded-md border p-2 flex items-center justify-center text-2xl">
+              Coming Soon!
+            </div>
+          </div>
+        </TabPanel>
       </div>
     </div>
   )
