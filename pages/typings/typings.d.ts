@@ -75,8 +75,10 @@ interface MongoInsertRes {
 }
 
 interface MongoInsertOneRes {
-  acknowledged: boolean
-  insertedId: string
+  acknowledged?: boolean
+  insertedId?: {}
+  error?: {}
+  
 }
 
 interface MongoUpdateRes {
@@ -86,6 +88,7 @@ interface MongoUpdateRes {
   upsertedCount?: number
   error?: string
 }
+
 
 interface IUser {
   id: string
@@ -105,6 +108,7 @@ type Profile = {
 }
 
 type Post = {
+  _id: string
   name: string
   userId: string
   timestamp: number

@@ -1,1 +1,2 @@
 export const MESSAGE_EMPTY = "MESSAGE_EMPTY"
+export const POST_WAS_NOT_FOUND = "POST_WAS_NOT_FOUND"

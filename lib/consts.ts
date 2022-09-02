@@ -10,10 +10,13 @@ export const SEND_MESSAGE_METHOD = "SEND_MESSAGE_METHOD"
 export const GET_PROFILES_METHOD = "GET_PROFILES"
 export const GET_CITY_DATA = "GET_CITY_DATA"
 export const POST_MESSAGE = "POST_MESSAGE"
+export const POST_COMMENT = "POST_COMMENT"
 export const GET_MESSAGES = "GET_MESSAGES"
 export const CityPostsTable = "city_posts"
+export const CITY_COMMENTS_TABLE = "city_comments"
 export const START_FOLLOW = "START_FOLLOW"
 export const STOP_FOLLOW = "STOP_FOLLOW"
+export const MAX_POSTS_PER_PAGE = 2
 export const EMPTY_PROFILE_PICTURE =
   "https://akadem.org.il/wp-content/uploads/2020/05/blank-profile-picture-973460_640.png"
 

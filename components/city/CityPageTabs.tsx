@@ -4,7 +4,6 @@ import Tab from "@mui/material/Tab"
 import Typography from "@mui/material/Typography"
 import Box from "@mui/material/Box"
 import useTravelers from "./useTravelers"
-import FeedPost from "../FeedPost"
 import CityPosts from "./CityPosts"
 
 interface TabPanelProps {

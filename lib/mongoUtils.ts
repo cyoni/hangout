@@ -49,7 +49,7 @@ export async function dbInsertMany(
 export async function dbInsertOne(
   database: string,
   query: {}
-): Promise<MongoUpdateRes | ErrorRes> {
+): Promise<MongoInsertOneRes> {
   try {
     const client = await clientPromise
     const db = client.db()

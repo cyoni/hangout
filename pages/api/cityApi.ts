@@ -1,7 +1,10 @@
 import {
   CityPostsTable as CITY_POSTS_TABLE,
+  CITY_COMMENTS_TABLE,
   GET_CITY_DATA,
   GET_MESSAGES,
+  MAX_POSTS_PER_PAGE,
+  POST_COMMENT,
   POST_MESSAGE,
   ProfileParams,
   USERS_COLLECTION,
@@ -13,7 +16,8 @@ import { dbAggregate, dbFind, dbInsertOne } from "../../lib/mongoUtils"
 import { queryPlace, queryPlaces } from "../../lib/place"
 import { getObjectKeys } from "../../lib/scripts/objects"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
-import { MESSAGE_EMPTY } from "../../lib/consts/error"
+import { MESSAGE_EMPTY, POST_WAS_NOT_FOUND } from "../../lib/consts/error"
+import { ObjectId } from "mongodb"
 
 async function getValidCities(cityIds) {
   const validCities = await queryPlaces(cityIds)
@@ -33,15 +37,39 @@ async function PostMessage({ message, cityId }, userId) {
     message,
     cityId: Number(keys[0]),
   })
-  if (!result.upsertedCount) return { error: "Error updating city table" }
+  if (!result.insertedId) return { error: "Error updating city table" }
 
   return { message: "post uploaded successfully" }
+}
+
+async function PostComment({ message, postId }, userId) {
+  if (isNullOrEmpty(message))
+    return { error: "post is empty", id: MESSAGE_EMPTY }
+
+  // post check
+  const postCheck = await dbFind(CITY_POSTS_TABLE, {
+    _id: new ObjectId(postId),
+  })
+  if (postCheck.length === 0)
+    return { error: "post was not found", id: POST_WAS_NOT_FOUND }
+
+  //const cityId = postCheck[0].cityId
+
+  const result = await dbInsertOne(CITY_COMMENTS_TABLE, {
+    timestamp: Date.now(),
+    postId,
+    userId,
+    message,
+  })
+  if (!result.insertedId) return { error: "Error sending comment" }
+
+  return { message: "comment uploaded successfully" }
 }
 
 async function GetPosts({ cityId, page }) {
   const validPlaces = await getValidCities([cityId])
   const keys = getObjectKeys(validPlaces)
-  const limit = 2
+
   if (keys.length === 0) return { error: "invalid city." }
 
   console.log("cityapi page:", page)
@@ -75,9 +103,9 @@ async function GetPosts({ cityId, page }) {
               },
             },
             {
-              $skip: (pageNumber - 1) * limit,
+              $skip: (pageNumber - 1) * MAX_POSTS_PER_PAGE,
             },
-            { $limit: limit },
+            { $limit: MAX_POSTS_PER_PAGE },
             {
               $lookup: {
                 localField: "userId",
@@ -105,7 +133,8 @@ async function GetPosts({ cityId, page }) {
 
   const nextPage =
     data.metadata.length > 0 &&
-    (pageNumber - 1) * limit + posts.length !== data.metadata[0].count
+    (pageNumber - 1) * MAX_POSTS_PER_PAGE + posts.length !==
+      data.metadata[0].count
       ? pageNumber + 1
       : undefined
   console.log("posts follow", posts)
@@ -155,6 +184,9 @@ export default async function handler(
     switch (method) {
       case POST_MESSAGE:
         result = await PostMessage(req.body, userId)
+        break
+      case POST_COMMENT:
+        result = await PostComment(req.body, userId)
         break
       case GET_MESSAGES:
         result = await GetPosts({

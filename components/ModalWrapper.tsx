@@ -28,7 +28,7 @@ function ModalWrapper({
       onAfterClose={() => console.log("exited")}
       style={{
         overlay: {
-          background: "transparent",
+          background: "rgba(0,0,0,.6)",
           backdropFilter: "blur(15px)",
           zIndex: 10,
         },
@@ -44,7 +44,7 @@ function ModalWrapper({
       contentLabel="My dialog"
     >
       <XMarkIcon
-        className="h-6 sticky top-1 cursor-pointer text-gray-400 hover:text-gray-300  "
+        className="h-5 sticky top-1 cursor-pointer text-gray-400 hover:text-gray-300  "
         onClick={onRequestClose}
       />
       {children}
