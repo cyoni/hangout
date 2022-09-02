@@ -30,7 +30,9 @@ export default function ButtonIntegration({
     e?.preventDefault()
     if (!loading) {
       setLoading(true)
+      
       await onClick()
+      
       setLoading(false)
       setIsDone(true)
       callback?.()

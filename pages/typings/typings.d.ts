@@ -78,7 +78,6 @@ interface MongoInsertOneRes {
   acknowledged?: boolean
   insertedId?: {}
   error?: {}
-  
 }
 
 interface MongoUpdateRes {
@@ -88,7 +87,6 @@ interface MongoUpdateRes {
   upsertedCount?: number
   error?: string
 }
-
 
 interface IUser {
   id: string
@@ -118,4 +116,12 @@ type Post = {
 type MyFollowing = {
   members: { _id: string; profile: Profile; userId: string }[]
   cities: { cityIds: number[] }
+}
+
+type IComment = {
+  _id: string
+  name: string
+  message: string
+  profile: []
+  timestamp: number
 }

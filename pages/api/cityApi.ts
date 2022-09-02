@@ -158,6 +158,9 @@ async function GetPostComments({ postId }) {
           postId,
         },
       },
+      {
+        $sort: { timestamp: -1 },
+      },
       JoinProfiles(),
     ],
   })

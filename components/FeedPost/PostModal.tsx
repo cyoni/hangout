@@ -1,15 +1,30 @@
 import { Avatar, TextField } from "@mui/material"
 import React from "react"
+import toast from "react-hot-toast"
+import ButtonIntegration from "../ButtonIntegration"
 import CircularButton from "../CircularButton"
 import Spinner from "../Spinner"
+import Comment from "./Comment"
 import useComment from "./useComment"
 
 function PostModal({ renderOptions, post }) {
-  const { sendComment, commentMutation, message, setMessage, commentQuery } = useComment(
-    post._id
-  )
+  const { sendComment, commentMutation, message, setMessage, commentQuery } =
+    useComment(post._id)
 
   console.log("commentQuery", commentQuery.data)
+  const { data: comments } = commentQuery
+
+  React.useEffect(() => {
+    if (commentMutation.isSuccess) {
+      toast.success("You comment was successfully posted!")
+    }
+    if (commentMutation.error) {
+      toast.error(
+        "You comment was not posted. Please try again later. msg: " +
+          commentMutation.error
+      )
+    }
+  }, [commentMutation.error, commentMutation.isSuccess])
 
   return (
     <div className="w-[80%] mx-auto mt-10">
@@ -44,61 +59,29 @@ function PostModal({ renderOptions, post }) {
         />
 
         <div className="flex mt-2 justify-end">
-          <button className="btn" onClick={sendComment}>
+          <ButtonIntegration
+            buttonClassName="btn"
+            onClick={sendComment}
+            callback={commentQuery.refetch}
+          >
             Send
-          </button>
+          </ButtonIntegration>
         </div>
-
+        {console.log("comments", comments)}
         <div className="border-t py-5 mt-5 space-y-5">
-          <div className="font-semibold text-xl">10 Comments</div>
-
-          <div className="flex space-x-2 items-center">
-            <Avatar className="h-12 w-12 self-start" />
-            <div className="">
-              <p className="font-bold text-lg ">Yoni</p>
-              <p>
-                Message here Message here Message here Message here Message here
-                Message here Message here Message here Message here Message here
-                Message here Message here Message here Message here Message here{" "}
-              </p>
-            </div>
+          <div className="font-semibold text-xl">
+            {comments?.length} Comments
           </div>
 
-          <div className="flex space-x-2 items-center">
-            <Avatar className="h-12 w-12 self-start" />
-            <div className="">
-              <p className="font-bold text-lg ">Yoni</p>
-              <p>
-                Message here Message here Message here Message here Message here
-                Message here Message here Message here Message here Message here
-                Message here Message here Message here Message here Message here{" "}
-              </p>
-            </div>
-          </div>
+          { <div className="mx-auto"><Spinner  /> </div>}
 
-          <div className="flex space-x-2 items-center">
-            <Avatar className="h-12 w-12 self-start" />
-            <div className="">
-              <p className="font-bold text-lg ">Yoni</p>
-              <p>
-                Message here Message here Message here Message here Message here
-                Message here Message here Message here Message here Message here
-                Message here Message here Message here Message here Message here{" "}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex space-x-2 items-center">
-            <Avatar className="h-12 w-12 self-start" />
-            <div className="">
-              <p className="font-bold text-lg ">Yoni</p>
-              <p>
-                Message here Message here Message here Message here Message here
-                Message here Message here Message here Message here Message here
-                Message here Message here Message here Message here Message here{" "}
-              </p>
-            </div>
-          </div>
+          {commentQuery.isSuccess &&
+            comments.map((comment: IComment) => (
+              <div key={comment._id}>
+                {console.log("comment", comment)}
+                <Comment {...comment} />
+              </div>
+            ))}
         </div>
       </div>
     </div>

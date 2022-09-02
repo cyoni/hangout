@@ -3,71 +3,66 @@ import { access } from "fs"
 import { convertObjectToDictionary } from "./scripts/objects"
 
 export async function post(req: PostRequest): Promise<any> {
-  try {
-    const data = await fetch(req.url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(req.body),
-    })
-    if (data.status == 200) {
-      const result: ResponseObject = await data.json()
+  const data = await fetch(req.url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(req.body),
+  })
 
-      return result
-    }
-    throw Error("(post) - bad request")
-  } catch (e) {
-    const res = { error: e.message }
-    return res
+  const response = await data.json()
+
+  if (data.status === 200) {
+    return response
   }
+
+  return Promise.reject("post - error: " + response?.error?.message)
 }
 
-export async function newGet(url, params: {} = null): Promise<ResponseObject> {
-  try {
-    let ans = ""
-    const paramsDictionary = convertObjectToDictionary(params)
+export async function newGet(url, params: {} = null): Promise<any> {
+  let ans = ""
+  const paramsDictionary = convertObjectToDictionary(params)
 
-    const convertedParams = paramsDictionary.reduce(
-      (prev, curr) => `${prev}${curr[1] ? `${curr[0]}=${curr[1]}&` : ""}`,
-      ""
-    )
+  const convertedParams = paramsDictionary.reduce(
+    (prev, curr) => `${prev}${curr[1] ? `${curr[0]}=${curr[1]}&` : ""}`,
+    ""
+  )
 
-    console.log("convertedParams", convertedParams)
-    const serviceUrl = `${url}?${convertedParams}`
-    const data = await fetch(serviceUrl, {
-      method: "GET",
-    })
-    if (data.status == 200) {
-      const json = await data.json()
-      console.log("JSON", json)
-      return json
-    }
-    const json = await data.json()
-    throw Error(`(newGet) - bad request, statue: ${data.status}, json: ${JSON.stringify( json)}`)
-  } catch (e) {
-    const res: ResponseObject = { error: e.message }
-    return res
+  console.log("convertedParams", convertedParams)
+  const serviceUrl = `${url}?${convertedParams}`
+  const data = await fetch(serviceUrl, {
+    method: "GET",
+  })
+
+  const response = await data.json()
+
+  if (data.status == 200) {
+    console.log("JSON", response)
+    return response
   }
+
+  throw Error(
+    `(newGet) - error, statue: ${data.status}, message: ${response?.error?.message}`
+  )
 }
 
 export async function get(url, params = null): Promise<ResponseObject> {
-  try {
-    const serviceUrl = `${url}?${params}`
-    const data = await fetch(serviceUrl, {
-      method: "GET",
-    })
-    console.log("service url: " + serviceUrl)
-    if (data.status == 200) {
-      const json = await data.json()
-      console.log("JSON", json)
-      return { data: json }
-    }
-    throw Error("(get) - bad request")
-  } catch (e) {
-    const res: ResponseObject = { error: e.message }
-    return res
+  const serviceUrl = `${url}?${params}`
+  const data = await fetch(serviceUrl, {
+    method: "GET",
+  })
+
+  console.log("service url: " + serviceUrl)
+
+  const response = await data.json()
+
+  if (data.status == 200) {
+    console.log("JSON", response)
+    return { data: response }
   }
+
+  throw Error("(get) - error: " + response?.error?.message)
 }
 
 export async function firePost(url: string, body: {}): Promise<any> {
