@@ -5,9 +5,11 @@ import Spinner from "../Spinner"
 import useComment from "./useComment"
 
 function PostModal({ renderOptions, post }) {
-  const { sendComment, commentMutation, message, setMessage } = useComment(
+  const { sendComment, commentMutation, message, setMessage, commentQuery } = useComment(
     post._id
   )
+
+  console.log("commentQuery", commentQuery.data)
 
   return (
     <div className="w-[80%] mx-auto mt-10">
@@ -48,41 +50,55 @@ function PostModal({ renderOptions, post }) {
         </div>
 
         <div className="border-t py-5 mt-5 space-y-5">
-            <div className="font-semibold text-xl">10 Comments</div>
+          <div className="font-semibold text-xl">10 Comments</div>
 
           <div className="flex space-x-2 items-center">
             <Avatar className="h-12 w-12 self-start" />
             <div className="">
-            <p className="font-bold text-lg ">Yoni</p>
-            <p>Message here Message here Message here  Message here Message here Message here Message here Message here Message here Message here Message here Message here Message here Message here Message here </p>
+              <p className="font-bold text-lg ">Yoni</p>
+              <p>
+                Message here Message here Message here Message here Message here
+                Message here Message here Message here Message here Message here
+                Message here Message here Message here Message here Message here{" "}
+              </p>
             </div>
           </div>
 
           <div className="flex space-x-2 items-center">
             <Avatar className="h-12 w-12 self-start" />
             <div className="">
-            <p className="font-bold text-lg ">Yoni</p>
-            <p>Message here Message here Message here  Message here Message here Message here Message here Message here Message here Message here Message here Message here Message here Message here Message here </p>
+              <p className="font-bold text-lg ">Yoni</p>
+              <p>
+                Message here Message here Message here Message here Message here
+                Message here Message here Message here Message here Message here
+                Message here Message here Message here Message here Message here{" "}
+              </p>
             </div>
           </div>
 
           <div className="flex space-x-2 items-center">
             <Avatar className="h-12 w-12 self-start" />
             <div className="">
-            <p className="font-bold text-lg ">Yoni</p>
-            <p>Message here Message here Message here  Message here Message here Message here Message here Message here Message here Message here Message here Message here Message here Message here Message here </p>
+              <p className="font-bold text-lg ">Yoni</p>
+              <p>
+                Message here Message here Message here Message here Message here
+                Message here Message here Message here Message here Message here
+                Message here Message here Message here Message here Message here{" "}
+              </p>
             </div>
           </div>
-
 
           <div className="flex space-x-2 items-center">
             <Avatar className="h-12 w-12 self-start" />
             <div className="">
-            <p className="font-bold text-lg ">Yoni</p>
-            <p>Message here Message here Message here  Message here Message here Message here Message here Message here Message here Message here Message here Message here Message here Message here Message here </p>
+              <p className="font-bold text-lg ">Yoni</p>
+              <p>
+                Message here Message here Message here Message here Message here
+                Message here Message here Message here Message here Message here
+                Message here Message here Message here Message here Message here{" "}
+              </p>
             </div>
           </div>
-         
         </div>
       </div>
     </div>

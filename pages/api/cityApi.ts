@@ -3,6 +3,7 @@ import {
   CITY_COMMENTS_TABLE,
   GET_CITY_DATA,
   GET_MESSAGES,
+  GET_POST_COMMENTS,
   MAX_POSTS_PER_PAGE,
   POST_COMMENT,
   POST_MESSAGE,
@@ -18,6 +19,7 @@ import { getObjectKeys } from "../../lib/scripts/objects"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import { MESSAGE_EMPTY, POST_WAS_NOT_FOUND } from "../../lib/consts/error"
 import { ObjectId } from "mongodb"
+import { JoinProfiles } from "../../lib/queryUtils"
 
 async function getValidCities(cityIds) {
   const validCities = await queryPlaces(cityIds)
@@ -146,6 +148,23 @@ async function GetPosts({ cityId, page }) {
   return result
 }
 
+async function GetPostComments({ postId }) {
+  if (isNullOrEmpty(postId)) return { error: "Post id is empty." }
+  const result = await dbAggregate({
+    collection: CITY_COMMENTS_TABLE,
+    params: [
+      {
+        $match: {
+          postId,
+        },
+      },
+      JoinProfiles(),
+    ],
+  })
+
+  return result
+}
+
 async function getCityData(cityIdsInput: string | string[]) {
   const cityIds = String(cityIdsInput)
   const cityIdsArray = cityIds.split(",")
@@ -193,6 +212,9 @@ export default async function handler(
           cityId: req.query.cityId,
           page: req.query.page,
         })
+        break
+      case GET_POST_COMMENTS:
+        result = await GetPostComments(req.query)
         break
       case GET_CITY_DATA:
         result = await getCityData(req.query.cityIds)

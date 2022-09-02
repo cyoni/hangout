@@ -1,11 +1,15 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import React, { useState } from "react"
-import { POST_COMMENT } from "../../lib/consts"
+import { GET_POST_COMMENTS, POST_COMMENT } from "../../lib/consts"
 import { CITY_API } from "../../lib/consts/apis"
-import { post } from "../../lib/postman"
+import { get, newGet, post } from "../../lib/postman"
 
 function useComment(postId) {
   const [message, setMessage] = useState<string>()
+
+  const commentQuery = useQuery(["post-comments", postId], async () => {
+    return newGet(CITY_API, { method: GET_POST_COMMENTS, postId })
+  })
 
   const triggerFollowMutation = (body) => {
     return post({
@@ -25,7 +29,7 @@ function useComment(postId) {
     setMessage("")
   }
 
-  return { sendComment, commentMutation, message, setMessage }
+  return { commentQuery, sendComment, commentMutation, message, setMessage }
 }
 
 export default useComment
