@@ -22,7 +22,7 @@ interface Props {
 const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
   const [isModalMessageOpen, setIsModalMessageOpen] = useState<boolean>(false)
   const session = useSession()
-  const { follow } = useFollow()
+  const { follow, unFollow, isFollowing } = useFollow()
   const { name, userId, picture } = profile
 
   console.log("session: ", session)
@@ -108,11 +108,20 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
         <ButtonIntegration
           buttonClassName="btn"
           onClick={() =>
-            follow({ userId: profile.userId, type: FOLLOW, name: profile.name })
+            isFollowing(userId)
+              ? unFollow({
+                  userId: profile.userId,
+                  type: FOLLOW,
+                  name: profile.name,
+                })
+              : follow({
+                  userId: profile.userId,
+                  type: FOLLOW,
+                  name: profile.name,
+                })
           }
-          onFinishText={"Following"}
         >
-          Follow
+          {isFollowing(userId) ? "Following" : "Follow"}
         </ButtonIntegration>
       </div>
       <div className="mx-auto w-[80%]">
@@ -132,7 +141,7 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
             aria-label="scrollable prevent tabs example"
           >
             <Tab label="About" />
-            <Tab label="Itinerary" />
+            <Tab label="Travels" />
             <Tab label="Pictures" />
           </Tabs>
         </Box>

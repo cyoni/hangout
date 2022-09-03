@@ -14,6 +14,7 @@ interface followReq {
 }
 function useFollow(initialData = null) {
   const followers = []
+  const following = []
   console.log("initialData", initialData)
 
   const getOptions = () => {
@@ -40,29 +41,49 @@ function useFollow(initialData = null) {
   const followMutation = useMutation(triggerFollowMutation)
 
   const follow = async (req) => {
-    await followMutation.mutateAsync({
-      userId: req.userId,
-      cityId: req.cityId,
-      method: START_FOLLOW,
-      type: req.type,
-    })
-    toast.success(`You started following ${req.name}`)
+    const { name, userId, cityId, type } = req
+    await followMutation.mutateAsync(
+      {
+        userId: userId,
+        cityId: cityId,
+        method: START_FOLLOW,
+        type: type,
+      },
+      {
+        onSuccess: () => {
+          toast.success(`You started Following ${name}`)
+          following.push(userId)
+        },
+      }
+    )
   }
 
   const unFollow = async (req) => {
-    await followMutation.mutateAsync({
-      userId: req.userId,
-      cityId: req.cityId,
-      method: STOP_FOLLOW,
-      type: req.type,
-    })
-    toast.success(`You stopped following ${req.name}`)
+    const { name, userId, cityId, type } = req
+    await followMutation.mutateAsync(
+      {
+        userId: userId,
+        cityId: cityId,
+        method: STOP_FOLLOW,
+        type: type,
+      },
+      {
+        onSuccess: () => {
+          toast.success(`You stopped following ${name}`)
+          const index = following.indexOf(userId)
+          if (index > -1) {
+            following.splice(index, 1)
+          }
+        },
+      }
+    )
   }
 
   const isFollowing = (id: string | number) => {
     console.log("followQuery.data", followQuery.data)
 
     return (
+      following.some((userId) => userId === String(id)) ||
       followQuery.data?.members?.some(
         (member) => member.userId == String(id)
       ) ||

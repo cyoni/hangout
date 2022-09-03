@@ -40,48 +40,6 @@ const addEmptyProfileImageIfNeeded = (results) => {
   }
 }
 
-export async function getAllTravellingByPlace(cityId: number) {
-  const request: AggregateReq = {
-    collection: TRAVELLING_TABLE,
-    params: [
-      {
-        $match: {
-          "itineraries.place.city_id": Number(cityId),
-        },
-      },
-      {
-        $lookup: {
-          localField: "userId",
-          foreignField: "userId",
-          as: "profile",
-          from: USERS_COLLECTION,
-        },
-      },
-      {
-        $project: {
-          startDate: 1,
-          endDate: 1,
-          userId: 1,
-          description: 1,
-          profile: { name: 1, picture: 1, cityId: 1 },
-          itineraries: {
-            $filter: {
-              input: "$itineraries",
-              as: "itinerary",
-              cond: { $eq: ["$$itinerary.place.city_id", Number(cityId)] },
-            },
-          },
-        },
-      },
-    ],
-  }
-  const data = await dbAggregate(request)
-  console.log("getAllTravellingByPlace data", data)
-
-  addEmptyProfileImageIfNeeded(data)
-  console.log("datadatadata", data)
-  return data
-}
 
 export async function getTravelContent(userId) {
   if (!userId || userId === undefined) {

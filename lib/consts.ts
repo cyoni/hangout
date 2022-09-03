@@ -27,3 +27,6 @@ export const ProfileParams = { name: 1, picture: 1, cityId: 1, userId: 1 }
 export const GET_FOLLOWING = "GET_FOLLOWING"
 export const CITY = "CITY"
 export const FOLLOW = "FOLLOW"
+export const POST_NEW_ITINERARY = "POST_NEW_ITINERARY"
+export const GET_CITY_ITINERARIES = "GET_CITY_ITINERARIES"
+export const GET_USER_ITINERARIES = "GET_USER_ITINERARIES"

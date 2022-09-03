@@ -11,11 +11,17 @@ export function convertStringArrToNumber(array: string[]): number[] {
 }
 
 export function getDifference(a, b) {
-  return a.filter(element => {
-    return !b.includes(element);
-  });
+  return a.filter((element) => {
+    return !b.includes(element)
+  })
 }
 
 export function convertArrayToDictionary(array: any[], key: string) {
   return array.reduce((acc, curr) => ({ ...acc, [curr[key]]: curr }), {})
+}
+
+export function convertStringToTypeArray(input, T) {
+  const array = input.split(",")
+  const ans = array.map((str) => T(str))
+  return ans
 }

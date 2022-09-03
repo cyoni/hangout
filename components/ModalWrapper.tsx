@@ -30,7 +30,7 @@ function ModalWrapper({
         overlay: {
           background: "rgba(0,0,0,.6)",
           backdropFilter: "blur(15px)",
-          zIndex: 10,
+          zIndex: 100000,
         },
       }}
       isOpen={isOpen}

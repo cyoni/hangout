@@ -1,7 +1,7 @@
 import { toast } from "react-hot-toast"
 import { useState } from "react"
 import React from "react"
-import { PUBLISH_TRAVEL_API } from "../../lib/consts/apis"
+import { TRAVEL_API } from "../../lib/consts/apis"
 import { useQuery } from "@tanstack/react-query"
 import { firePost } from "../../lib/postman"
 
@@ -79,7 +79,7 @@ function usePublishHangout() {
     return useQuery(
       ["publish-itinerary"],
       async () => {
-        return await firePost(PUBLISH_TRAVEL_API, {
+        return await firePost(TRAVEL_API, {
           itineraries,
         })
       },
