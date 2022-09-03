@@ -10,7 +10,7 @@ import { dbAggregate, dbInsertMany } from "../../lib/mongoUtils"
 import { JoinProfiles } from "../../lib/queryUtils"
 import { convertStringToTypeArray } from "../../lib/scripts/arrays"
 
-async function postNewItinerary({ itineraries }, userId) {
+export async function postNewItinerary({ itineraries }, userId) {
   const dataToDb = {
     userId,
     timestamp: Date.now(),
@@ -29,7 +29,7 @@ async function postNewItinerary({ itineraries }, userId) {
   return { error: "Could not insert to db" }
 }
 
-async function getUserItineraries({ userIds }) {
+export async function getUserItineraries({ userIds }) {
   const userIdsArray = convertStringToTypeArray(userIds, String)
   const request: AggregateReq = {
     collection: TRAVELLING_TABLE,
@@ -47,8 +47,11 @@ async function getUserItineraries({ userIds }) {
   return result
 }
 
-async function getCityItineraries({ cityIds }) {
-  const convertedCityArray = convertStringToTypeArray(cityIds, Number)
+export async function getCityItineraries({ cityIds }) {
+
+  const convertedCityArray = Array.isArray(cityIds)
+    ? cityIds
+    : convertStringToTypeArray(cityIds, Number)
 
   const request: AggregateReq = {
     collection: TRAVELLING_TABLE,

@@ -7,7 +7,6 @@ import { InboxIcon } from "@heroicons/react/outline"
 import HeaderImage from "../../components/HeaderImage"
 import { formatDate } from "../../lib/dates"
 import { queryPlace } from "../../lib/place"
-import { getAllTravellingByPlace } from "../../lib/travel"
 import Tabs from "../../components/city/CityPageTabs"
 import Cities from "../../components/Cities"
 import CityPageTabs from "../../components/city/CityPageTabs"
@@ -17,6 +16,7 @@ import ButtonIntegration from "../../components/ButtonIntegration"
 import useFollow from "../../components/useFollow"
 import { CITY } from "../../lib/consts"
 import { getSession, useSession } from "next-auth/react"
+import { getCityItineraries } from "../api/travelApi"
 
 const defaultCityCode: number = 127407
 
@@ -105,7 +105,7 @@ export async function getServerSideProps(context) {
 
     const place = await queryPlace(cityQueryCode)
 
-    const travels = await getAllTravellingByPlace(cityQueryCode)
+    const travels = await getCityItineraries({ cityIds: [cityQueryCode] })
     console.log("travels", JSON.stringify(travels))
 
     const myFollowing = await getFollowing(token.userId)
