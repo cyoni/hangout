@@ -1,5 +1,5 @@
 import Head from "next/head"
-import Avatar from "../components/Avatar"
+
 import Back from "../components/Back"
 import FeedPost from "../components/FeedPost/FeedPost"
 import HeaderImage from "../components/HeaderImage"
@@ -10,15 +10,21 @@ import usePlace from "../components/usePlace"
 import { useEffect } from "react"
 import { getCsrfToken } from "next-auth/react"
 import { getToken } from "next-auth/jwt"
-import { dehydrate, QueryClient, useQuery, UseQueryResult } from "@tanstack/react-query"
+import {
+  dehydrate,
+  QueryClient,
+  useQuery,
+  UseQueryResult,
+} from "@tanstack/react-query"
 import { my_following_list } from "../lib/consts/query"
 import { FollowingQuery } from "../lib/queries"
 import { getFollowing } from "./api/followApi"
+import { Avatar, AvatarGroup } from "@mui/material"
 
 interface Props {
   place: Place
 }
-export default function Home({ session,myTest }) {
+export default function Home({ session, myTest }) {
   console.log("My myTest prop", myTest)
   const { followQuery } = useFollow(myTest)
 
@@ -45,11 +51,28 @@ export default function Home({ session,myTest }) {
 
               <div className="mt-3 flex flex-col rounded-sm border bg-gray-50 p-3 pb-2">
                 <div className="mt-2 flex justify-center space-x-3">
-                  <div className="h-32 w-32 rounded-md border"></div>
-                  <div className="h-32 w-32 rounded-md border"></div>
-                  <div className="h-32 w-32 rounded-md border"></div>
-                  <div className="h-32 w-32 rounded-md border"></div>
-                  <div className="h-32 w-32 rounded-md border"></div>
+                  <AvatarGroup total={24} >
+                    <Avatar
+                      alt="Remy Sharp"
+                      src="/static/images/avatar/1.jpg"
+                      sx={{ width: 50, height: 50 }}
+                    />
+                    <Avatar
+                      alt="Travis Howard"
+                      src="/static/images/avatar/2.jpg"
+                      sx={{ width: 50, height: 50 }}
+                    />
+                    <Avatar
+                      alt="Agnes Walker"
+                      src="/static/images/avatar/4.jpg"
+                      sx={{ width: 50, height: 50 }}
+                    />
+                    <Avatar
+                      alt="Trevor Henderson"
+                      src="/static/images/avatar/5.jpg"
+                      sx={{ width: 50, height: 50 }}
+                    />
+                  </AvatarGroup>
                 </div>
                 <button className=" btn-outline ml-auto  mt-4 w-fit py-1 px-4 text-right">
                   More

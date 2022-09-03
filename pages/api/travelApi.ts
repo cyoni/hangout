@@ -1,6 +1,4 @@
 import { getToken } from "next-auth/jwt"
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import clientPromise from "../../lib/mongodb"
 import {
   GET_CITY_ITINERARIES,
   GET_USER_ITINERARIES,
@@ -9,12 +7,8 @@ import {
   TRAVELLING_TABLE,
 } from "../../lib/consts"
 import { dbAggregate, dbInsertMany } from "../../lib/mongoUtils"
-import { resourceLimits } from "worker_threads"
 import { JoinProfiles } from "../../lib/queryUtils"
-import {
-  convertStringArrToNumber,
-  convertStringToTypeArray,
-} from "../../lib/scripts/arrays"
+import { convertStringToTypeArray } from "../../lib/scripts/arrays"
 
 async function postNewItinerary({ itineraries }, userId) {
   const dataToDb = {
@@ -35,7 +29,7 @@ async function postNewItinerary({ itineraries }, userId) {
   return { error: "Could not insert to db" }
 }
 
-async function getUserItineraries({userIds}) {
+async function getUserItineraries({ userIds }) {
   const userIdsArray = convertStringToTypeArray(userIds, String)
   const request: AggregateReq = {
     collection: TRAVELLING_TABLE,

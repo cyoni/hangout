@@ -12,6 +12,7 @@ import { Avatar, Box, Fab, Tab, Tabs } from "@mui/material"
 import ChatModal from "../ChatModal"
 import EditIcon from "@mui/icons-material/Edit"
 import CustomAvatar from "../CustomAvatar"
+import useItinerary from "../useItinerary"
 
 interface Props {
   profile: Profile
@@ -23,6 +24,10 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
   const [isModalMessageOpen, setIsModalMessageOpen] = useState<boolean>(false)
   const session = useSession()
   const { follow, unFollow, isFollowing } = useFollow()
+  const { userItineraryQuery } = useItinerary({
+    userIds: [profile.userId],
+    isUser: true,
+  })
   const { name, userId, picture } = profile
 
   console.log("session: ", session)
@@ -54,13 +59,6 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
         {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
       </div>
     )
-  }
-
-  function a11yProps(index: number) {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    }
   }
 
   return (
@@ -166,10 +164,19 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
         </TabPanel>
 
         <TabPanel value={value} index={1}>
-          <div>
-            <div className="pl-2 text-3xl ">Travels</div>
-            <Itinerary />
-          </div>
+         
+            <div className="pl-2 text-3xl">Travels</div>
+
+            {userItineraryQuery.data && (
+              <>
+                {userItineraryQuery.data.map((userItinerary) => {
+                  {console.log("userItinerary",userItinerary)}
+                  return <div key={userItinerary._id}> <Itinerary {...userItinerary} /></div>
+                })}
+              </>
+            )}
+           
+          
         </TabPanel>
 
         <TabPanel value={value} index={2}>
