@@ -142,7 +142,9 @@ async function GetPosts({ cityId, page }) {
 
   const result = {
     posts,
-    totalPages: Math.ceil(data.metadata[0].count / MAX_POSTS_PER_PAGE),
+    totalPages: data.metadata[0]
+      ? Math.ceil(data.metadata[0].count / MAX_POSTS_PER_PAGE)
+      : 0,
   }
 
   return result

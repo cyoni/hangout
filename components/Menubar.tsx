@@ -2,6 +2,8 @@ import Link from "next/link"
 import React, { useState } from "react"
 import MenubarRow from "./MenubarRow"
 import {
+  ChatBubbleLeftEllipsisIcon,
+  ChatBubbleLeftRightIcon,
   HomeIcon,
   InboxIcon,
   PlusIcon,
@@ -41,7 +43,7 @@ function Menubar({ newMessages }) {
         <MenubarRow title="Notifications" Icon={HomeIcon} link="/" />
         <MenubarRow
           title="Messages"
-          Icon={InboxIcon}
+          Icon={ChatBubbleLeftRightIcon}
           link="/messages"
           notifications={newMessages}
         />

@@ -1,7 +1,6 @@
 import { Badge } from "@mui/material"
 import Link from "next/link"
 import React from "react"
-import Notification from "./Notification"
 
 interface Props {
   title: string

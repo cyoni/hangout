@@ -1,16 +1,17 @@
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
-import React from "react"
+import React, { useState } from "react"
 import { getFullPlaceName } from "../../lib/scripts/place"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
-import Avatar from "../Avatar"
 import Itinerary from "../Itinerary"
 import { isAuthenticated, isAuthor } from "../../lib/session"
 import ButtonIntegration from "../ButtonIntegration"
 import useFollow from "../useFollow"
-import HeaderImage from "../HeaderImage"
 import { FOLLOW } from "../../lib/consts"
-import { Box, Tab, Tabs } from "@mui/material"
+import { Avatar, Box, Fab, Tab, Tabs } from "@mui/material"
+import ChatModal from "../ChatModal"
+import EditIcon from "@mui/icons-material/Edit"
+import CustomAvatar from "../CustomAvatar"
 
 interface Props {
   profile: Profile
@@ -19,15 +20,18 @@ interface Props {
 }
 
 const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
+  const [isModalMessageOpen, setIsModalMessageOpen] = useState<boolean>(false)
   const session = useSession()
   const { follow } = useFollow()
+  const { name, userId, picture } = profile
 
   console.log("session: ", session)
   const router = useRouter()
   console.log("profile content place", place)
+
   const handleSendMessage = (e) => {
     e.preventDefault()
-    router.push(`/messages/conversation/${profile.userId}`)
+    setIsModalMessageOpen(true)
   }
 
   const [value, setValue] = React.useState(0)
@@ -62,7 +66,23 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
   return (
     <div>
       <div className="mt-5 flex space-x-3">
-        <Avatar className="relative bottom-12 h-32 w-32  " />
+        <div className="relative">
+          <CustomAvatar
+            name={name}
+            userId={userId}
+            picture={picture}
+            className="relative bottom-12 h-36 w-36  "
+          />
+
+          <Fab
+            color="primary"
+            className="bg-blue-500 absolute top-14 h-10 w-10 right-0"
+            aria-label="edit"
+          >
+            <EditIcon />
+          </Fab>
+        </div>
+
         <div className="flex-1">
           <p className="text-3xl font-medium tracking-wide capitalize">
             {profile.name}
@@ -90,9 +110,9 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
           onClick={() =>
             follow({ userId: profile.userId, type: FOLLOW, name: profile.name })
           }
-          onFinishText={<>Following</>}
+          onFinishText={"Following"}
         >
-          Follow me
+          Follow
         </ButtonIntegration>
       </div>
       <div className="mx-auto w-[80%]">
@@ -152,6 +172,13 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
           </div>
         </TabPanel>
       </div>
+
+      <ChatModal
+        name={name}
+        userId={userId}
+        isModalMessageOpen={isModalMessageOpen}
+        setIsModalMessageOpen={setIsModalMessageOpen}
+      />
     </div>
   )
 }

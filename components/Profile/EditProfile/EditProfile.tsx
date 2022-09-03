@@ -49,14 +49,13 @@ function EditProfile({ editProfileParams, place }) {
         />
       )}
 
-      <HeaderImage title="test test" />
 
       <form
         className="w-[40%] mx-auto flex justify-center items-center flex-col space-y-5"
         onSubmit={submitForm}
       >
         <div className="font-bold mt-5 text-xl">Edit Profile</div>
-        <Avatar className="h-28 w-28 mt-5" />
+
 
         <div className="w-full mt-4 p-2">
           <AutoComplete
@@ -92,7 +91,8 @@ function EditProfile({ editProfileParams, place }) {
 
         <ButtonIntegration
           externalClass="mt-24"
-          buttonClassName="px-10"
+          buttonClassName="btn px-10 mt-5"
+          
           onClick={submitForm}
         >
           Save

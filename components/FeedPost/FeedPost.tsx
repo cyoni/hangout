@@ -22,6 +22,7 @@ import Spinner from "../Spinner"
 import { FOLLOW } from "../../lib/consts"
 import SendMessage from "../SendMessage/SendMessage"
 import PostModal from "./PostModal"
+import ChatModal from "../ChatModal"
 
 interface Props {
   post: Post
@@ -112,23 +113,15 @@ function FeedPost({ post }: Props) {
         isOpen={isOpen}
         onRequestClose={() => setIsOpen(false)}
       >
-          <PostModal post={post} renderOptions={renderOptions}  />
+        <PostModal post={post} renderOptions={renderOptions} />
       </ModalWrapper>
 
-      <ModalWrapper
-        height={"h-[52%]"}
-        width={"w-[40%]"}
-        isOpen={isModalMessageOpen}
-        onRequestClose={() => setIsModalMessageOpen(false)}
-      >
-        <div className="flex justify-center px-10 mt-5 ">
-          <SendMessage
-            theirId={post.userId}
-            name={post.profile[0].name}
-            closeModal={() => setIsModalMessageOpen(false)}
-          />
-        </div>
-      </ModalWrapper>
+      <ChatModal
+        name={post.profile[0].name}
+        userId={post.userId}
+        isModalMessageOpen={isModalMessageOpen}
+        setIsModalMessageOpen={setIsModalMessageOpen}
+      />
     </div>
   )
 }
