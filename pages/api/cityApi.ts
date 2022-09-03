@@ -133,16 +133,16 @@ async function GetPosts({ cityId, page }) {
 
   const posts = data.posts
 
-  const nextPage =
-    data.metadata.length > 0 &&
-    (pageNumber - 1) * MAX_POSTS_PER_PAGE + posts.length !==
-      data.metadata[0].count
-      ? pageNumber + 1
-      : undefined
-  console.log("posts follow", posts)
+  // const nextPage =
+  //   data.metadata.length > 0 &&
+  //   (pageNumber - 1) * MAX_POSTS_PER_PAGE + posts.length !==
+  //     data.metadata[0].count
+  //     ? pageNumber + 1
+  //     : undefined
+
   const result = {
     posts,
-    nextPage,
+    totalPages: Math.ceil(data.metadata[0].count / MAX_POSTS_PER_PAGE),
   }
 
   return result

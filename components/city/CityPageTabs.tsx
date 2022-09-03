@@ -40,7 +40,7 @@ interface Props {
   posts: any
   place: Place
 }
-export default function CityPageTabs({ travelers, posts, place }: Props) {
+export default function CityPageTabs({ travelers, place }: Props) {
   const [value, setValue] = React.useState(0)
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {

@@ -8,16 +8,23 @@ export function JoinProfiles(
   return {
     $lookup: {
       from: USERS_COLLECTION,
-      as,
-      foreignField, //: "userId",
-      localField, //: "userId",
+      foreignField,
+      localField,
       pipeline: [
+        {
+          $set: {
+            picture: {
+              $ifNull: ["$picture", "broken-pic"],
+            },
+          },
+        },
         {
           $project: {
             ...ProfileParams,
           },
         },
       ],
+      as,
     },
   }
 }

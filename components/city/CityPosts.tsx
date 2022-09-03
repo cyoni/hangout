@@ -1,24 +1,30 @@
-import { TextField, Tooltip } from "@mui/material"
+import { Pagination, TextField, Tooltip } from "@mui/material"
 import React, { Fragment, useState } from "react"
-import generateRandomString, { isNullOrEmpty } from "../../lib/scripts/strings"
-import ButtonIntegration from "../ButtonIntegration"
 import CircularButton from "../CircularButton"
 import FeedPost from "../FeedPost/FeedPost"
 import Spinner from "../Spinner"
 import usePosts from "./usePosts"
 import SendRoundedIcon from "@mui/icons-material/SendRounded"
+import Loader from "../Loader"
 function CityPosts({ place }) {
   const {
     sendPost,
-    getPostsQuery,
+    postsQuery,
     messageInput,
     setMessageInput,
     noContent,
     pages,
+    page,
+    setPage,
+    totalPages,
   } = usePosts(place)
 
-  const { isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } =
-    getPostsQuery
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setPage(value)
+  }
 
   return (
     <div className="w-[60%] mx-auto">
@@ -42,7 +48,7 @@ function CityPosts({ place }) {
           </CircularButton>
         </div>
 
-        {isFetching && !isFetchingNextPage && (
+        {postsQuery.isLoading && (
           <div className="flex my-10">
             <Spinner className="mx-auto" />
           </div>
@@ -54,33 +60,30 @@ function CityPosts({ place }) {
           </div>
         ) : (
           pages && (
-            <>
-              <div className="border-t mt-5 mb-10"></div>
+            <div>
+              <div className="relative">
+                {postsQuery.isFetching && <Loader />}
 
-              {pages.map((group, index) => {
-                console.log("group", group)
-                console.log("group.data.posts", group.data.posts)
-                return (
-                  <Fragment key={index}>
-                    {group.data.posts.map((post) => (
+                <div className="border-t mt-5 mb-10"></div>
+
+                {pages.map((post, index) => {
+                  return (
+                    <Fragment key={index}>
                       <div key={post._id}>
                         <FeedPost post={post} />
                       </div>
-                    ))}
-                  </Fragment>
-                )
-              })}
+                    </Fragment>
+                  )
+                })}
+              </div>
 
-              <ButtonIntegration
-                buttonClassName={`btn mt-10 mb-2 ${
-                  !hasNextPage ? "opacity-60 bg-blue-500" : ""
-                }`}
-                onClick={fetchNextPage}
-                disabled={!hasNextPage}
-              >
-                Load More
-              </ButtonIntegration>
-            </>
+              <Pagination
+                className="w-fit mx-auto my-5"
+                count={totalPages}
+                page={page}
+                onChange={handlePageChange}
+              />
+            </div>
           )
         )}
       </div>

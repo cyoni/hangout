@@ -28,7 +28,7 @@ function MenubarRow({
       items-center space-x-2
       rounded-full px-3 py-2
       text-xl hover:bg-gray-100 hover:shadow-sm
-       ${externalClass}`}
+       ${externalClass ? externalClass : ""}`}
       >
         <Badge badgeContent={notifications} color="error">
           {Icon && <Icon className="h-6" />}
