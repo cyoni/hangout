@@ -6,8 +6,6 @@ import useEditProfile from "../../components/Profile/EditProfile/useEditProfile"
 import EditProfile from "../../components/Profile/EditProfile/EditProfile"
 import ProfileContent from "../../components/Profile/ProfileContent"
 import usePlace from "../../components/usePlace"
-import ButtonIntegration from "../../components/ButtonIntegration"
-import { Box, Tab, Tabs } from "@mui/material"
 
 interface Props {
   profile: Profile
@@ -18,7 +16,7 @@ export default function Profile({ profile }: Props) {
 
   const editProfileParams = useEditProfile(profile)
 
-  const { places, getPlaceFromObject } = usePlace(profile?.cityId)
+  const { places, getPlaceFromObject } = usePlace([profile.cityId])
   const place = getPlaceFromObject(profile?.cityId)
 
   console.log("new places", places)
@@ -34,11 +32,11 @@ export default function Profile({ profile }: Props) {
     )
   }
 
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(0)
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
+    setValue(newValue)
+  }
 
   return (
     <>
@@ -49,9 +47,6 @@ export default function Profile({ profile }: Props) {
       </HeaderImage>
       {console.log("profile_user_ place:", place)}
       <EditProfile editProfileParams={editProfileParams} place={place} />
-
-
-
 
       <div className="mx-auto w-[80%]">
         {profile ? (

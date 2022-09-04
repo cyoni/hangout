@@ -1,7 +1,9 @@
 import * as React from "react"
+import { formatDate } from "../lib/dates"
+import { getFullPlaceName } from "../lib/scripts/place"
 import generateRandomString from "../lib/scripts/strings"
 
-export default function TravelTimeLine({ itineraries }) {
+export default function TravelTimeLine({ itineraries, getPlaceFromObject }) {
   const Separator = () => {
     return <div className="h-11 ml-1 w-[3px] rounded-lg bg-slate-500"></div>
   }
@@ -9,23 +11,29 @@ export default function TravelTimeLine({ itineraries }) {
     return <span className="text-sm">○</span>
   }
   return (
-    <div className="p-2 basis-[30%]">
+    <div className="p-2 pr-3 basis-[400px]">
       {itineraries &&
-        itineraries.map((itinerary) => {
-          console.log("itineraryitinerary",itinerary)
+        itineraries.map((itinerary, index) => {
+          const place = getPlaceFromObject(itinerary.place.city_id)
           return (
             <React.Fragment key={generateRandomString(5)}>
-              <div className="flex space-x-3 items-center">
+              <div className="flex items-center w-full">
                 <Dot />
-                <div className="ml-4 font-bold">{itinerary.place.city_id}</div>
-                <div>{itinerary.startDate} - {itinerary.endDate}</div>
+                <div className="flex justify-between items-center w-full">
+                  <div className="ml-4 font-bold">
+                    {getFullPlaceName(place)}
+                  </div>
+                  <div className="text-sm">
+                    {formatDate(itinerary.startDate)} -{" "}
+                    {formatDate(itinerary.endDate)}
+                  </div>
+                </div>
               </div>
-              <Separator />
+
+              {index + 1 !== itineraries.length && <Separator />}
             </React.Fragment>
           )
         })}
-
-      
     </div>
   )
 }

@@ -13,6 +13,7 @@ import ChatModal from "../ChatModal"
 import EditIcon from "@mui/icons-material/Edit"
 import CustomAvatar from "../CustomAvatar"
 import useItinerary from "../useItinerary"
+import usePlace from "../usePlace"
 
 interface Props {
   profile: Profile
@@ -28,6 +29,16 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
     userIds: [profile.userId],
     isUser: true,
   })
+
+  console.log("userItineraryQuery.data", userItineraryQuery.data)
+
+  const { getFirstPlace, getPlaceFromObject, placeQuery } = usePlace(
+    userItineraryQuery.data &&
+      userItineraryQuery.data.map((travel) =>
+        travel.itineraries.map((itin) => itin.place.city_id)
+      )
+  )
+
   const { name, userId, picture } = profile
 
   console.log("session: ", session)
@@ -74,7 +85,7 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
 
           <Fab
             color="primary"
-            className="bg-blue-500 absolute top-14 h-10 w-10 right-0"
+            className="bg-blue-500 absolute top-14 h-10 w-10 right-0 z-[1]"
             aria-label="edit"
           >
             <EditIcon />
@@ -164,19 +175,25 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
         </TabPanel>
 
         <TabPanel value={value} index={1}>
-         
-            <div className="pl-2 text-3xl">Travels</div>
+          <div className="pl-2 text-3xl">Travels</div>
 
-            {userItineraryQuery.data && (
-              <>
-                {userItineraryQuery.data.map((userItinerary) => {
-                  {console.log("userItinerary",userItinerary)}
-                  return <div key={userItinerary._id}> <Itinerary {...userItinerary} /></div>
-                })}
-              </>
-            )}
-           
-          
+          {userItineraryQuery.data && placeQuery.data && (
+            <>
+              {userItineraryQuery.data.map((userItinerary) => {
+                {
+                  console.log("userItinerary", userItinerary)
+                }
+                return (
+                  <div key={userItinerary._id}>
+                    <Itinerary
+                      {...userItinerary}
+                      getPlaceFromObject={getPlaceFromObject}
+                    />
+                  </div>
+                )
+              })}
+            </>
+          )}
         </TabPanel>
 
         <TabPanel value={value} index={2}>

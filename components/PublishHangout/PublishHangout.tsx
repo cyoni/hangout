@@ -66,7 +66,6 @@ export default function PublishHangout({ place }: Props) {
 
   console.log("currentItinerary client", currentItinerary)
 
-
   const handleOnChange = (ref) => {
     // if (newPlace) {
     //   ref.current.value = ""
@@ -210,8 +209,12 @@ export default function PublishHangout({ place }: Props) {
         />
 
         <div className="mt-24">
-          <ButtonIntegration buttonClassName="px-10 " onClick={() => refetch()}>
-            Publish Itinerary Now
+          <ButtonIntegration
+            externalClass="w-fit mx-auto"
+            buttonClassName="btn px-10  "
+            onClick={() => refetch()}
+          >
+            Publish
           </ButtonIntegration>
         </div>
       </form>

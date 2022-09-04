@@ -3,8 +3,9 @@ import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
 import Typography from "@mui/material/Typography"
 import Box from "@mui/material/Box"
-import useTravelers from "./useTravelers"
 import CityPosts from "./CityPosts"
+import useItinerary from "../useItinerary"
+import Travels from "./Travels"
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -40,14 +41,12 @@ interface Props {
   posts: any
   place: Place
 }
-export default function CityPageTabs({ travelers, place }: Props) {
+export default function CityPageTabs({ place }: Props) {
   const [value, setValue] = React.useState(0)
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
   }
-
-  const { Travelers } = useTravelers()
 
   return (
     <Box
@@ -74,7 +73,7 @@ export default function CityPageTabs({ travelers, place }: Props) {
       </TabPanel>
 
       <TabPanel value={value} index={1}>
-        {<Travelers travelers={travelers} />}
+        {<Travels place={place} />}
       </TabPanel>
     </Box>
   )

@@ -48,7 +48,6 @@ export async function getUserItineraries({ userIds }) {
 }
 
 export async function getCityItineraries({ cityIds }) {
-
   const convertedCityArray = Array.isArray(cityIds)
     ? cityIds
     : convertStringToTypeArray(cityIds, Number)
@@ -68,6 +67,7 @@ export async function getCityItineraries({ cityIds }) {
           endDate: 1,
           userId: 1,
           description: 1,
+          profile: 1,
           itineraries: {
             $filter: {
               input: "$itineraries",

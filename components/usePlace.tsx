@@ -1,24 +1,22 @@
-import { arrayIncludes } from "@mui/x-date-pickers/internals/utils/utils"
 import { useQuery } from "@tanstack/react-query"
-import React, { useEffect, useState } from "react"
 import { getPlace } from "../lib/dbClient"
-import { getObjectKeys } from "../lib/scripts/objects"
 
-function usePlace(cityIds: string[]) {
+function usePlace(cityIds: number[]) {
+  console.log("USE PLACES CITY IDS", cityIds)
   const fetchPlaces = async (cityIds) => {
     console.log("fetchPlaces", cityIds)
     return await getPlace(cityIds)
   }
 
-  const query = useQuery(
+  const placeQuery = useQuery(
     ["city-data-controller", cityIds],
     async () => await fetchPlaces(cityIds),
     {
-      enabled: !!Array.isArray(cityIds),
+      enabled: !!Array.isArray(cityIds) && cityIds.length > 0,
     }
   )
 
-  const places = query.data
+  const places = placeQuery.data
 
   const getFirstPlace = (): Place => {
     console.log("cityIds..", cityIds)
@@ -30,7 +28,7 @@ function usePlace(cityIds: string[]) {
     return places ? { city_id: id, ...places[id] } : null
   }
 
-  return { getFirstPlace, places, getPlaceFromObject }
+  return { getFirstPlace, places, getPlaceFromObject, placeQuery }
 }
 
 export default usePlace
