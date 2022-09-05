@@ -23,6 +23,7 @@ model states {
   name         String
   country_id   Int
   country_code String
+  iso2 String
   city         cities? @relation(fields: [id], references: [state_id])
 }
 

@@ -17,23 +17,34 @@ interface Props {
   defaultValue?: string
   variant?: any
 }
-export default function AutoComplete({
-  id,
-  label,
-  fetchFunction,
-  getOptionLabel,
-  isOptionEqualToValue,
-  handleSelect,
-  placeholder,
-  disableUnderline,
-  disableClearable,
-  defaultValue,
-  variant = "outlined",
-}: Props) {
+
+export const CustomAutoComplete = (
+  {
+    id,
+    label,
+    fetchFunction,
+    getOptionLabel,
+    isOptionEqualToValue,
+    handleSelect,
+    placeholder,
+    disableUnderline,
+    disableClearable,
+    defaultValue,
+    variant = "outlined",
+  }: Props,
+  ref
+) => {
   const [open, setOpen] = React.useState(false)
   const [options, setOptions] = React.useState<readonly any[]>([])
   const [loading, setLoading] = React.useState(false)
   const [input, setInput] = React.useState<string>("")
+
+  React.useImperativeHandle(ref, () => ({
+    setAutoCompleteValue(value) {
+      console.log("setAutoCompleteValue", value)
+      setInput(value)
+    },
+  }))
 
   React.useEffect(() => {
     if (isNullOrEmpty(input)) return
@@ -56,7 +67,7 @@ export default function AutoComplete({
   }, [open])
 
   return (
-    <Autocomplete
+    <Autocomplete // Mui auto complete
       id={id}
       open={open}
       onOpen={() => {
@@ -74,6 +85,8 @@ export default function AutoComplete({
       options={options}
       loading={loading}
       freeSolo={true}
+      onInputChange={(e, v, r) => setInput(v)}
+      inputValue={input}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -98,3 +111,5 @@ export default function AutoComplete({
     />
   )
 }
+
+export const AutoComplete = React.forwardRef(CustomAutoComplete)

@@ -23,7 +23,8 @@ async function queryLocation(input) {
     country.id as country_id,
     country.name as country, 
     state.id as province_id,
-    state.name as province 
+    state.name as province,
+    state.iso2 as province_short 
     FROM cities as city 
     INNER JOIN countries as country ON country.id = city.country_id 
     INNER JOIN states as state ON city.state_id = state.id 

@@ -46,7 +46,7 @@ function Travels({ place }) {
         )}
 
         {!isLoading && Array.isArray(travelers) && travelers.length > 0 && (
-          <div className="grid grid-cols-2 gap-5  justify-center max-w-[600px]">
+          <div className="grid  grid-cols-[300px_300px]  gap-10  justify-center  items-center">
             {travelers.map((item, i) => {
               console.log("item", item)
               return (

@@ -10,10 +10,11 @@ import { dbAggregate, dbInsertMany } from "../../lib/mongoUtils"
 import { JoinProfiles } from "../../lib/queryUtils"
 import { convertStringToTypeArray } from "../../lib/scripts/arrays"
 
-export async function postNewItinerary({ itineraries }, userId) {
+export async function postNewItinerary({ itineraries, description }, userId) {
   const dataToDb = {
     userId,
     timestamp: Date.now(),
+    description,
     itineraries,
   }
   const data = [{ ...dataToDb }]

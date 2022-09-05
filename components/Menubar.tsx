@@ -15,6 +15,8 @@ import { isAuthenticated, isNotAuthenticated } from "../lib/session"
 import { useRouter } from "next/router"
 import { ListItemIcon, MenuItem } from "@mui/material"
 import Logout from "@mui/icons-material/Logout"
+import PersonIcon from "@mui/icons-material/Person"
+import SettingsIcon from "@mui/icons-material/Settings"
 
 function Menubar({ newMessages }) {
   const router = useRouter()
@@ -22,12 +24,21 @@ function Menubar({ newMessages }) {
   const renderMyAvatar = () => {
     return (
       <AvatarMenu>
-        <MenuItem  onClick={() => router.push("/profile")}>
+        <MenuItem onClick={() => router.push("/profile")}>
           <ListItemIcon>
-            <Logout fontSize="small" />
+            <PersonIcon fontSize="small" />
           </ListItemIcon>
           Profile
         </MenuItem>
+
+        <MenuItem>
+          <ListItemIcon>
+            <SettingsIcon fontSize="small" />
+          </ListItemIcon>
+          Account
+        </MenuItem>
+
+
         <MenuItem onClick={() => signOut()}>
           <ListItemIcon>
             <Logout fontSize="small" />
@@ -47,7 +58,7 @@ function Menubar({ newMessages }) {
           link="/messages"
           notifications={newMessages}
         />
-   
+
         <MenubarRow
           title="Publish hangout"
           Icon={PlusIcon}

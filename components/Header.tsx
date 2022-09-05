@@ -7,7 +7,7 @@ import { post } from "../lib/postman"
 import { isAuthenticated } from "../lib/session"
 import Menubar from "./Menubar"
 import LocationAutoComplete from "./LocationAutoComplete"
-import AutoComplete from "./AutoComplete"
+import {AutoComplete} from "./AutoComplete"
 import { getCitiesAutoComplete } from "../lib/AutoCompleteUtils"
 
 function Header() {
