@@ -17,7 +17,7 @@ function CityPosts({ place }) {
     page,
     setPage,
     totalPages,
-  } = usePosts(place)
+  } = usePosts({ cityId: place?.city_id })
 
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,

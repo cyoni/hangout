@@ -7,15 +7,29 @@ interface Props {
   picture: string
   userId?: string
   onClick?: Function
+  disabled?: boolean
 }
-function CustomAvatar({ name, picture, userId, className, onClick }: Props) {
+function CustomAvatar({
+  name,
+  picture,
+  userId,
+  className,
+  onClick,
+  disabled,
+}: Props) {
   return (
     <Avatar
-      className={`h-12 w-12 cursor-pointer ${className ? className : ""}`}
-      alt={name.charAt(0)}
+      className={`${disabled ? "" : "cursor-pointer"} shadow-xl ${
+        className ? className : ""
+      }`}
+      alt={name?.charAt(0)}
       src={picture}
       onClick={
-        onClick ? () => onClick() : () => window.open(`/profile/${userId}`)
+        !disabled
+          ? onClick
+            ? () => onClick()
+            : () => window.open(`/profile/${userId}`)
+          : null
       }
     />
   )

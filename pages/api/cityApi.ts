@@ -104,7 +104,7 @@ export async function GetPosts({ cityId, take, page = 1 }) {
             {
               $skip: (pageNumber - 1) * MAX_POSTS_PER_PAGE,
             },
-            { $limit: take ? take : MAX_POSTS_PER_PAGE },
+            { $limit: take ? Number(take) : MAX_POSTS_PER_PAGE },
             {
               $lookup: {
                 localField: "userId",
@@ -127,7 +127,7 @@ export async function GetPosts({ cityId, take, page = 1 }) {
     ],
   }
   const data = (await dbAggregate(request))?.[0]
-
+  console.log("DATA FROM API", data)
   const posts = data.posts
 
   // const nextPage =
@@ -213,6 +213,7 @@ export default async function handler(
         result = await GetPosts({
           cityId: req.query.cityId,
           page: req.query.page,
+          take: req.query.take || null,
         })
         break
       case GET_POST_COMMENTS:

@@ -1,14 +1,11 @@
 import "../styles/globals.scss"
 import Head from "next/head"
-import Script from "next/script"
 import Footer from "../components/Footer"
-import Layout from "../components/Layout"
+import Layout from "../components/Layout/Layout"
 import Header from "../components/Header"
 import { Toaster } from "react-hot-toast"
 import { getSession, SessionProvider } from "next-auth/react"
 import {
-  useQuery,
-  useQueryClient,
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query"
@@ -29,7 +26,7 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
 
         <Toaster />
 
-        <Layout Component={Component} pageProps={pageProps} />
+        <Layout Component={Component} pageProps={pageProps} session={session} />
         <Footer />
 
         <ReactQueryDevtools />

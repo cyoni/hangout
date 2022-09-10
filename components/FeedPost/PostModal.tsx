@@ -3,8 +3,10 @@ import { Avatar, TextField } from "@mui/material"
 import React, { useMemo } from "react"
 import toast from "react-hot-toast"
 import { unique } from "../../lib/scripts/arrays"
+import { getPastTime } from "../../lib/scripts/general"
 import ButtonIntegration from "../ButtonIntegration"
 import CircularButton from "../CircularButton"
+import CustomAvatar from "../CustomAvatar"
 import Spinner from "../Spinner"
 import usePlace from "../usePlace"
 import Comment from "./Comment"
@@ -46,15 +48,20 @@ function PostModal({ renderOptions, post }) {
     await commentQuery.refetch()
     toast.success("Done", { id: refreshToast })
   }
+
+  const name = post.profile[0].name
+  const picture = post.profile[0].picture
+  const timestamp = post.timestamp
+
   return (
     <div className="w-[80%] mx-auto mt-10">
       <div className="flex justify-between ml-2">
         <div className="flex space-x-2 mt-4">
-          <Avatar className="h-24 w-24" />
+          <CustomAvatar name={name} picture={picture} className="h-24 w-24" />
           <div>
-            <div className="text-3xl  mt-2 ">Yoni</div>
-            <p className="text-sm leading-5	">Tel Aviv, Israel</p>
-            <p className="text-sm leading-3	">2 hours ago</p>
+            <div className="text-3xl  mt-2 ">{name}</div>
+            <p className="text-sm leading-5	">{post.profile[0].cityId}</p>
+            <p className="text-sm leading-3	">{getPastTime(timestamp)}</p>
           </div>
         </div>
         <div>{renderOptions()}</div>

@@ -1,5 +1,5 @@
 import React from "react"
-import FavoriteCities from "./FavoriteCities"
+import FavoriteCities from "../FavoriteCities"
 
 function RightBlock({ places, cityIds, getPlaceFromObject }) {
   return (

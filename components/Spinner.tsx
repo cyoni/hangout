@@ -6,7 +6,7 @@ interface Props {
 }
 function Spinner({ className }: Props) {
   return (
-    <div className={className}>
+    <div className={`text-center ${className ? className : ""}`}>
       <Box>
         <CircularProgress />
       </Box>

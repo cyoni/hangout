@@ -1,13 +1,11 @@
 import {
-  PlusIcon,
   ChatBubbleBottomCenterTextIcon,
   EllipsisHorizontalCircleIcon,
-  CheckCircleIcon,
-  CheckIcon,
+  UserCircleIcon,
+  UserPlusIcon,
 } from "@heroicons/react/24/outline"
 import SendRoundedIcon from "@mui/icons-material/SendRounded"
 
-import { CircularProgress, IconButton, TextField, Tooltip } from "@mui/material"
 import React, { useState } from "react"
 import { getPastTime } from "../../lib/scripts/general"
 import Avatar from "../Avatar"
@@ -23,6 +21,8 @@ import { FOLLOW } from "../../lib/consts"
 import SendMessage from "../SendMessage/SendMessage"
 import PostModal from "./PostModal"
 import ChatModal from "../ChatModal"
+import CustomAvatar from "../CustomAvatar"
+import { IconButton, Tooltip } from "@mui/material"
 
 interface Props {
   post: Post
@@ -71,9 +71,9 @@ function FeedPost({ post }: Props) {
           callback={getMyFollowingList}
         >
           {following ? (
-            <CheckIcon className="h-5" />
+            <UserPlusIcon className="h-5" />
           ) : (
-            <PlusIcon className="h-6" />
+            <UserCircleIcon className="h-6" />
           )}
         </CircularButton>
 
@@ -89,11 +89,17 @@ function FeedPost({ post }: Props) {
 
   const following = isFollowing(post.userId)
   const name = post.profile[0].name
+  const picture = post.profile[0].picture
+
   return (
     <div className="mt-4 rounded-md bg-white p-2 shadow-sm cursor-pointer hover:shadow-md">
       <div className="flex justify-between">
         <div className="flex space-x-2">
-          <Avatar className="h-11 w-11" />
+          <CustomAvatar
+            name={name?.toUpperCase()}
+            picture={picture}
+            className="h-11 w-11"
+          />
           <div className="flex flex-col">
             <div className="font-bold">{name}</div>
             <div className="text-sm leading-3 ">{place?.city}</div>

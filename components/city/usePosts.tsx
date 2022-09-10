@@ -1,13 +1,16 @@
-import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query"
-import React, { useEffect, useState } from "react"
+import { useMutation, useQuery } from "@tanstack/react-query"
+import React, { useState } from "react"
 import toast from "react-hot-toast"
 import { GET_MESSAGES, POST_MESSAGE } from "../../lib/consts"
 import { CITY_API } from "../../lib/consts/apis"
-import { CITY_POST_MESSAGE } from "../../lib/consts/query"
 import { get, newGet, post } from "../../lib/postman"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 
-function usePosts(place: Place) {
+interface Props {
+  cityId: number
+  take?: number
+}
+function usePosts({ cityId, take }: Props) {
   const [messageInput, setMessageInput] = useState<string>("")
   const [page, setPage] = useState<number>(1)
   const [totalPages, setTotalPages] = useState<number>(0)
@@ -18,7 +21,7 @@ function usePosts(place: Place) {
       body: {
         method: POST_MESSAGE,
         message: messageInput,
-        cityId: place.city_id,
+        cityId,
       },
     })
   )
@@ -26,8 +29,9 @@ function usePosts(place: Place) {
   const fetchPosts = (pageParam: number) =>
     newGet(CITY_API, {
       method: GET_MESSAGES,
-      cityId: place.city_id,
+      cityId,
       page: pageParam,
+      take,
     })
 
   const postsQuery = useQuery(
@@ -42,6 +46,7 @@ function usePosts(place: Place) {
       onSuccess: (data) => {
         setTotalPages(data.totalPages)
       },
+      enabled: !isNaN(cityId),
     }
   )
 
