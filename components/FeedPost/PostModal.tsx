@@ -1,9 +1,13 @@
 import Refresh from "@mui/icons-material/Refresh"
 import { Avatar, TextField } from "@mui/material"
-import React, { useMemo } from "react"
+import { Session } from "next-auth"
+import { getSession } from "next-auth/react"
+import React, { useEffect, useMemo, useState } from "react"
 import toast from "react-hot-toast"
 import { unique } from "../../lib/scripts/arrays"
 import { getPastTime } from "../../lib/scripts/general"
+import { getFullPlaceName } from "../../lib/scripts/place"
+import { isNullOrEmpty } from "../../lib/scripts/strings"
 import ButtonIntegration from "../ButtonIntegration"
 import CircularButton from "../CircularButton"
 import CustomAvatar from "../CustomAvatar"
@@ -12,24 +16,29 @@ import usePlace from "../usePlace"
 import Comment from "./Comment"
 import useComment from "./useComment"
 
-function PostModal({ renderOptions, post }) {
+function PostModal({ renderOptions, post, place }) {
   const { sendComment, commentMutation, message, setMessage, commentQuery } =
     useComment(post._id)
+  const [session, setSession] = useState<Session>()
 
-  console.log("commentQuery", commentQuery.data)
+  useEffect(() => {
+    const x = async () => {
+      console.log("dfsgonerouginreoughnerugo")
+      setSession(await getSession())
+    }
+    x()
+  }, [])
+
+  console.log("COMMENT SESSION", session)
   const { data: comments } = commentQuery
-
-  console.log("my comments", comments)
 
   const getCityIds = useMemo(() => {
     if (comments) {
-      console.log("BRINGING CITY IDS....", comments?.length)
       return unique(comments.map((comment) => comment.profile[0].cityId))
     }
   }, [comments])
 
   const { places, getPlaceFromObject } = usePlace(getCityIds)
-  console.log("places", places)
 
   React.useEffect(() => {
     if (commentMutation.isSuccess) {
@@ -52,15 +61,21 @@ function PostModal({ renderOptions, post }) {
   const name = post.profile[0].name
   const picture = post.profile[0].picture
   const timestamp = post.timestamp
+  const isSubmitButtonDisabled = isNullOrEmpty(message)
 
   return (
     <div className="w-[80%] mx-auto mt-10">
       <div className="flex justify-between ml-2">
         <div className="flex space-x-2 mt-4">
-          <CustomAvatar name={name} picture={picture} className="h-24 w-24" />
+          <CustomAvatar
+            name={name}
+            picture={picture}
+            userId={post.userId}
+            className="h-24 w-24"
+          />
           <div>
             <div className="text-3xl  mt-2 ">{name}</div>
-            <p className="text-sm leading-5	">{post.profile[0].cityId}</p>
+            <p className="text-sm leading-5	">{getFullPlaceName(place)}</p>
             <p className="text-sm leading-3	">{getPastTime(timestamp)}</p>
           </div>
         </div>
@@ -82,7 +97,8 @@ function PostModal({ renderOptions, post }) {
           <div className="py-5 mt-5 space-y-5">
             <div className="flex justify-between">
               <div className="font-semibold text-xl">
-                {comments?.length} Comments
+                {comments.length} Comment
+                {comments.length != 1 ? "s" : ""}
               </div>
               <div>
                 <CircularButton
@@ -93,23 +109,31 @@ function PostModal({ renderOptions, post }) {
                 </CircularButton>
               </div>
             </div>
-
-            <TextField
-              id="outlined-multiline-flexible"
-              label="Join the conversation!"
-              className="w-full bg-white"
-              multiline
-              minRows={2}
-              maxRows={4}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
+            <div className="flex gap-4">
+              <CustomAvatar
+                name={session?.user.name}
+                picture={session?.user.image}
+                disabled
+                className="h-12 w-12"
+              />
+              <textarea
+                id="outlined-multiline-flexible"
+                placeholder="Join the conversation"
+                className="w-full bg-white outline-none"
+                value={message}
+                rows={4}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+            </div>
 
             <div className="flex mt-2 justify-end">
               <ButtonIntegration
-                buttonClassName="btn"
+                buttonClassName={`btn ${
+                  isSubmitButtonDisabled ? "disabled" : ""
+                }`}
                 onClick={sendComment}
                 callback={commentQuery.refetch}
+                disabled={isSubmitButtonDisabled}
               >
                 Send
               </ButtonIntegration>

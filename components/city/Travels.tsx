@@ -4,6 +4,7 @@ import {
 } from "@heroicons/react/24/outline"
 import { IconButton } from "@mui/material"
 import Link from "next/link"
+import { Router, useRouter } from "next/router"
 import React, { useState } from "react"
 import { formatDate } from "../../lib/dates"
 import { getFullPlaceName } from "../../lib/scripts/place"
@@ -15,13 +16,12 @@ import usePlace from "../usePlace"
 
 function Travels({ place }) {
   const [isModalMessageOpen, setIsModalMessageOpen] = useState<boolean>(false)
+  const router = useRouter()
 
   const { cityItineraryQuery } = useItinerary({
     isCity: true,
     cityIds: [place.city_id],
   })
-
-  console.log("abcdfg", place.city_id)
 
   const travelers = cityItineraryQuery.data
   console.log("travelers", travelers)
@@ -37,7 +37,15 @@ function Travels({ place }) {
 
   return (
     <div className="w-[60%] mx-auto ">
-      <div className="text-2xl">Travelers</div>
+      <div className="flex justify-between">
+        <div className="text-2xl">Travelers</div>
+        <button
+          className="btn"
+          onClick={() => router.push(`/publish-hangout/city/${place.city_id}`)}
+        >
+          Add travel
+        </button>
+      </div>
       <div className=" py-5 px-10 rounded-md shadow-md mt-4 bg-gray-50 min-h-[700px]">
         {isLoading && (
           <div className="relative">

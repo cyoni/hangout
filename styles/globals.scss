@@ -11,13 +11,13 @@
     text-lg font-medium text-white  min-w-[100px] min-h-[35px]
     hover:bg-blue-500;
   }
-  
+
   .disabled {
     @apply bg-blue-400 hover:bg-blue-400;
   }
 
   .btn-outline {
-    @apply h-9 rounded-md w-fit px-4 cursor-pointer transition  duration-300  hover:border-white hover:bg-blue-600 hover:text-white;
+    @apply h-9 rounded-md w-fit px-4 cursor-pointer transition duration-300  hover:border-white hover:bg-sky-600 hover:text-white;
   }
 
   .shared-frame {

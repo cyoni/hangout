@@ -1,15 +1,18 @@
-import { Avatar, AvatarGroup, TextField } from "@mui/material"
-import React, { useState } from "react"
+import { Avatar, AvatarGroup } from "@mui/material"
+import { useRouter } from "next/router"
+import React from "react"
+import { POST, TRAVEL } from "../../lib/consts"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import ButtonIntegration from "../ButtonIntegration"
 import usePosts from "../city/usePosts"
 import CustomAvatar from "../CustomAvatar"
 import FeedPost from "../FeedPost/FeedPost"
-import Loader from "../Loader"
 import Spinner from "../Spinner"
 
 function MiddleBlock({ session, recentTravelers }) {
   const userCityId = session?.place?.city_id
+  const cityName = session?.place?.city
+  const router = useRouter()
   const user = session?.user
   const { sendPost, postsQuery, messageInput, setMessageInput } = usePosts({
     cityId: userCityId,
@@ -35,11 +38,11 @@ function MiddleBlock({ session, recentTravelers }) {
   return (
     <div className="col-span-2 min-h-[400px] ">
       <div>
-        <div className="text-xl ">Recent Travelers to [city name]</div>
+        <div className="text-xl ">Recent Travelers to {cityName}</div>
         <div className="mt-3 flex flex-col rounded-sm  p-3 pb-2">
           <div className="mt-2 flex justify-center space-x-3">
             <AvatarGroup
-              total={25}
+              total={recentTravelers?.length}
               sx={{
                 "& .MuiAvatar-root": {
                   width: 80,
@@ -50,7 +53,10 @@ function MiddleBlock({ session, recentTravelers }) {
               {renderRecentTravelers()}
             </AvatarGroup>
           </div>
-          <button className=" btn-outline ml-auto mt-4 w-fit py-1 px-4 text-right ">
+          <button
+            className=" btn-outline ml-auto mt-4 w-fit py-1 px-4 text-right"
+            onClick={() => router.push(`city/${userCityId}?view=${TRAVEL}`)}
+          >
             Show all
           </button>
         </div>
@@ -99,6 +105,12 @@ function MiddleBlock({ session, recentTravelers }) {
               </div>
             )
           })}
+        <button
+          className="btn-outline mt-2 block ml-auto"
+          onClick={() => router.push(`city/${userCityId}?view=${POST}`)}
+        >
+          More
+        </button>
       </div>
     </div>
   )

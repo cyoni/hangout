@@ -2,8 +2,11 @@ import Link from "next/link"
 import React, { useState } from "react"
 import MenubarRow from "./MenubarRow"
 import {
+  BellAlertIcon,
+  BellIcon,
   ChatBubbleLeftEllipsisIcon,
   ChatBubbleLeftRightIcon,
+  GlobeEuropeAfricaIcon,
   HomeIcon,
   InboxIcon,
   PlusIcon,
@@ -23,7 +26,7 @@ function Menubar({ newMessages }) {
   const session = useSession()
   const renderMyAvatar = () => {
     return (
-      <AvatarMenu>
+      <AvatarMenu session={session}>
         <MenuItem onClick={() => router.push("/profile")}>
           <ListItemIcon>
             <PersonIcon fontSize="small" />
@@ -51,7 +54,7 @@ function Menubar({ newMessages }) {
   return (
     <div className="col-span-2 border-gray-100">
       <div className="flex items-center space-x-2">
-        <MenubarRow title="Notifications" Icon={HomeIcon} link="/" />
+        {/* <MenubarRow title="Notifications" Icon={BellAlertIcon} link="/" /> */}
         <MenubarRow
           title="Messages"
           Icon={ChatBubbleLeftRightIcon}
@@ -61,7 +64,7 @@ function Menubar({ newMessages }) {
 
         <MenubarRow
           title="Publish hangout"
-          Icon={PlusIcon}
+          Icon={GlobeEuropeAfricaIcon}
           link={`/publish-hangout/${
             router.query.city_id ? `city/${router.query.city_id}` : ""
           }`}

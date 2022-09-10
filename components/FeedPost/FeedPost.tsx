@@ -47,14 +47,13 @@ function FeedPost({ post }: Props) {
   } = useFollow()
 
   const handleMessageModal = () => {
-    console.log("$$")
     setIsModalMessageOpen(true)
   }
 
   const renderOptions = () => {
     return (
       <div className="flex items-center ">
-        <Tooltip title="Chat">
+        <Tooltip title="Send Message">
           <IconButton onClick={handleMessageModal}>
             <ChatBubbleBottomCenterTextIcon className="h-6" />
           </IconButton>
@@ -77,11 +76,11 @@ function FeedPost({ post }: Props) {
           )}
         </CircularButton>
 
-        <Tooltip title="Options">
+        {/* <Tooltip title="Options">
           <IconButton>
             <EllipsisHorizontalCircleIcon className="h-6" />
           </IconButton>
-        </Tooltip>
+        </Tooltip> */}
       </div>
     )
   }
@@ -119,7 +118,7 @@ function FeedPost({ post }: Props) {
         isOpen={isOpen}
         onRequestClose={() => setIsOpen(false)}
       >
-        <PostModal post={post} renderOptions={renderOptions} />
+        <PostModal post={post} place={place} renderOptions={renderOptions} />
       </ModalWrapper>
 
       <ChatModal

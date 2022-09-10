@@ -13,7 +13,26 @@ interface Props {
 function usePosts({ cityId, take }: Props) {
   const [messageInput, setMessageInput] = useState<string>("")
   const [page, setPage] = useState<number>(1)
-  const [totalPages, setTotalPages] = useState<number>(0)
+
+  const postsQuery = useQuery(
+    ["city-fetch-posts", page],
+    () => fetchPosts(page),
+    {
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+      keepPreviousData: true,
+      // getNextPageParam: (lastPage, allPages) => lastPage.data.nextPage,
+      // getPreviousPageParam: (firstPage, allPages) => firstPage.prevCursor,
+      onSuccess: (data) => {
+        setTotalPages(data.totalPages)
+      },
+      enabled: !isNaN(cityId),
+    }
+  )
+
+  const [totalPages, setTotalPages] = useState<number>(
+    postsQuery?.data?.totalPages || 0
+  )
 
   const sendPostMutation = useMutation(() =>
     post({
@@ -34,26 +53,13 @@ function usePosts({ cityId, take }: Props) {
       take,
     })
 
-  const postsQuery = useQuery(
-    ["city-fetch-posts", page],
-    () => fetchPosts(page),
-    {
-      staleTime: Infinity,
-      refetchOnWindowFocus: false,
-      keepPreviousData: true,
-      // getNextPageParam: (lastPage, allPages) => lastPage.data.nextPage,
-      // getPreviousPageParam: (firstPage, allPages) => firstPage.prevCursor,
-      onSuccess: (data) => {
-        setTotalPages(data.totalPages)
-      },
-      enabled: !isNaN(cityId),
-    }
-  )
-
   console.log("totalPages", totalPages)
 
   const sendPost = async () => {
-    if (isNullOrEmpty("messageInput")) return
+    if (isNullOrEmpty(messageInput)) {
+      toast.error("Post can't be empty")
+      return
+    }
     const refreshToast = toast.loading("Posting...")
     await sendPostMutation.mutateAsync()
     setMessageInput("")

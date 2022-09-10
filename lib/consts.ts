@@ -17,7 +17,7 @@ export const CityPostsTable = "city_posts"
 export const CITY_COMMENTS_TABLE = "city_comments"
 export const START_FOLLOW = "START_FOLLOW"
 export const STOP_FOLLOW = "STOP_FOLLOW"
-export const MAX_POSTS_PER_PAGE = 2
+export const MAX_POSTS_PER_PAGE = 5
 export const EMPTY_PROFILE_PICTURE =
   "https://akadem.org.il/wp-content/uploads/2020/05/blank-profile-picture-973460_640.png"
 
@@ -30,3 +30,5 @@ export const FOLLOW = "FOLLOW"
 export const POST_NEW_ITINERARY = "POST_NEW_ITINERARY"
 export const GET_CITY_ITINERARIES = "GET_CITY_ITINERARIES"
 export const GET_USER_ITINERARIES = "GET_USER_ITINERARIES"
+export const POST = "post"
+export const TRAVEL = "travel"

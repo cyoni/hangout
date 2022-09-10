@@ -6,6 +6,8 @@ import Box from "@mui/material/Box"
 import CityPosts from "./CityPosts"
 import useItinerary from "../useItinerary"
 import Travels from "./Travels"
+import { useRouter } from "next/router"
+import { POST, TRAVEL } from "../../lib/consts"
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -15,7 +17,7 @@ interface TabPanelProps {
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props
-
+  const router = useRouter()
   return (
     <div
       role="tabpanel"
@@ -29,18 +31,31 @@ function TabPanel(props: TabPanelProps) {
   )
 }
 
-function a11yProps(index: number) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  }
-}
-
 interface Props {
   place: Place
 }
 export default function CityPageTabs({ place }: Props) {
-  const [value, setValue] = React.useState(0)
+  const router = useRouter()
+  const POSTS_CODE = 0
+  const TRAVEL_CODE = 1
+  const getView = () => {
+    if (router.query.view === POST) {
+      return POSTS_CODE
+    } else if (router.query.view === TRAVEL) {
+      return TRAVEL_CODE
+    } else {
+      return TRAVEL_CODE
+    }
+  }
+
+  const [value, setValue] = React.useState(getView())
+
+  const changeTab = (index: number) => {
+    return {
+      id: `simple-tab-${index}`,
+      "aria-controls": `simple-tabpanel-${index}`,
+    }
+  }
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
@@ -61,8 +76,8 @@ export default function CityPageTabs({ place }: Props) {
         }}
       >
         <Tabs value={value} onChange={handleChange}>
-          <Tab label="Posts" {...a11yProps(0)} />
-          <Tab label="Travelers" {...a11yProps(1)} />
+          <Tab label="Posts" {...changeTab(0)} />
+          <Tab label="Travelers" {...changeTab(1)} />
         </Tabs>
       </Box>
 

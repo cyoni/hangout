@@ -1,24 +1,18 @@
 import * as React from "react"
 import Box from "@mui/material/Box"
 import Menu from "@mui/material/Menu"
-import MenuItem from "@mui/material/MenuItem"
-import ListItemIcon from "@mui/material/ListItemIcon"
-import Divider from "@mui/material/Divider"
 import IconButton from "@mui/material/IconButton"
-import Typography from "@mui/material/Typography"
-import Tooltip from "@mui/material/Tooltip"
-import PersonAdd from "@mui/icons-material/PersonAdd"
-import Settings from "@mui/icons-material/Settings"
-import Logout from "@mui/icons-material/Logout"
-import Avatar from "./Avatar"
+import CustomAvatar from "./CustomAvatar"
 
-function AvatarMenu({ children }) {
+function AvatarMenu({ session, children }) {
   interface Props {
     title: string
     url?: string
     onClick?: Function
     className?: string
   }
+
+  console.log("$#%$#%#$%#", session)
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
@@ -39,7 +33,12 @@ function AvatarMenu({ children }) {
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
         >
-          <Avatar className="w-10 h-10"></Avatar>
+          <CustomAvatar
+            name={session?.data?.user.name}
+            picture={session?.data?.user.image}
+            disabled
+            className="w-10 h-10 transition duration-100 hover:scale-110"
+          />
         </IconButton>
       </Box>
       <Menu

@@ -74,7 +74,7 @@ function CityPosts({ place }) {
                   )
                 })}
               </div>
-
+                  {console.log("totalPag@estotalPages",totalPages)}
               <Pagination
                 className="w-fit mx-auto my-5"
                 count={totalPages}
