@@ -68,7 +68,7 @@ async function PostComment({ message, postId }, userId) {
   return { message: "comment uploaded successfully" }
 }
 
-async function GetPosts({ cityId, page }) {
+export async function GetPosts({ cityId, take, page = 1 }) {
   const validPlaces = await getValidCities([cityId])
   const keys = getObjectKeys(validPlaces)
 
@@ -77,9 +77,6 @@ async function GetPosts({ cityId, page }) {
   console.log("cityapi page:", page)
   const pageNumber = Number(page)
   if (pageNumber < 1) return { error: "page number must be greater than 0" }
-
-  //const takeFrom = page > 0 ? page : Date.now()
-  // console.log("takeFrom", Number(takeFrom))
 
   const request: AggregateReq = {
     collection: CITY_POSTS_TABLE,
@@ -107,7 +104,7 @@ async function GetPosts({ cityId, page }) {
             {
               $skip: (pageNumber - 1) * MAX_POSTS_PER_PAGE,
             },
-            { $limit: MAX_POSTS_PER_PAGE },
+            { $limit: take ? take : MAX_POSTS_PER_PAGE },
             {
               $lookup: {
                 localField: "userId",

@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
-import React, { useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { getFullPlaceName } from "../../lib/scripts/place"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import Itinerary from "../Itinerary"
@@ -14,6 +14,8 @@ import EditIcon from "@mui/icons-material/Edit"
 import CustomAvatar from "../CustomAvatar"
 import useItinerary from "../useItinerary"
 import usePlace from "../usePlace"
+import { getCitiesAutoComplete } from "../../lib/AutoCompleteUtils"
+import { unique } from "../../lib/scripts/arrays"
 
 interface Props {
   profile: Profile
@@ -23,6 +25,7 @@ interface Props {
 
 const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
   const [isModalMessageOpen, setIsModalMessageOpen] = useState<boolean>(false)
+  const [cityIds, setCityIds] = useState<number[]>([])
   const session = useSession()
   const { follow, unFollow, isFollowing } = useFollow()
   const { userItineraryQuery } = useItinerary({
@@ -32,12 +35,22 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
 
   console.log("userItineraryQuery.data", userItineraryQuery.data)
 
-  const { getFirstPlace, getPlaceFromObject, placeQuery } = usePlace(
-    userItineraryQuery.data &&
-      userItineraryQuery.data.map((travel) =>
-        travel.itineraries.map((itin) => itin.place.city_id)
-      )
-  )
+  const { getFirstPlace, getPlaceFromObject, placeQuery } = usePlace(cityIds)
+
+  useEffect(() => {
+    if (userItineraryQuery.data) {
+      const newData = []
+      userItineraryQuery.data.forEach((travel) => {
+        travel.itineraries.forEach((itin) => {
+          newData.push(itin?.place?.city_id)
+        })
+      })
+      setCityIds(unique(newData))
+    }
+  }, [userItineraryQuery.data])
+
+  const setCities = new Set<number>()
+  console.log("setCities", setCities)
 
   const { name, userId, picture } = profile
 

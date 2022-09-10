@@ -37,8 +37,6 @@ function a11yProps(index: number) {
 }
 
 interface Props {
-  travelers: any
-  posts: any
   place: Place
 }
 export default function CityPageTabs({ place }: Props) {
@@ -69,11 +67,11 @@ export default function CityPageTabs({ place }: Props) {
       </Box>
 
       <TabPanel value={value} index={0}>
-        {<CityPosts place={place} />}
+        <CityPosts place={place} />
       </TabPanel>
 
       <TabPanel value={value} index={1}>
-        {<Travels place={place} />}
+        <Travels place={place} />
       </TabPanel>
     </Box>
   )

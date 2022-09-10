@@ -60,12 +60,10 @@ function CityPosts({ place }) {
           </div>
         ) : (
           pages && (
-            <div>
+            <>
               <div className="relative">
                 {postsQuery.isFetching && <Loader />}
-
                 <div className="border-t mt-5 mb-10"></div>
-
                 {pages.map((post, index) => {
                   return (
                     <Fragment key={index}>
@@ -83,7 +81,7 @@ function CityPosts({ place }) {
                 page={page}
                 onChange={handlePageChange}
               />
-            </div>
+            </>
           )
         )}
       </div>

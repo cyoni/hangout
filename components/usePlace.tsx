@@ -3,6 +3,7 @@ import { getPlace } from "../lib/dbClient"
 
 function usePlace(cityIds: number[]) {
   console.log("USE PLACES CITY IDS", cityIds)
+
   const fetchPlaces = async (cityIds) => {
     console.log("fetchPlaces", cityIds)
     return await getPlace(cityIds)

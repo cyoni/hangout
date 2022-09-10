@@ -123,18 +123,15 @@ export default function PublishHangout({ place }: Props) {
             ref={autoCompleteRef}
           />
         </div>
-        {console.log(
-          "currentItinerary?.startDate",
-          currentItinerary?.startDate
-        )}
+
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Stack spacing={3}>
             <MobileDatePicker
               label="When are you arriving?"
-              value={currentItinerary?.startDate}
+              value={formatDate(currentItinerary?.startDate)}
               onChange={(newValue) => {
                 console.log("newValue", newValue)
-                updateItinerary("startDate", formatDate(newValue)) //setStartDate(newValue)
+                updateItinerary("startDate", newValue) //setStartDate(newValue)
               }}
               renderInput={(params) => <TextField {...params} />}
             />
@@ -144,10 +141,10 @@ export default function PublishHangout({ place }: Props) {
           <Stack spacing={3}>
             <MobileDatePicker
               label="When are you leaving?"
-              value={currentItinerary?.endDate}
+              value={formatDate(currentItinerary?.endDate)}
               onChange={(newValue) => {
                 console.log("endDate newValue", newValue)
-                updateItinerary("endDate", formatDate(newValue))
+                updateItinerary("endDate", newValue)
               }}
               renderInput={(params) => <TextField {...params} />}
             />

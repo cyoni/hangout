@@ -40,6 +40,8 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
 MyApp.getInitialProps = async (context) => {
   const session = await getSession(context)
 
+  // check inbox here
+  
   return {
     pageProps: { session },
   }

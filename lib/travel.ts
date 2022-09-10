@@ -4,6 +4,8 @@ import {
   USERS_COLLECTION,
 } from "./consts"
 import { dbAggregate, dbFind } from "./mongoUtils"
+import { isNullOrEmpty } from "./scripts/strings"
+import { JoinProfiles } from "./queryUtils"
 
 const formatDate = (date) => {
   let d = new Date(date)
@@ -40,6 +42,53 @@ const addEmptyProfileImageIfNeeded = (results) => {
   }
 }
 
+export async function getRecentTravelersByCity(cityId: number) {
+  if (isNullOrEmpty(cityId)) return null
+  const now = Date.now()
+  const result = await dbAggregate({
+    collection: TRAVELLING_TABLE,
+    params: [
+      {
+        $match: {
+          $and: [
+            { "itineraries.place.city_id": cityId },
+            { "itineraries.place.city_id": { $eq: cityId } },
+            { "itineraries.startDate": { $gt: new Date() } },
+          ],
+        },
+      },
+      JoinProfiles(),
+      {
+        $project: {
+          userId: 1,
+          profile: 1,
+          itinerary: {
+            $filter: {
+              input: "$itineraries",
+              as: "travel",
+              cond: {
+                $and: [
+                  { $eq: ["$$travel.place.city_id", cityId] },
+                  { $gt: ["$$travel.startDate", new Date()] },
+                ],
+              },
+            },
+          },
+        },
+      },
+      {
+        $sort: {
+          "itinerary.startDate": 1,
+        },
+      },
+      {
+        $limit: 1,
+      },
+    ],
+  })
+  console.log("result: ", JSON.stringify(result))
+  return result
+}
 
 export async function getTravelContent(userId) {
   if (!userId || userId === undefined) {

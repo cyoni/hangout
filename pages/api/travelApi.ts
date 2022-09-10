@@ -11,6 +11,7 @@ import { JoinProfiles } from "../../lib/queryUtils"
 import { convertStringToTypeArray } from "../../lib/scripts/arrays"
 
 export async function postNewItinerary({ itineraries, description }, userId) {
+  
   const dataToDb = {
     userId,
     timestamp: Date.now(),

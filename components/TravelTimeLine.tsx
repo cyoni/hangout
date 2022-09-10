@@ -14,13 +14,13 @@ export default function TravelTimeLine({ itineraries, getPlaceFromObject }) {
     <div className="p-2 pr-3 basis-[400px]">
       {itineraries &&
         itineraries.map((itinerary, index) => {
-          const place = getPlaceFromObject(itinerary.place.city_id)
+          const place = getPlaceFromObject(itinerary?.place?.city_id)
           return (
             <React.Fragment key={generateRandomString(5)}>
               <div className="flex items-center w-full">
                 <Dot />
-                <div className="flex justify-between items-center w-full">
-                  <div className="ml-4 font-bold">
+                <div className="ml-4">
+                  <div className=" font-bold">
                     {getFullPlaceName(place)}
                   </div>
                   <div className="text-sm">
