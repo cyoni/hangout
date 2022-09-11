@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query"
 import React, { useState } from "react"
 import { GET_POST_COMMENTS, POST_COMMENT } from "../../lib/consts"
 import { CITY_API } from "../../lib/consts/apis"
@@ -6,11 +6,28 @@ import { get, newGet, post } from "../../lib/postman"
 import { POST_COMMENTS_KEY } from "../../lib/queries"
 
 function useComment(postId) {
-  const [message, setMessage] = useState<string>()
+  const [message, setMessage] = useState<string>("")
+  const [totalComments, setTotalComments] = useState<number>(null)
 
-  const commentQuery = useQuery([POST_COMMENTS_KEY, postId], async () => {
-    return newGet(CITY_API, { method: GET_POST_COMMENTS, postId })
-  })
+  const commentQuery = useInfiniteQuery(
+    [POST_COMMENTS_KEY, postId],
+    async ({ pageParam = 1 }) => {
+      return newGet(CITY_API, {
+        method: GET_POST_COMMENTS,
+        page: pageParam,
+        postId,
+      })
+    },
+    {
+      getNextPageParam: (lastPage, allPages) => lastPage.nextPage,
+      refetchOnWindowFocus: false,
+      keepPreviousData: true,
+      staleTime: Infinity,
+      onSuccess: (data) => {
+        setTotalComments(data.pages[data.pages.length - 1]?.totalComments)
+      },
+    }
+  )
 
   const triggerCommentMutation = (body) => {
     return post({
@@ -32,7 +49,14 @@ function useComment(postId) {
     setMessage("")
   }
 
-  return { commentQuery, sendComment, commentMutation, message, setMessage }
+  return {
+    commentQuery,
+    sendComment,
+    commentMutation,
+    message,
+    setMessage,
+    totalComments,
+  }
 }
 
 export default useComment

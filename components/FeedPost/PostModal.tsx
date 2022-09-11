@@ -2,7 +2,7 @@ import Refresh from "@mui/icons-material/Refresh"
 import { Avatar, TextField } from "@mui/material"
 import { Session } from "next-auth"
 import { getSession } from "next-auth/react"
-import React, { useEffect, useMemo, useState } from "react"
+import React, { Fragment, useEffect, useMemo, useState } from "react"
 import toast from "react-hot-toast"
 import { unique } from "../../lib/scripts/arrays"
 import { getPastTime } from "../../lib/scripts/general"
@@ -17,26 +17,37 @@ import Comment from "./Comment"
 import useComment from "./useComment"
 
 function PostModal({ renderOptions, post, place }) {
-  const { sendComment, commentMutation, message, setMessage, commentQuery } =
-    useComment(post._id)
+  const {
+    sendComment,
+    commentMutation,
+    message,
+    setMessage,
+    commentQuery,
+    totalComments,
+  } = useComment(post._id)
+
   const [session, setSession] = useState<Session>()
 
   useEffect(() => {
-    const x = async () => {
-      console.log("dfsgonerouginreoughnerugo")
+    const loadSession = async () => {
       setSession(await getSession())
     }
-    x()
+    loadSession()
   }, [])
 
   console.log("COMMENT SESSION", session)
-  const { data: comments } = commentQuery
+  const { data } = commentQuery
 
   const getCityIds = useMemo(() => {
-    if (comments) {
-      return unique(comments.map((comment) => comment.profile[0].cityId))
+    if (data) {
+      console.log("DATA IS: ", data)
+      return unique(
+        data.pages[data.pages.length - 1].comments.map(
+          (comment) => comment.profile[0].cityId
+        )
+      )
     }
-  }, [comments])
+  }, [data])
 
   const { places, getPlaceFromObject } = usePlace(getCityIds)
 
@@ -82,11 +93,11 @@ function PostModal({ renderOptions, post, place }) {
         <div>{renderOptions()}</div>
       </div>
 
-      <div className=" border rounded-md p-2 min-h-[150px] my-5">
+      <div className="border rounded-md p-2 min-h-[150px] my-5">
         {post.message}
       </div>
 
-      <div className="min-h-[150px]  mt-3">
+      <div className="min-h-[150px] mt-3">
         {commentQuery.isLoading && (
           <div className="mx-auto w-fit mt-10">
             <Spinner />
@@ -95,10 +106,10 @@ function PostModal({ renderOptions, post, place }) {
 
         {commentQuery.isSuccess && (
           <div className="py-5 mt-5 space-y-5">
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
               <div className="font-semibold text-xl">
-                {comments.length} Comment
-                {comments.length != 1 ? "s" : ""}
+                {totalComments} Comment
+                {totalComments != 1 ? "s" : ""}
               </div>
               <div>
                 <CircularButton
@@ -140,15 +151,33 @@ function PostModal({ renderOptions, post, place }) {
             </div>
 
             <div className="flex flex-col space-y-7">
-              {comments.map((comment: IComment) => {
-                const cityId = comment?.profile[0]?.cityId
+              {data.pages?.map((group, i) => {
                 return (
-                  <div key={comment._id}>
-                    <Comment {...comment} place={getPlaceFromObject(cityId)} />
-                  </div>
+                  <Fragment key={i}>
+                    {group.comments?.map((comment: IComment) => {
+                      const cityId = comment.profile[0]?.cityId
+                      return (
+                        <div key={comment._id}>
+                          <Comment
+                            {...comment}
+                            place={getPlaceFromObject(cityId)}
+                          />
+                        </div>
+                      )
+                    })}
+                  </Fragment>
                 )
               })}
             </div>
+            <ButtonIntegration
+              externalClass={`btn w-fit mx-auto ${
+                !commentQuery.hasNextPage ? "disabled" : ""
+              }`}
+              disabled={!commentQuery.hasNextPage}
+              onClick={() => commentQuery.fetchNextPage()}
+            >
+              Load More
+            </ButtonIntegration>
           </div>
         )}
       </div>

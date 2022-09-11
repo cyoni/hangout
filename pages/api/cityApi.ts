@@ -98,7 +98,6 @@ export async function GetPosts({ cityId, take, page = 1 }) {
             {
               $match: {
                 cityId: Number(keys[0]),
-                //  timestamp: { $lt: Number(takeFrom) },
               },
             },
             {
@@ -130,13 +129,6 @@ export async function GetPosts({ cityId, take, page = 1 }) {
   console.log("DATA FROM API", data)
   const posts = data.posts
 
-  // const nextPage =
-  //   data.metadata.length > 0 &&
-  //   (pageNumber - 1) * MAX_POSTS_PER_PAGE + posts.length !==
-  //     data.metadata[0].count
-  //     ? pageNumber + 1
-  //     : undefined
-
   const result = {
     posts,
     totalPages: data.metadata[0]
@@ -147,22 +139,62 @@ export async function GetPosts({ cityId, take, page = 1 }) {
   return result
 }
 
-async function GetPostComments({ postId }) {
+async function GetPostComments({ postId, page }) {
   if (isNullOrEmpty(postId)) return { error: "Post id is empty." }
-  const result = await dbAggregate({
+  const pageNumber = Number(page)
+  if (isNaN(pageNumber) || pageNumber < 1)
+    return { error: "Page number is invalid. Got: ", pageNumber }
+
+  const request = {
     collection: CITY_COMMENTS_TABLE,
     params: [
       {
-        $match: {
-          postId,
+        $facet: {
+          metadata: [
+            {
+              $match: {
+                postId,
+              },
+            },
+            {
+              $count: "count",
+            },
+          ],
+          comments: [
+            {
+              $match: {
+                postId,
+              },
+            },
+            { $sort: { timestamp: -1 } },
+            { $skip: (pageNumber - 1) * MAX_POSTS_PER_PAGE },
+            { $limit: MAX_POSTS_PER_PAGE },
+            JoinProfiles(),
+          ],
         },
       },
-      {
-        $sort: { timestamp: -1 },
-      },
-      JoinProfiles(),
     ],
-  })
+  }
+
+  const data = (await dbAggregate(request))?.[0]
+
+  console.log("Comments result:", data)
+
+  const nextPage =
+    data.metadata.length > 0 &&
+    (pageNumber - 1) * MAX_POSTS_PER_PAGE + data.comments.length !==
+      data.metadata[0].count
+      ? pageNumber + 1
+      : undefined
+
+  const result = {
+    comments: data.comments,
+    totalComments: data.metadata[0] ? data.metadata[0].count : 0,
+    totalPages: data.metadata[0]
+      ? Math.ceil(data.metadata[0].count / MAX_POSTS_PER_PAGE)
+      : 0,
+    nextPage,
+  }
 
   return result
 }
