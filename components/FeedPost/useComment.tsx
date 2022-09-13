@@ -7,7 +7,6 @@ import { POST_COMMENTS_KEY } from "../../lib/queries"
 
 function useComment(postId) {
   const [message, setMessage] = useState<string>("")
-  const [totalComments, setTotalComments] = useState<number>(null)
 
   const commentQuery = useInfiniteQuery(
     [POST_COMMENTS_KEY, postId],
@@ -23,11 +22,12 @@ function useComment(postId) {
       refetchOnWindowFocus: false,
       keepPreviousData: true,
       staleTime: Infinity,
-      onSuccess: (data) => {
-        setTotalComments(data.pages[data.pages.length - 1]?.totalComments)
-      },
     }
   )
+
+  const totalComments =
+    commentQuery.isSuccess &&
+    commentQuery.data.pages[commentQuery.data.pages.length - 1]?.totalComments
 
   const triggerCommentMutation = (body) => {
     return post({

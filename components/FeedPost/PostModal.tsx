@@ -73,6 +73,10 @@ function PostModal({ renderOptions, post, place }) {
   const picture = post.profile[0].picture
   const timestamp = post.timestamp
   const isSubmitButtonDisabled = isNullOrEmpty(message)
+  const hasData =
+    commentQuery.isSuccess &&
+    Array.isArray(data.pages[0]?.comments) &&
+    data.pages[0].comments.length > 0
 
   return (
     <div className="w-[80%] mx-auto mt-10">
@@ -92,11 +96,10 @@ function PostModal({ renderOptions, post, place }) {
         </div>
         <div>{renderOptions()}</div>
       </div>
-
       <div className="border rounded-md p-2 min-h-[150px] my-5">
         {post.message}
       </div>
-
+      
       <div className="min-h-[150px] mt-3">
         {commentQuery.isLoading && (
           <div className="mx-auto w-fit mt-10">
@@ -105,79 +108,83 @@ function PostModal({ renderOptions, post, place }) {
         )}
 
         {commentQuery.isSuccess && (
-          <div className="py-5 mt-5 space-y-5">
-            <div className="flex justify-between items-center">
-              <div className="font-semibold text-xl">
-                {totalComments} Comment
-                {totalComments != 1 ? "s" : ""}
+          <div className="py-5 mt-5">
+            <div className="space-y-5">
+              <div className="flex justify-between items-center">
+                <div className="font-semibold text-xl">
+                  {totalComments} Comment
+                  {totalComments != 1 ? "s" : ""}
+                </div>
+                <div>
+                  <CircularButton
+                    circularProgressColor="text-blue-500"
+                    onClick={() => refresh()}
+                  >
+                    <Refresh className="cursor-pointer text-gray-400 transition duration-75 hover:rotate-180" />
+                  </CircularButton>
+                </div>
               </div>
-              <div>
-                <CircularButton
-                  circularProgressColor="text-blue-500"
-                  onClick={() => refresh()}
+              <div className="flex gap-4">
+                <CustomAvatar
+                  name={session?.user.name}
+                  picture={session?.user.image}
+                  disabled
+                  className="h-12 w-12"
+                />
+                <textarea
+                  id="outlined-multiline-flexible"
+                  placeholder="Join the conversation"
+                  className="w-full bg-white outline-none"
+                  value={message}
+                  rows={4}
+                  onChange={(e) => setMessage(e.target.value)}
+                />
+              </div>
+
+              <div className="flex mt-2 justify-end">
+                <ButtonIntegration
+                  buttonClassName={`btn ${
+                    isSubmitButtonDisabled ? "disabled" : ""
+                  }`}
+                  onClick={sendComment}
+                  callback={commentQuery.refetch}
+                  disabled={isSubmitButtonDisabled}
                 >
-                  <Refresh className="cursor-pointer text-gray-400 transition duration-75 hover:rotate-180" />
-                </CircularButton>
+                  Send
+                </ButtonIntegration>
+              </div>
+
+              <div className="flex flex-col space-y-7">
+                {data.pages?.map((group, i) => {
+                  return (
+                    <Fragment key={i}>
+                      {group.comments?.map((comment: IComment) => {
+                        const cityId = comment.profile[0]?.cityId
+                        return (
+                          <div key={comment._id}>
+                            <Comment
+                              {...comment}
+                              place={getPlaceFromObject(cityId)}
+                            />
+                          </div>
+                        )
+                      })}
+                    </Fragment>
+                  )
+                })}
               </div>
             </div>
-            <div className="flex gap-4">
-              <CustomAvatar
-                name={session?.user.name}
-                picture={session?.user.image}
-                disabled
-                className="h-12 w-12"
-              />
-              <textarea
-                id="outlined-multiline-flexible"
-                placeholder="Join the conversation"
-                className="w-full bg-white outline-none"
-                value={message}
-                rows={4}
-                onChange={(e) => setMessage(e.target.value)}
-              />
-            </div>
-
-            <div className="flex mt-2 justify-end">
+            {!commentQuery.isLoading && hasData && (
               <ButtonIntegration
-                buttonClassName={`btn ${
-                  isSubmitButtonDisabled ? "disabled" : ""
+                externalClass={`btn w-fit mx-auto mt-10 ${
+                  !commentQuery.hasNextPage ? "disabled" : ""
                 }`}
-                onClick={sendComment}
-                callback={commentQuery.refetch}
-                disabled={isSubmitButtonDisabled}
+                disabled={!commentQuery.hasNextPage}
+                onClick={() => commentQuery.fetchNextPage()}
               >
-                Send
+                Load More
               </ButtonIntegration>
-            </div>
-
-            <div className="flex flex-col space-y-7">
-              {data.pages?.map((group, i) => {
-                return (
-                  <Fragment key={i}>
-                    {group.comments?.map((comment: IComment) => {
-                      const cityId = comment.profile[0]?.cityId
-                      return (
-                        <div key={comment._id}>
-                          <Comment
-                            {...comment}
-                            place={getPlaceFromObject(cityId)}
-                          />
-                        </div>
-                      )
-                    })}
-                  </Fragment>
-                )
-              })}
-            </div>
-            <ButtonIntegration
-              externalClass={`btn w-fit mx-auto ${
-                !commentQuery.hasNextPage ? "disabled" : ""
-              }`}
-              disabled={!commentQuery.hasNextPage}
-              onClick={() => commentQuery.fetchNextPage()}
-            >
-              Load More
-            </ButtonIntegration>
+            )}
           </div>
         )}
       </div>
