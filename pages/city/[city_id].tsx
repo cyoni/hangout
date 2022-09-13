@@ -80,7 +80,7 @@ export async function getServerSideProps(context) {
   try {
     const user = await getToken(context)
 
-    const city_id = Number(context.params.city_id)
+    const city_id = Number(context.query.city_id)
 
     console.log("cityQueryCode", city_id)
 

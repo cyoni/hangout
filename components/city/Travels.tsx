@@ -5,16 +5,19 @@ import {
 import { IconButton } from "@mui/material"
 import Link from "next/link"
 import { Router, useRouter } from "next/router"
-import React, { useState } from "react"
+import React, { Fragment, useState } from "react"
 import { formatDate } from "../../lib/dates"
 import { getFullPlaceName } from "../../lib/scripts/place"
+import ButtonIntegration from "../ButtonIntegration"
 import ChatModal from "../ChatModal"
 import CustomAvatar from "../CustomAvatar"
+import Loader from "../Loader"
 import Spinner from "../Spinner"
 import useItinerary from "../useItinerary"
 import usePlace from "../usePlace"
 
 function Travels({ place }) {
+
   const [isModalMessageOpen, setIsModalMessageOpen] = useState<boolean>(false)
   const router = useRouter()
 
@@ -24,14 +27,17 @@ function Travels({ place }) {
   })
 
   const travelers = cityItineraryQuery.data
+  const hasData =
+    Array.isArray(travelers?.pages) && travelers.pages[0]?.travelers?.length > 0
+
   console.log("travelers", travelers)
-  const cityIds = travelers?.map((travel) => {
-    return travel.profile[0].cityId
-  })
+  const cityIds: number[] = travelers?.pages.map((page) =>
+    page?.travelers?.map((travel) => travel.profile[0].cityId)
+  )
 
   const { places, getPlaceFromObject, placeQuery } = usePlace([cityIds])
 
-  const isLoading = cityItineraryQuery.isFetching || placeQuery.isFetching
+  const isLoading = cityItineraryQuery.isFetching 
 
   console.log("travelers city ids", cityIds)
 
@@ -47,76 +53,80 @@ function Travels({ place }) {
         </button>
       </div>
       <div className=" py-5 px-10 rounded-md shadow-md mt-4 bg-gray-50 min-h-[700px]">
-        {isLoading && (
-          <div className="relative">
-            <Spinner className="absolute top-0 left-1/2 mt-10" />
-          </div>
-        )}
-
-        {!isLoading && Array.isArray(travelers) && travelers.length > 0 && (
+        {!travelers && <Spinner className="top-0 left-1/2 mt-10" />}
+        {hasData && travelers.pages.length > 0 && (
           <div>
-            <div className="grid grid-cols-[300px_300px]  gap-10  justify-center  items-center">
-              {travelers.map((item, i) => {
-                console.log("item", item)
-                return (
-                  <>
-                    <div className="mt-5 flex max-w-[400px] flex-col rounded-md px-5 py-5 shadow-md hover:shadow-lg bg-white">
-                      <div className="flex items-center justify-between ">
-                        <div className="font-bold capitalize">
-                          {item.profile.name}
-                        </div>
-                        <IconButton>
-                          <ChatBubbleLeftEllipsisIcon
-                            className="h-6 z-50"
-                            onClick={() => setIsModalMessageOpen(true)}
-                          />
-                        </IconButton>
-                      </div>
-                      <div className="">
-                        <a
-                          href={`/profile/${item.profile[0].userId}?tab=itinerary`}
-                        >
-                          {/* profile image */}
-                          <div className="w-fit mx-auto ">
-                            <CustomAvatar
-                              name={item.profile[0].name}
-                              picture={item.profile[0].picture}
-                              className="w-36 h-36"
+            <div className="grid grid-cols-[300px_300px] gap-10 justify-center items-center">
+              {travelers.pages.map((page) =>
+                page.travelers.map((item, i) => {
+                  return (
+                    <Fragment key={i}>
+                      <div className="mt-5 flex max-w-[400px] flex-col rounded-md px-5 py-5 shadow-md hover:shadow-lg bg-white">
+                        <div className="flex items-center justify-between ">
+                          <div className="font-bold capitalize">
+                            {item.profile.name}
+                          </div>
+                          <IconButton>
+                            <ChatBubbleLeftEllipsisIcon
+                              className="h-6 z-50"
+                              onClick={() => setIsModalMessageOpen(true)}
                             />
-                          </div>
-                          {/* info */}
-                          <div className="mt-5">
-                            {formatDate(item.itineraries[0].startDate)} -{" "}
-                            {formatDate(item.itineraries[0].endDate)}
-                            {/* country */}
-                            <div className="">
-                              {getFullPlaceName(
-                                getPlaceFromObject(item.profile[0].cityId)
-                              )}
+                          </IconButton>
+                        </div>
+                        <div className="">
+                          <a
+                            href={`/profile/${item.profile[0].userId}?tab=itinerary`}
+                          >
+                            {/* profile image */}
+                            <div className="w-fit mx-auto ">
+                              <CustomAvatar
+                                name={item.profile[0].name}
+                                picture={item.profile[0].picture}
+                                className="w-36 h-36"
+                              />
                             </div>
-                            <div className="line-clamp-5">
-                              {item.description}
+                            {/* info */}
+                            <div className="mt-5">
+                              {formatDate(item.itineraries[0].startDate)} -{" "}
+                              {formatDate(item.itineraries[0].endDate)}
+                              {/* country */}
+                              <div className="">
+                                {getFullPlaceName(
+                                  getPlaceFromObject(item.profile[0].cityId)
+                                )}
+                              </div>
+                              <div className="line-clamp-5">
+                                {item.description}
+                              </div>
                             </div>
-                          </div>
-                        </a>
+                          </a>
+                        </div>
                       </div>
-                    </div>
 
-                    <ChatModal
-                      name={item.profile[0].name}
-                      userId={item.profile[0].userId}
-                      isModalMessageOpen={isModalMessageOpen}
-                      setIsModalMessageOpen={setIsModalMessageOpen}
-                    />
-                  </>
-                )
-              })}
+                      <ChatModal
+                        name={item.profile[0].name}
+                        userId={item.profile[0].userId}
+                        isModalMessageOpen={isModalMessageOpen}
+                        setIsModalMessageOpen={setIsModalMessageOpen}
+                      />
+                    </Fragment>
+                  )
+                })
+              )}
             </div>
-            <button className="btn block mx-auto mt-8">Show more</button>
+            <ButtonIntegration
+              externalClass={`btn block mx-auto mt-8 w-fit ${
+                !cityItineraryQuery.hasNextPage ? "disabled" : ""
+              }`}
+              disabled={!cityItineraryQuery.hasNextPage}
+              onClick={() => cityItineraryQuery.fetchNextPage()}
+            >
+              Show more
+            </ButtonIntegration>
           </div>
         )}
 
-        {!isLoading && (!travelers || travelers.length == 0) && (
+        {!isLoading && !hasData && (
           <div className=" text-center text-3xl my-20 ">
             No travelers yet
             <p>

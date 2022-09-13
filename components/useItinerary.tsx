@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query"
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import React from "react"
 import { GET_CITY_ITINERARIES, GET_USER_ITINERARIES } from "../lib/consts"
 import { TRAVEL_API } from "../lib/consts/apis"
@@ -11,13 +11,21 @@ interface Props {
   userIds?: string[]
 }
 function useItinerary({ isCity, cityIds, isUser, userIds }: Props) {
-  const cityItineraryQuery = useQuery(
+  const cityItineraryQuery = useInfiniteQuery(
     ["cityItineraryQuery", cityIds],
-    async () => {
-      return await newGet(TRAVEL_API, { method: GET_CITY_ITINERARIES, cityIds })
+    async ({ pageParam = 1 }) => {
+      return await newGet(TRAVEL_API, {
+        method: GET_CITY_ITINERARIES,
+        page: pageParam,
+        cityIds,
+      })
     },
     {
       enabled: !!isCity && !!cityIds,
+      getNextPageParam: (lastPage, allPages) => lastPage.nextPage,
+      refetchOnWindowFocus: false,
+      keepPreviousData: true,
+      staleTime: Infinity,
     }
   )
 

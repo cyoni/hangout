@@ -2,6 +2,7 @@ import { getToken } from "next-auth/jwt"
 import {
   GET_CITY_ITINERARIES,
   GET_USER_ITINERARIES,
+  MAX_POSTS_PER_PAGE,
   POST_NEW_ITINERARY,
   TRAVELLING_TABLE as TRAVELING_TABLE,
   TRAVELLING_TABLE,
@@ -11,7 +12,6 @@ import { JoinProfiles } from "../../lib/queryUtils"
 import { convertStringToTypeArray } from "../../lib/scripts/arrays"
 
 export async function postNewItinerary({ itineraries, description }, userId) {
-  
   const dataToDb = {
     userId,
     timestamp: Date.now(),
@@ -49,40 +49,71 @@ export async function getUserItineraries({ userIds }) {
   return result
 }
 
-export async function getCityItineraries({ cityIds }) {
+export async function getCityItineraries({ cityIds, page }) {
   const convertedCityArray = Array.isArray(cityIds)
     ? cityIds
     : convertStringToTypeArray(cityIds, Number)
+
+  const pageNumber = Number(page)
+
+  if (isNaN(pageNumber) || pageNumber < 1)
+    return { error: "Page number is invalid. Got: ", pageNumber }
+
+  const matchFilter = {
+    $match: {
+      "itineraries.place.city_id": { $in: convertedCityArray },
+    },
+  }
 
   const request: AggregateReq = {
     collection: TRAVELLING_TABLE,
     params: [
       {
-        $match: {
-          "itineraries.place.city_id": { $in: convertedCityArray },
-        },
-      },
-      JoinProfiles(),
-      {
-        $project: {
-          startDate: 1,
-          endDate: 1,
-          userId: 1,
-          description: 1,
-          profile: 1,
-          itineraries: {
-            $filter: {
-              input: "$itineraries",
-              as: "itinerary",
-              cond: { $in: ["$$itinerary.place.city_id", convertedCityArray] },
+        $facet: {
+          metadata: [matchFilter, { $count: "count" }],
+          travelers: [
+            matchFilter,
+            { $skip: (pageNumber - 1) * MAX_POSTS_PER_PAGE },
+            { $limit: MAX_POSTS_PER_PAGE },
+            JoinProfiles(),
+            {
+              $project: {
+                startDate: 1,
+                endDate: 1,
+                userId: 1,
+                description: 1,
+                profile: 1,
+                itineraries: {
+                  $filter: {
+                    input: "$itineraries",
+                    as: "itinerary",
+                    cond: {
+                      $in: ["$$itinerary.place.city_id", convertedCityArray],
+                    },
+                  },
+                },
+              },
             },
-          },
+          ],
         },
       },
     ],
   }
-  const data = await dbAggregate(request)
-  return data
+  const data = (await dbAggregate(request))[0]
+  
+  const nextPage =
+    data.metadata.length > 0 &&
+    (pageNumber - 1) * MAX_POSTS_PER_PAGE + data.travelers.length !==
+      data.metadata[0].count
+      ? pageNumber + 1
+      : undefined
+
+  const result = {
+    nextPage,
+    travelers: data.travelers,
+  }
+
+  return result
 }
 
 export default async function handler(req, res) {
