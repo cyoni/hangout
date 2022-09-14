@@ -1,10 +1,15 @@
 import { ProfileParams, USERS_COLLECTION } from "./consts"
 
-export function JoinProfiles(
+interface Props {
+  foreignField?: string
+  localField?: string
+  as?: string
+}
+export function JoinProfiles({
   foreignField = "userId",
   localField = "userId",
-  as = "profile"
-) {
+  as = "profile",
+}: Props) {
   return {
     $lookup: {
       from: USERS_COLLECTION,

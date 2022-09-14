@@ -2,18 +2,10 @@ import React from "react"
 import Avatar from "./Avatar"
 import moment from "moment"
 import { getPastTime } from "../lib/scripts/general"
+import CustomAvatar from "./CustomAvatar"
 
-interface Props {
-  _id: string
-  sharedToken: string
-  senderId: string
-  message: string
-  timestamp: number
-  name: string
-  picture: string
-  place: Place
+interface Props extends MessageObj {
   places: Place[]
-  profile: {}
 }
 
 function PreviewMessage({
@@ -25,27 +17,31 @@ function PreviewMessage({
   profile,
   places,
 }: Props) {
+  const { picture, name, cityId } = profile[0]
+
   const renderPlace = () => {
-    const place = places[profile[0]?.cityId]
+    console.log("renderPlace cityId", cityId)
+    console.log("places", places)
+    const place = places["57564"]
+    console.log("place",place)
     if (place) {
       return `${place.city}, ${place.province_short}, ${place.country}`
     }
   }
+
   const time = getPastTime(timestamp)
-  console.log("place", profile[0]?.cityId)
+  console.log("place", cityId)
   console.log("got places:", places)
+
   return (
     <div className="relative mx-5 flex gap-7 border-b border-b-gray-100 py-5 pl-5 text-gray-600">
       <div className="absolute left-0 top-3 hidden text-[50px] font-bold text-red-600">
         ·
       </div>
       <div className="flex gap-2">
-        <a href={`/profile/${theirId}`}>
-          <Avatar className="h-14 w-14" />
-        </a>
-
-        <div className="">
-          <div className="font-bold capitalize">{profile[0]?.name}</div>
+        <CustomAvatar {...profile[0]} className="h-14 w-14" />
+        <div className="w-[200px]">
+          <div className="font-bold capitalize">{name}</div>
           <div>{renderPlace()}</div>
         </div>
       </div>

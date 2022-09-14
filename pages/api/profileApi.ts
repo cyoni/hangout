@@ -13,7 +13,7 @@ type Response = {
   error?: string
 }
 
-async function getProfiles({ userIds }) {
+export async function getProfiles({ userIds }) {
   if (!Array.isArray(userIds)) return { error: "bad request." }
   const profiles: Profile[] = await dbAggregate({
     collection: "users",
@@ -22,6 +22,7 @@ async function getProfiles({ userIds }) {
       { $project: { _id: 0, userId: 1, picture: 1, cityId: 1, name: 1 } },
     ],
   })
+  console.log("#######$#",profiles)
   return profiles
 }
 

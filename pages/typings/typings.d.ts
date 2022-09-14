@@ -64,7 +64,14 @@ interface MessageObjResponse {
 interface MessageObj {
   _id: string
   message: string
-  profile: { name: string; place: Place }
+  profile: Profile[]
+
+  message: string
+  receiverId: string
+  senderId: string
+  sharedToken: string
+  theirId: string
+  timestamp: number
 }
 
 interface MongoInsertRes {

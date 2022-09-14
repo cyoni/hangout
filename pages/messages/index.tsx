@@ -25,7 +25,7 @@ interface PreviewMessage {
   senderId: string
   profile: [{ name: string; place: Place }]
 }
-function inbox() {
+function Inbox() {
   const session = useSession()
   const [messages, setMessages] = useState<MessageObj[]>(null)
   const [unreadMsgs, setUnreadMsgs] = useState<string[]>(null)
@@ -48,9 +48,7 @@ function inbox() {
       console.log("XXXXXXXXXX", result?.previewMsgs)
       const cities = result.previewMsgs.map((r) => r.profile[0]?.cityId)
       const places = await queryPlacesFromClient(cities)
-      if (places?.isError) {
-        console.log("An error occured while proccessing the request")
-      } else {
+      if (places) {
         setPlaces(places)
         console.log("places##", places)
         console.log("msg msg", result.previewMsgs)
@@ -64,7 +62,7 @@ function inbox() {
     if (isAuthenticated(session)) getMsgs()
   }, [session])
   return (
-    <div>
+    <>
       <Head>
         <title>Messages</title>
       </Head>
@@ -77,10 +75,10 @@ function inbox() {
           onClick={handleRefresh}
         />
       )}
-
+      {console.log("messages", messages)}
       {!messages && <Spinner className="mt-20 flex justify-center" />}
-      <div className="mx-auto mt-6 max-w-[80%]">
-        {messages?.length > 0 && (
+      <div className="mx-auto mt-6 xl:max-w-[1300px]">
+        {Array.isArray(messages) && (
           <>
             {messages.map((msg) => (
               <div key={msg._id}>
@@ -93,8 +91,8 @@ function inbox() {
           <div className="text-center text-3xl">No messages</div>
         )}
       </div>
-    </div>
+    </>
   )
 }
 
-export default inbox
+export default Inbox

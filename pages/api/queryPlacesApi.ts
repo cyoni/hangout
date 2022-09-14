@@ -11,7 +11,7 @@ export default async function handler(req, res) {
 
     if (Array.isArray(codes) && codes.length > 0) {
       const result = await queryPlaces(codes)
-      if (result) res.status(200).json(JSON.stringify(result))
+      if (result) res.status(200).json(result)
     } else throw Error("request invalid")
   } catch (e) {
     res.status(400).json(JSON.stringify(e.message))

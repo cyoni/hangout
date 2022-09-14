@@ -1,4 +1,5 @@
 import { dbAggregate, dbFind, dbUpdateOne } from "./mongoUtils"
+import { JoinProfiles } from "./queryUtils"
 
 export async function resetUnreadMessages(userId: string) {
   dbUpdateOne("users", { userId: userId }, { $unset: { unreadMsgs: 1 } }, {})
@@ -46,17 +47,9 @@ export async function getPreviewMsgs(
           receiverId: 1,
           message: 1,
           timestamp: 1,
-          profile: { picture: 1, name: 1, cityId: 1 },
         },
       },
-      {
-        $lookup: {
-          from: "users",
-          foreignField: "userId",
-          localField: "theirId",
-          as: "profile",
-        },
-      },
+      JoinProfiles({ localField: "theirId" }),
       { $sort: { timestamp: -1 } },
     ],
   })

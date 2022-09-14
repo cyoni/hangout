@@ -1,142 +1,35 @@
-
-import { useQuery } from "@tanstack/react-query"
 import Head from "next/head"
-import { useRouter } from "next/router"
-import React, { createRef, useEffect, useRef, useState } from "react"
-import Avatar from "../../../components/Avatar"
+import React, { useEffect, useRef, useState } from "react"
 import Back from "../../../components/Back"
+import CustomAvatar from "../../../components/CustomAvatar"
 import HeaderImage from "../../../components/HeaderImage"
 import Refresh from "../../../components/Refresh"
 import Spinner from "../../../components/Spinner"
-import {
-  GET_ALL_MESSAGES_BY_USER_METHOD,
-  SEND_MESSAGE_API,
-  SEND_MESSAGE_METHOD,
-} from "../../../lib/consts"
-import { PROFILE_API } from "../../../lib/consts/apis"
-import { getProfile } from "../../../lib/dbClient"
-import { post } from "../../../lib/postman"
-import randomString from "../../../lib/randomString"
+import { getProfiles } from "../../api/profileApi"
+import Message from "./Message"
+import useConversation from "./useConversation"
 
-function Messages({ theirId }) {
-  const [messages, setMessages] = useState(null)
-  const [input, setInput] = useState<string>("")
-  const [profile, setProfile] = useState<Profile>(null)
+function Messages({ theirId, profile, session }) {
+  console.log("msgs session", session)
 
-  useEffect(() => {
-    const profile = async () => {
-      console.log("their id profile", theirId)
-      const profiles = await getProfile([theirId])
-      console.log("profile result", profiles)
-      if (Array.isArray(profiles) && profiles.length > 0)
-        setProfile(profiles[0])
-    }
-    if (theirId) profile()
-  }, [theirId])
-
-  const { isLoading, data, isError, error, isFetching } = useQuery(
-    ["get-chat-messages"],
-    async () => {
-      return await post({
-        url: "/api/messagesApi",
-        body: {
-          method: GET_ALL_MESSAGES_BY_USER_METHOD,
-          theirId: theirId,
-        },
-      })
-    },
-    {
-      refetchInterval: 6000,
-    }
-  )
-
-  useEffect(() => {
-    setMessages(data)
-  }, [data])
-
-  const getMessages = async () => {
-    console.log("getting messages....")
-    const messages = await post({
-      url: "/api/messagesApi",
-      body: {
-        method: GET_ALL_MESSAGES_BY_USER_METHOD,
-        theirId: theirId,
-      },
-    })
-    console.log("messages", messages)
-    setMessages(messages)
-  }
-
-  // useEffect(() => {
-  //   if (theirId) getMessages()
-  // }, [theirId])
-
-  const inputRef = useRef()
-
-  const handleMessage = async (e) => {
-    e.preventDefault()
-
-    if (!input) return
-
-    const msgId = randomString(5)
-    const newMessage = { message: input, id: msgId, status: "SENDING" }
-    const newMsgs = [...messages, newMessage]
-
-    setMessages(newMsgs)
-    setInput("")
-    inputRef.current.focus()
-
-    const result = await post({
-      url: SEND_MESSAGE_API,
-      body: {
-        method: SEND_MESSAGE_METHOD,
-        theirId: theirId,
-        message: input,
-      },
-    })
-    console.log("msg result", result)
-  }
-
-  const Msg = ({ data }) => {
-    const message = data.message
-    const senderId = data.senderId
-    // incoming message
-    if (senderId === theirId) {
-      return (
-        <div className="my-2 flex">
-          <div
-            className="max-w-[800px] rounded-xl border
-             bg-blue-700 py-1
-              px-3 text-white shadow-md"
-          >
-            {message}
-          </div>
-        </div>
-      )
-    } else {
-      return (
-        <div className="my-2 flex justify-end">
-          <div
-            className={`max-w-[800px] rounded-xl border
-           ${data.status === "SENDING" ? "bg-green-400" : "bg-green-600"} py-1
-            px-3 text-white shadow-md`}
-          >
-            {message}
-          </div>
-        </div>
-      )
-    }
-  }
-
-  const handleRefresh = () => {
-    setMessages(null)
-    getMessages()
-  }
-
+  const [message, setMessage] = useState<string>("")
   const messagesEndRef = useRef(null)
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
+  const inputRef = useRef()
+  const { name, picture } = profile
+  const myProfilePic = session?.user?.image
+  const myName = session?.user?.name
+  const {
+    messages,
+    handleMessage,
+    scrollToBottom,
+    handleRefresh,
+  } = useConversation({
+    theirId,
+    messagesEndRef,
+    inputRef,
+    message,
+    setMessage,
+  })
   useEffect(() => {
     scrollToBottom()
   }, [messages])
@@ -158,37 +51,45 @@ function Messages({ theirId }) {
       </div>
       <div className="relative mx-auto w-[55%] cursor-default rounded-md border pb-5">
         <div className="flex items-center justify-between  py-3 px-3 shadow-md">
-          <div className=" hover:bg-gray-100 cursor-pointer p-1 px-2 rounded-md">
-            <a className="flex items-center space-x-1" href={`/profile/${theirId}`}>
-              <Avatar className="h-10 w-10" picture={profile?.picture} />
-              <div className="text-lg font-bold capitalize">
-                {profile?.name}
-              </div>
-            </a>
+          <div
+            onClick={() => window.open(`/profile/${theirId}`)}
+            className="flex items-center space-x-2 hover:bg-gray-100 cursor-pointer p-1 px-4 rounded-md"
+          >
+            <CustomAvatar
+              className="h-10 w-10"
+              name={name}
+              disabled
+              picture={picture}
+            />
+            <div className="text-lg font-bold capitalize">{name}</div>
           </div>
-          <div>
-            <button className="btn flex items-center justify-between space-x-2 border border-gray-300 bg-white px-4 text-blue-600 hover:bg-gray-200">
-               <span>Options</span>
-            </button>
-          </div>
+          <button className="btn flex items-center justify-between space-x-2 border border-gray-300 bg-white px-4 text-blue-600 hover:bg-gray-200">
+            <span>Options</span>
+          </button>
         </div>
         <div className="h-[500px] overflow-y-auto">
           <div className="mt-2 flex min-h-[500px] flex-col justify-end rounded-md  p-3">
-            {console.log("messagesmessages", messages)}
             {Array.isArray(messages) &&
-              messages.map((msg) => <Msg key={msg._id} data={msg} />)}
+              messages.map((msg) => (
+                <Message key={msg._id} theirId={theirId} data={msg} />
+              ))}
             <div ref={messagesEndRef} />
           </div>
         </div>
         {/* Send message box */}
         <form className="px-2" onSubmit={(e) => handleMessage(e)}>
           <div className="mt-2 flex space-x-2">
-            <Avatar className="h-10 w-10" />
+            <CustomAvatar
+              disabled
+              name={myName}
+              picture={myProfilePic}
+              className="h-10 w-10"
+            />
             <input
               autoFocus
               ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
               className="h-14 flex-1 rounded-md border p-2 outline-none"
             />
           </div>
@@ -211,9 +112,12 @@ export default Messages
 export async function getServerSideProps(context) {
   const { theirId } = context.params
 
+  const profile = (await getProfiles({ userIds: [theirId] }))?.[0]
+
   return {
     props: {
       theirId: theirId,
+      profile,
     },
   }
 }
