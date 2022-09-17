@@ -15,6 +15,7 @@ function PreviewMessage({
   message,
   timestamp,
   profile,
+  isRead,
   places,
 }: Props) {
   const { picture, name, cityId } = profile[0]
@@ -23,7 +24,7 @@ function PreviewMessage({
     console.log("renderPlace cityId", cityId)
     console.log("places", places)
     const place = places["57564"]
-    console.log("place",place)
+    console.log("place", place)
     if (place) {
       return `${place.city}, ${place.province_short}, ${place.country}`
     }
@@ -34,10 +35,11 @@ function PreviewMessage({
   console.log("got places:", places)
 
   return (
-    <div className="relative mx-5 flex gap-7 border-b border-b-gray-100 py-5 pl-5 text-gray-600">
-      <div className="absolute left-0 top-3 hidden text-[50px] font-bold text-red-600">
-        ·
-      </div>
+    <div
+      className={`relative mx-5 flex cursor-pointer gap-7 rounded-md border-b border-b-gray-100 py-5 pl-5 text-gray-600 transition-colors duration-1000 hover:bg-sky-100 ${
+        !isRead ? "bg-orange-200" : ""
+      }`}
+    >
       <div className="flex gap-2">
         <CustomAvatar {...profile[0]} className="h-14 w-14" />
         <div className="w-[200px]">
@@ -47,7 +49,9 @@ function PreviewMessage({
       </div>
       <div className="flex flex-1 flex-col rounded-md  p-3">
         <a href={`/messages/conversation/${theirId}`}>
-          <div className="cursor-pointer truncate rounded-md bg-gray-100 p-2 shadow-sm hover:bg-gray-200">
+          <div
+            className={`h-14 cursor-pointer truncate rounded-md p-2  `}
+          >
             {message}
           </div>
         </a>

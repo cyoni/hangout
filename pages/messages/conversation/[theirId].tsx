@@ -1,3 +1,4 @@
+import { Button, Menu, MenuItem } from "@mui/material"
 import Head from "next/head"
 import React, { useEffect, useRef, useState } from "react"
 import Back from "../../../components/Back"
@@ -18,42 +19,37 @@ function Messages({ theirId, profile, session }) {
   const { name, picture } = profile
   const myProfilePic = session?.user?.image
   const myName = session?.user?.name
-  const {
-    messages,
-    handleMessage,
-    scrollToBottom,
-    handleRefresh,
-  } = useConversation({
-    theirId,
-    messagesEndRef,
-    inputRef,
-    message,
-    setMessage,
-  })
+  const { messages, handleMessage, scrollToBottom, handleRefresh } =
+    useConversation({
+      theirId,
+      messagesEndRef,
+      inputRef,
+      message,
+      setMessage,
+    })
   useEffect(() => {
     scrollToBottom()
   }, [messages])
-
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
   return (
     <div>
       <Head>
         <title>Messages</title>
       </Head>
       <HeaderImage title="Messages" />
-      <div className="ml-7 mt-5 flex items-center space-x-2">
-        <Back className="" url="/messages" />
-        <Refresh
-          className=" h-10  w-10 cursor-pointer rounded-full p-2
-                   text-gray-400 transition duration-150 hover:rotate-180
-                   hover:bg-gray-100"
-          onClick={handleRefresh}
-        />
-      </div>
-      <div className="relative mx-auto w-[55%] cursor-default rounded-md border pb-5">
+
+      <div className="relative mx-auto mt-10 cursor-default rounded-md border pb-5 lg:w-[80%] xl:w-[55%]">
         <div className="flex items-center justify-between  py-3 px-3 shadow-md">
           <div
             onClick={() => window.open(`/profile/${theirId}`)}
-            className="flex items-center space-x-2 hover:bg-gray-100 cursor-pointer p-1 px-4 rounded-md"
+            className="flex cursor-pointer items-center space-x-2 rounded-md p-1 px-4 hover:bg-gray-100"
           >
             <CustomAvatar
               className="h-10 w-10"
@@ -63,9 +59,29 @@ function Messages({ theirId, profile, session }) {
             />
             <div className="text-lg font-bold capitalize">{name}</div>
           </div>
-          <button className="btn flex items-center justify-between space-x-2 border border-gray-300 bg-white px-4 text-blue-600 hover:bg-gray-200">
-            <span>Options</span>
-          </button>
+
+          <Button
+            id="basic-button"
+            aria-controls={open ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleClick}
+          >
+            Options
+          </Button>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem onClick={handleClose}>Delete Chat</MenuItem>
+            <MenuItem onClick={handleClose}>Report</MenuItem>
+          </Menu>
+
         </div>
         <div className="h-[500px] overflow-y-auto">
           <div className="mt-2 flex min-h-[500px] flex-col justify-end rounded-md  p-3">

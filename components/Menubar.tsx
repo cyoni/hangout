@@ -1,17 +1,9 @@
-import Link from "next/link"
 import React, { useState } from "react"
 import MenubarRow from "./MenubarRow"
 import {
-  BellAlertIcon,
-  BellIcon,
-  ChatBubbleLeftEllipsisIcon,
   ChatBubbleLeftRightIcon,
   GlobeEuropeAfricaIcon,
-  HomeIcon,
-  InboxIcon,
-  PlusIcon,
 } from "@heroicons/react/24/outline"
-import Avatar from "./Avatar"
 import AvatarMenu from "./AvatarMenu"
 import { signIn, signOut, useSession } from "next-auth/react"
 import { isAuthenticated, isNotAuthenticated } from "../lib/session"
@@ -22,6 +14,7 @@ import PersonIcon from "@mui/icons-material/Person"
 import SettingsIcon from "@mui/icons-material/Settings"
 
 function Menubar({ newMessages }) {
+  console.log("fgerwgferge",newMessages)
   const router = useRouter()
   const session = useSession()
   const renderMyAvatar = () => {
@@ -34,13 +27,12 @@ function Menubar({ newMessages }) {
           Profile
         </MenuItem>
 
-        <MenuItem>
+        {/* <MenuItem>
           <ListItemIcon>
             <SettingsIcon fontSize="small" />
           </ListItemIcon>
           Account
-        </MenuItem>
-
+        </MenuItem> */}
 
         <MenuItem onClick={() => signOut()}>
           <ListItemIcon>
@@ -61,7 +53,6 @@ function Menubar({ newMessages }) {
           link="/messages"
           notifications={newMessages}
         />
-
         <MenubarRow
           title="Publish hangout"
           Icon={GlobeEuropeAfricaIcon}

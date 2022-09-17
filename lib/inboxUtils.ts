@@ -1,8 +1,14 @@
-import { dbAggregate, dbFind, dbUpdateOne } from "./mongoUtils"
+import { MESSAGES_COLLECTION } from "./consts"
+import { dbAggregate, dbFind, dbUpdateMany, dbUpdateOne } from "./mongoUtils"
 import { JoinProfiles } from "./queryUtils"
 
 export async function resetUnreadMessages(userId: string) {
-  dbUpdateOne("users", { userId: userId }, { $unset: { unreadMsgs: 1 } }, {})
+  await dbUpdateMany(
+    MESSAGES_COLLECTION,
+    { receiverId: userId },
+    { $set: { isRead: true } },
+    {}
+  )
 }
 
 export async function getUnreadMsgsIds(userId: string) {
@@ -28,6 +34,15 @@ export async function getPreviewMsgs(
           senderId: { $first: "$senderId" },
           timestamp: { $first: "$timestamp" },
           message: { $first: "$message" },
+          isRead: {
+            $first: {
+              $cond: {
+                if: { $eq: ["$receiverId", userId] },
+                then: "$isRead",
+                else: null,
+              },
+            },
+          },
           theirId: {
             $first: {
               $cond: {
@@ -47,6 +62,7 @@ export async function getPreviewMsgs(
           receiverId: 1,
           message: 1,
           timestamp: 1,
+          isRead: 1,
         },
       },
       JoinProfiles({ localField: "theirId" }),

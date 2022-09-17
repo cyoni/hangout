@@ -3,35 +3,33 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import React, { useEffect, useState } from "react"
 import { GET_NOTIFICATION_METHOD } from "../lib/consts"
-import { post } from "../lib/postman"
+import { newGet, post } from "../lib/postman"
 import { isAuthenticated } from "../lib/session"
 import Menubar from "./Menubar"
 import LocationAutoComplete from "./LocationAutoComplete"
-import {AutoComplete} from "./AutoComplete"
+import { AutoComplete } from "./AutoComplete"
 import { getCitiesAutoComplete } from "../lib/AutoCompleteUtils"
+import { useQuery } from "@tanstack/react-query"
 
-function Header() {
+function Header({ session }) {
   const router = useRouter()
-  const session = useSession()
-  const [newMessages, setNewMessages] = useState<number>(null)
+  const [newMessages, setNewMessages] = useState<number>(0)
   const [cityId, setCityId] = useState<number>(null)
 
-  useEffect(() => {
-    const getInbox = async () => {
-      const body = {
-        userId: session.data.userId,
+  const unReadMessagesCounterQuery = useQuery(
+    ["unRead-messages-counter"],
+    async () => {
+      return await newGet("/api/messagesApi", {
         method: GET_NOTIFICATION_METHOD,
-      }
-      const result = await post({ url: "/api/messagesApi", body })
-      console.log("getInbox result", result)
-      setNewMessages(result.unreadMsgs)
+      })
+    },
+    {
+      enabled: !!session?.userId,
+      onSuccess: (data) => {
+        setNewMessages(data.unreadMessages)
+      },
     }
-
-    if (isAuthenticated(session)) {
-      console.log("getting messages....")
-      getInbox()
-    }
-  }, [session])
+  )
 
   const handleSelect = (place: Place) => {
     if (place && place.city_id) {
@@ -62,10 +60,10 @@ function Header() {
           </div>
           <div
             className="
-            rounded-md focus-within:w-[450px] focus-within:outline
-            hover:outline bg-slate-200 w-[300px]
-            hover:w-[450px] transition-width 
-            duration-500 px-3 py-1"
+            w-[300px] rounded-md bg-slate-200
+            px-3 py-1 transition-width
+            duration-500 focus-within:w-[450px] 
+            focus-within:outline hover:w-[450px] hover:outline"
           >
             <AutoComplete
               placeholder="Where are you going?"

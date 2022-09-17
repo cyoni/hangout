@@ -9,7 +9,7 @@ const Message = ({ theirId, data }) => {
       <div className="my-2 flex">
         <div
           className="max-w-[800px] rounded-xl border
-             bg-blue-700 py-1
+             bg-blue-600 py-1
               px-3 text-white shadow-md"
         >
           {message}

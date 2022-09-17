@@ -1,4 +1,8 @@
-import { SEND_MESSAGE_METHOD, USERS_COLLECTION } from "./../../lib/consts"
+import {
+  MESSAGES_COLLECTION,
+  SEND_MESSAGE_METHOD,
+  USERS_COLLECTION,
+} from "./../../lib/consts"
 import {
   GET_ALL_MESSAGES_BY_USER_METHOD,
   GET_NOTIFICATION_METHOD,
@@ -56,30 +60,33 @@ async function insertUnreadMsgToReceiver({ timestamp, receiverId, senderId }) {
   // )
 }
 
-async function getUnreadMsgsCount({ userId }: { userId: string }) {
+async function getUnreadMsgsCount(userId) {
   try {
     if (!userId) return { error: "bad request" }
 
     console.log("getNotifications userId", userId)
 
     const request: AggregateReq = {
-      collection: "users",
+      collection: MESSAGES_COLLECTION,
       params: [
-        { $match: { userId } },
+        { $match: { $and: [{ receiverId: userId }, { isRead: false }] } },
+        {
+          $group: {
+            _id: null,
+            unreadMessages: { $count: {} },
+          },
+        },
         {
           $project: {
             _id: 0,
-            unreadMsgs: { $size: { $ifNull: ["$unreadMsgs", []] } },
+            unreadMessages: 1,
           },
         },
       ],
     }
-    const results = await dbAggregate(request)
-    console.log("results getNotifications", results)
-    if (Array.isArray(results)) {
-      console.log("results", results)
-      return results.length > 0 ? results[0] : results
-    } else return { error: "no results" }
+    const result = (await dbAggregate(request))[0]
+    console.log("results getNotifications", result)
+    return result
   } catch (e) {
     throw Error(e.message)
   }
@@ -119,6 +126,7 @@ async function SendMessage({ senderId, receiverId, message }) {
     receiverId,
     message,
     timestamp,
+    isRead: false,
   }
   console.log("dataToDb", dataToDb)
 
@@ -192,12 +200,10 @@ export default async function handler(
   res: NextApiResponse<Response>
 ) {
   try {
-    const { method } = req.body
+    const { method } = req.body || req.query
     const token = await getToken({ req })
     const { userId } = token
     let result = null
-
-    console.log("msg inbox token", token)
 
     console.log("request message", req.body)
 
@@ -220,7 +226,7 @@ export default async function handler(
         result = await getAllMessagesByUserId({ ...req.body, userId })
         break
       case GET_NOTIFICATION_METHOD:
-        result = await getUnreadMsgsCount({ userId })
+        result = await getUnreadMsgsCount(userId)
         break
     }
     if (!result || result.error) res.status(400).json({ error: result.error })

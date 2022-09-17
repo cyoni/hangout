@@ -64,17 +64,18 @@ function Inbox() {
         <title>Messages</title>
       </Head>
       <HeaderImage title="Messages" />
-      {messages && (
-        <Refresh
-          className="mt-5 ml-5 h-10 w-10 cursor-pointer rounded-full p-2
+      <div className="mx-auto mt-6 xl:max-w-[1300px]">
+        {messages && (
+          <Refresh
+            className="mt-5 ml-5 mb-10 h-10 w-10 cursor-pointer rounded-full p-2
           text-gray-400 transition duration-150 hover:rotate-180
            hover:bg-gray-100"
-          onClick={handleRefresh}
-        />
-      )}
-      {console.log("messages", messages)}
-      {!messages && <Spinner className="mt-20 flex justify-center" />}
-      <div className="mx-auto mt-6 xl:max-w-[1300px]">
+            onClick={handleRefresh}
+          />
+        )}
+        {console.log("messages", messages)}
+        {!messages && <Spinner className="mt-20 flex justify-center" />}
+
         {Array.isArray(messages) && (
           <>
             {messages.map((msg) => (

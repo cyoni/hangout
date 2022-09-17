@@ -80,6 +80,23 @@ export async function dbUpdateOne(
   }
 }
 
+export async function dbUpdateMany(
+  database: string,
+  filter: {},
+  updateDoc: {},
+  options: {}
+) {
+  try {
+    const client = await clientPromise
+    const db = client.db()
+    const result = await db
+      .collection(database)
+      .updateMany(filter, updateDoc, options)
+    return result
+  } catch (e) {
+    return { error: e.message }
+  }
+}
 export async function dbDeleteOne(database: string, query) {
   const client = await clientPromise
   const db = client.db()
