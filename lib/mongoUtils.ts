@@ -1,3 +1,4 @@
+import { MongoUpdateRes } from "../pages/typings/typings"
 import clientPromise from "./mongodb"
 
 export async function dbFind(dbName, query) {

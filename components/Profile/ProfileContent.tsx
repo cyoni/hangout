@@ -16,6 +16,8 @@ import useItinerary from "../useItinerary"
 import usePlace from "../usePlace"
 import { unique } from "../../lib/scripts/arrays"
 import { convertToBase64 } from "../../lib/scripts/images"
+import useManageImages from "../useManageImages"
+import Loader from "../Loader"
 
 interface Props {
   profile: Profile
@@ -28,17 +30,13 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
   const [cityIds, setCityIds] = useState<number[]>([])
   const session = useSession()
   const { follow, unFollow, isFollowing } = useFollow()
+  const { imageMetadata, setImageMetadata, imageMutation } = useManageImages()
+  const { getFirstPlace, getPlaceFromObject, placeQuery } = usePlace(cityIds)
   const { userItineraryQuery } = useItinerary({
     userIds: [profile.userId],
     isUser: true,
   })
 
-  console.log("userItineraryQuery.data", userItineraryQuery.data)
-
-  const { getFirstPlace, getPlaceFromObject, placeQuery } = usePlace(cityIds)
-  {
-    console.log("userItineraryQuery", userItineraryQuery.data)
-  }
   useEffect(() => {
     if (userItineraryQuery.data) {
       const newData = []
@@ -55,8 +53,6 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
       setCityIds(unique(newData))
     }
   }, [userItineraryQuery.data])
-
-
 
   const setCities = new Set<number>()
   console.log("setCities", setCities)
@@ -125,8 +121,9 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
   }
 
   return (
-    <div>
+    <>
       <div className="mt-5 flex space-x-3">
+        {imageMutation.isLoading && <Loader />}
         <div className="relative">
           <CustomAvatar
             name={name}
@@ -260,7 +257,7 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
         isModalMessageOpen={isModalMessageOpen}
         setIsModalMessageOpen={setIsModalMessageOpen}
       />
-    </div>
+    </>
   )
 }
 

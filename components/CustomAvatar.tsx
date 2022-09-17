@@ -23,7 +23,11 @@ function CustomAvatar({
         className ? className : ""
       }`}
       alt={name?.charAt(0)}
-      src={picture}
+      src={
+        picture
+          ? `${process.env.PICTURES_SERVICE_ENDPOINT}/${picture}`
+          : "no-pic"
+      }
       onClick={
         !disabled
           ? onClick

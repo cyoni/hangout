@@ -89,7 +89,7 @@ interface MongoInsertOneRes {
   error?: {}
 }
 
-interface MongoUpdateRes {
+type MongoUpdateRes = {
   acknowledged?: boolean
   matchedCount?: number
   modifiedCount?: number
@@ -135,4 +135,18 @@ type IComment = {
   message: string
   profile: []
   timestamp: number
+}
+
+type UploadImageRes = {
+  fileId: string,
+  name: string,
+  size: number,
+  filePath: string,
+  url: string,
+  fileType: string,
+  height: number,
+  width: number,
+  thumbnailUrl: string,
+  AITags: any,
+  extensionStatus: { 'google-auto-tagging': string }
 }
