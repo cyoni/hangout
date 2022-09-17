@@ -8,6 +8,8 @@ interface Props {
   children: React.ReactNode
   height?: string
   width?: string
+  hideCloseButton?: boolean
+  preventForceCloseWindow?: boolean
 }
 
 function ModalWrapper({
@@ -15,6 +17,8 @@ function ModalWrapper({
   onRequestClose,
   children,
   className,
+  hideCloseButton,
+  preventForceCloseWindow,
   height,
   width,
 }: Props) {
@@ -28,8 +32,8 @@ function ModalWrapper({
       onAfterClose={() => console.log("exited")}
       style={{
         overlay: {
-          background: "rgba(0,0,0,.6)",
-          backdropFilter: "blur(15px)",
+          background: "rgba(0,0,0,.5)",
+          backdropFilter: "blur(12px)",
           zIndex: 10,
         },
       }}
@@ -40,13 +44,16 @@ function ModalWrapper({
                top-1/2 left-1/2
                translate-x-[-50%] translate-y-[-50%]
                overflow-auto bg-white ${className ? className : ""}`}
-      onRequestClose={onRequestClose}
+      onRequestClose={!preventForceCloseWindow ? onRequestClose : null}
       contentLabel="My dialog"
     >
-      <XMarkIcon
-        className="h-5 sticky top-1 cursor-pointer text-gray-400 hover:text-gray-300  "
-        onClick={onRequestClose}
-      />
+      {!hideCloseButton && (
+        <XMarkIcon
+          className="h-5 sticky top-1 cursor-pointer text-gray-400 hover:text-gray-300  "
+          onClick={onRequestClose}
+        />
+      )}
+
       {children}
     </Modal>
   )

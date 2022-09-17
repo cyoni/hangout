@@ -1,22 +1,9 @@
-import {
-  ChatBubbleLeftEllipsisIcon,
-  InboxIcon,
-} from "@heroicons/react/24/outline"
-import { IconButton } from "@mui/material"
-import Link from "next/link"
-import { Router, useRouter } from "next/router"
-import React, { Fragment, useState } from "react"
-import { formatDate } from "../../lib/dates"
-import { getFullPlaceName } from "../../lib/scripts/place"
+import { useRouter } from "next/router"
 import ButtonIntegration from "../ButtonIntegration"
-import ChatModal from "../ChatModal"
-import CustomAvatar from "../CustomAvatar"
-import Loader from "../Loader"
 import Spinner from "../Spinner"
 import useItinerary from "../useItinerary"
 import usePlace from "../usePlace"
 import TravelItem from "./TravelItem"
-import useChatModal from "./useChatModal"
 
 function Travels({ place }) {
   const router = useRouter()

@@ -4,9 +4,10 @@ import { getHeaderPicture } from "../lib/headerImage"
 
 interface Props {
   headerExternalClass?: string
-  title: string
+  title?: string
   titleExternalClass?: string
   backgroundId?: string
+  customImageId?: string
   children
 }
 
@@ -14,34 +15,45 @@ function HeaderImage({
   title,
   titleExternalClass,
   headerExternalClass,
-  backgroundId,
+  backgroundId: backgroundCityId,
+  customImageId,
   children,
 }: Props) {
-  console.log("backgroundId", backgroundId)
   const [backgroundUrl, setBackgroundUrl] = useState<string>()
   const [isLoading, setIsLoading] = useState<boolean>(true)
-
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const result = await getHeaderPicture(backgroundId)
+      const result = await getHeaderPicture(backgroundCityId)
       setBackgroundUrl(result)
       setIsLoading(false)
     }
-    fetchData()
-  }, [backgroundId])
+    if (backgroundCityId) fetchData()
+  }, [backgroundCityId])
+
+  useEffect(() => {
+    if (customImageId) {
+      console.log(
+        "${process.env.PICTURES_SERVICE_ENDPOINT}/${customImageId}",
+        `${process.env.PICTURES_SERVICE_ENDPOINT}/${customImageId}`
+      )
+      setBackgroundUrl(
+        `${process.env.PICTURES_SERVICE_ENDPOINT}/${customImageId}`
+      )
+    }
+  }, [customImageId])
 
   return (
     <div
       style={{
         backgroundImage: `url('${
-          backgroundId ? backgroundUrl : defaultBackground
+          backgroundCityId || customImageId ? backgroundUrl : defaultBackground
         }')`,
-        filter: backgroundId && isLoading ? `blur(8px)` : "",
+        filter: backgroundCityId && isLoading ? `blur(8px)` : "",
       }}
-      className={`h-56 rounded-sm relative
-       border border-transparent object-fill	
-       bg-cover bg-center shadow-lg ${
+      className={`relative h-56 rounded-sm
+       border border-transparent bg-cover	
+       bg-center object-fill shadow-lg ${
          headerExternalClass ? headerExternalClass : ""
        }`}
     >

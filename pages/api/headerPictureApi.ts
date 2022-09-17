@@ -1,10 +1,7 @@
-import { decode, getToken } from 'next-auth/jwt';
 import { defaultBackground } from '../../lib/consts';
 import type { NextApiRequest, NextApiResponse } from "next"
 import data from "../../lib/cityImages.json"
 import { getUnsplashImageByText } from "../../lib/unsplash"
-import { unstable_getServerSession } from 'next-auth';
-import {authOptions}  from "./auth/[...nextauth]"
 
 type Response = {
   picture: string
@@ -20,7 +17,6 @@ async function getPicture(input) {
 
   // if not found go to unsplash
   const unsplashResult = await getUnsplashImageByText(input)
-  console.log("unsplashResult", unsplashResult)
   if (unsplashResult) {
     return unsplashResult
   }

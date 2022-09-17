@@ -8,8 +8,6 @@ import SendRoundedIcon from "@mui/icons-material/SendRounded"
 
 import React, { useState } from "react"
 import { getPastTime } from "../../lib/scripts/general"
-import Avatar from "../Avatar"
-import ButtonIntegration from "../ButtonIntegration"
 import ModalWrapper from "../ModalWrapper"
 import useFollow from "../useFollow"
 import usePlace from "../usePlace"
@@ -91,16 +89,17 @@ function FeedPost({ post }: Props) {
   const picture = post.profile[0].picture
 
   return (
-    <div className="mt-4 rounded-md bg-white p-2 shadow-sm cursor-pointer hover:shadow-md">
+    <div className="mt-4 cursor-pointer rounded-md bg-white p-2 shadow-sm hover:shadow-md">
       <div className="flex justify-between">
         <div className="flex space-x-2">
           <CustomAvatar
             name={name?.toUpperCase()}
+            userId={userId}
             picture={picture}
             className="h-11 w-11"
           />
           <div className="flex flex-col">
-            <div className="font-bold">{name}</div>
+            <div className="font-bold capitalize">{name}</div>
             <div className="text-sm leading-3 ">{place?.city}</div>
             <div className="text-xs">{getPastTime(post.timestamp)}</div>
           </div>
@@ -122,8 +121,7 @@ function FeedPost({ post }: Props) {
       </ModalWrapper>
 
       <ChatModal
-        name={post.profile[0].name}
-        userId={post.userId}
+        profile={post.profile[0]}
         isModalMessageOpen={isModalMessageOpen}
         setIsModalMessageOpen={setIsModalMessageOpen}
       />

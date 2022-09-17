@@ -19,10 +19,10 @@ function CustomAvatar({
 }: Props) {
   return (
     <Avatar
-      className={`${disabled ? "" : "cursor-pointer"} shadow-xl ${
+      className={`${disabled ? "" : "cursor-pointer"} shadow-xl  ${
         className ? className : ""
       }`}
-      alt={name?.charAt(0)}
+      alt={name?.charAt(0).toUpperCase()}
       src={
         picture
           ? `${process.env.PICTURES_SERVICE_ENDPOINT}/${picture}`

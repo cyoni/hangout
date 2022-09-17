@@ -23,7 +23,13 @@ export const EMPTY_PROFILE_PICTURE =
 
 export const SEND_MESSAGE_API = "/api/messagesApi"
 
-export const ProfileParams = { name: 1, picture: 1, cityId: 1, userId: 1 }
+export const ProfileParams = {
+  name: 1,
+  picture: 1,
+  wrapPicture: 1,
+  cityId: 1,
+  userId: 1,
+}
 export const GET_FOLLOWING = "GET_FOLLOWING"
 export const CITY = "CITY"
 export const FOLLOW = "FOLLOW"
@@ -34,3 +40,4 @@ export const POST = "post"
 export const TRAVEL = "travel"
 export const UPLOAD_IMAGE = "UPLOAD_IMAGE"
 export const REMOVE_IMAGE = "REMOVE_IMAGE"
+export const UPLOAD_WRAPPER_IMAGE = "UPLOAD_WRAPPER_IMAGE"

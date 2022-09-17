@@ -3,6 +3,7 @@ import { useRouter } from "next/router"
 import React from "react"
 import { POST, TRAVEL } from "../../lib/consts"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
+import { Profile } from "../../pages/typings/typings"
 import ButtonIntegration from "../ButtonIntegration"
 import usePosts from "../city/usePosts"
 import CustomAvatar from "../CustomAvatar"
@@ -14,6 +15,7 @@ function MiddleBlock({ session, recentTravelers }) {
   const cityName = session?.place?.city
   const router = useRouter()
   const user = session?.user
+  console.log("sessiwefwfwon",session)
   const { sendPost, postsQuery, messageInput, setMessageInput } = usePosts({
     cityId: userCityId,
     take: 10,
@@ -25,11 +27,12 @@ function MiddleBlock({ session, recentTravelers }) {
       recentTravelers.map((item) => {
         const profile: Profile = item.profile[0]
         return (
-          <a key={item._id} href={`/profile/${profile.userId}`}>
-            <div>
-              <Avatar alt={profile.name} src={profile.picture} />
-            </div>
-          </a>
+          <CustomAvatar
+            key={item._id}
+            name={profile.name}
+            userId={item.userId}
+            picture={profile.picture}
+          />
         )
       })
     )

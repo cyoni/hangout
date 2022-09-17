@@ -11,11 +11,6 @@ async function login({ email, password }) {
   if (Array.isArray(userArray) && userArray.length === 1) {
     const user = userArray[0]
 
-    // const profile = user["profile"]
-    // const userId = user["userId"]
-    // const cityId = user["cityId"]
-    // const name = user["name"]
-
     const place = await queryPlace(user.cityId)
     console.log("login place", place)
 

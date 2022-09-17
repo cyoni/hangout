@@ -5,11 +5,11 @@ import { IMAGE_MANAGER_API } from "../lib/consts/apis"
 import { post } from "../lib/postman"
 
 interface ImageMetaData {
-  method: "UPLOAD_IMAGE" | "REMOVE_IMAGE"
+  method: "UPLOAD_IMAGE" | "REMOVE_IMAGE" | "UPLOAD_WRAPPER_IMAGE"
   base64: string
 }
 function useManageImages() {
-  const [imageMetadata, setImageMetadata] = useState<ImageMetaData>(null)
+  const [imageMetadata, triggerImage] = useState<ImageMetaData>(null)
 
   const triggerImageMutation = () => {
     return post({
@@ -31,16 +31,16 @@ function useManageImages() {
     }
   }
 
-  // listener
+  // listeners
   useEffect(() => {
     if (imageMetadata) {
       console.log("got: ", imageMetadata.method)
       action()
-      setImageMetadata(null)
+      triggerImage(null)
     }
   }, [imageMetadata])
 
-  return { imageMetadata, setImageMetadata, imageMutation }
+  return { imageMetadata, triggerImage, imageMutation }
 }
 
 export default useManageImages

@@ -1,4 +1,4 @@
-import { USERS_COLLECTION } from "./consts"
+import { ProfileParams, USERS_COLLECTION } from "./consts"
 import { dbAggregate } from "./mongoUtils"
 
 export async function getProfile(userId) {
@@ -7,11 +7,10 @@ export async function getProfile(userId) {
       collection: USERS_COLLECTION,
       params: [
         { $match: { userId } },
-        { $project: { name: 1, picture: 1, cityId: 1, userId: 1, aboutMe: 1 } },
+        { $project: { ...ProfileParams, aboutMe: 1 } },
       ],
     }
     const data = await dbAggregate(req)
-    console.log("get profile", data)
     if (Array.isArray(data) && data.length > 0) {
       return { profile: data[0] }
     } else {

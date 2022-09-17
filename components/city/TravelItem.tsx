@@ -47,8 +47,7 @@ function TravelItem({ item, getPlaceFromObject }) {
       </div>
 
       <ChatModal
-        name={item.profile[0].name}
-        userId={item.profile[0].userId}
+        profile={item.profile[0]}
         isModalMessageOpen={isModalMessageOpen}
         setIsModalMessageOpen={setIsModalMessageOpen}
       />

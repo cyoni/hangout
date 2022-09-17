@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { getFullPlaceName } from "../../lib/scripts/place"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import Itinerary from "../Itinerary"
@@ -18,6 +18,8 @@ import { unique } from "../../lib/scripts/arrays"
 import { convertToBase64 } from "../../lib/scripts/images"
 import useManageImages from "../useManageImages"
 import Loader from "../Loader"
+import { Place, Profile } from "../../pages/typings/typings"
+import Head from "next/head"
 
 interface Props {
   profile: Profile
@@ -30,8 +32,11 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
   const [cityIds, setCityIds] = useState<number[]>([])
   const session = useSession()
   const { follow, unFollow, isFollowing } = useFollow()
-  const { imageMetadata, setImageMetadata, imageMutation } = useManageImages()
-  const { getFirstPlace, getPlaceFromObject, placeQuery } = usePlace(cityIds)
+  const { imageMetadata, triggerImage, imageMutation } = useManageImages()
+  const { isLoading: isUploadingImage, isSuccess: isUploadingCompleted } =
+    imageMutation
+  const { getPlaceFromObject, placeQuery } = usePlace(cityIds)
+  const inputFile = useRef(null)
   const { userItineraryQuery } = useItinerary({
     userIds: [profile.userId],
     isUser: true,
@@ -54,14 +59,16 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
     }
   }, [userItineraryQuery.data])
 
+  useEffect(() => {
+    if (isUploadingCompleted) {
+      window.location.reload()
+    }
+  }, [isUploadingCompleted])
+
   const setCities = new Set<number>()
   console.log("setCities", setCities)
 
   const { name, userId, picture } = profile
-
-  console.log("session: ", session)
-  const router = useRouter()
-  console.log("profile content place", place)
 
   const handleSendMessage = (e) => {
     e.preventDefault()
@@ -115,34 +122,49 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
   const handleImage = (e) => {
     const update = async () => {
       const base64 = await convertToBase64(e)
-      setImageMetadata({ base64, method: UPLOAD_IMAGE })
+      triggerImage({ base64, method: UPLOAD_IMAGE })
     }
     update()
   }
 
   return (
     <>
-      <div className="mt-5 flex space-x-3">
-        {imageMutation.isLoading && <Loader />}
+      <Head>
+        <title>{name} - Profile</title>
+      </Head>
+      <div className="mt-5 flex space-x-3 ">
+        {/* {!imageMutation.isLoading && <Loader />} */}
+
         <div className="relative">
           <CustomAvatar
             name={name}
             userId={userId}
             picture={picture}
-            className="relative bottom-12 h-36 w-36  "
+            disabled
+            className="relative bottom-12 h-36 w-36  ring-4"
           />
 
           <Fab
             color="primary"
-            className="bg-blue-500 absolute top-14 h-10 w-10 right-0 z-[1]"
+            className="absolute top-14 right-0 z-[1] h-10 w-10 bg-blue-500"
             aria-label="edit"
+            onClick={() => inputFile.current.click()}
           >
             <EditIcon />
           </Fab>
         </div>
-        <input type="file" name="file" onChange={(e) => handleImage(e)} />
+
+        <input
+          type="file"
+          name="file"
+          accept="image/png, image/gif, image/jpeg"
+          onChange={(e) => handleImage(e)}
+          ref={inputFile}
+          style={{ display: "none" }}
+        />
+
         <div className="flex-1">
-          <p className="text-3xl font-medium tracking-wide capitalize">
+          <p className="text-3xl font-medium capitalize tracking-wide">
             {profile.name}
           </p>
           <p>{getFullPlaceName(place)}</p>
@@ -200,7 +222,6 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
           >
             <Tab label="About" />
             <Tab label="Travels" />
-            <Tab label="Pictures" />
           </Tabs>
         </Box>
 
@@ -210,7 +231,7 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
             <div
               className={`mt-2 min-h-[400px] rounded-md border p-2 ${
                 isNullOrEmpty(profile.aboutMe)
-                  ? "flex justify-center items-center"
+                  ? "flex items-center justify-center"
                   : ""
               }`}
             >
@@ -235,28 +256,19 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
 
           {userItineraryQuery.data?.inactiveTravels && (
             <>
-              <div className="pl-2 text-3xl mt-4">Past Travels</div>
+              <div className="mt-4 pl-2 text-3xl">Past Travels</div>
               {renderTravelsCard(userItineraryQuery.data.inactiveTravels)}
             </>
           )}
         </TabPanel>
-
-        <TabPanel value={value} index={2}>
-          <div>
-            <div className="pl-2 text-3xl ">Pictures</div>
-            <div className="mt-2 min-h-[400px] rounded-md border p-2 flex items-center justify-center text-2xl">
-              Coming Soon!
-            </div>
-          </div>
-        </TabPanel>
       </div>
 
       <ChatModal
-        name={name}
-        userId={userId}
+        profile={profile}
         isModalMessageOpen={isModalMessageOpen}
         setIsModalMessageOpen={setIsModalMessageOpen}
       />
+      {isUploadingImage && <Loader blur />}
     </>
   )
 }

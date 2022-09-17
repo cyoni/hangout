@@ -1,12 +1,10 @@
 import { getToken } from "next-auth/jwt"
 import { useRouter } from "next/router"
 import React, { useEffect } from "react"
+import ProfileError from "../../components/Profile/ProfileError"
 
-function index({ userId }) {
-  const router = useRouter()
-  console.log("useid", userId)
-
-  return <div>Profile is empty</div>
+function index() {
+  return <ProfileError />
 }
 
 export default index
@@ -22,8 +20,6 @@ export async function getServerSideProps(context) {
     }
   }
   return {
-    props: {
-      userId: null,
-    },
+    props: {},
   }
 }

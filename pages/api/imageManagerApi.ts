@@ -1,3 +1,4 @@
+import { UPLOAD_WRAPPER_IMAGE } from "./../../lib/consts"
 import { UPLOAD_IMAGE, REMOVE_IMAGE, USERS_COLLECTION } from "../../lib/consts"
 import { getToken } from "next-auth/jwt"
 import { NextApiResponse } from "next"
@@ -21,7 +22,7 @@ async function getCompressedImage(imageSource) {
     let mimType = parts[0].split(":")[1]
     let imageData = parts[1].split(",")[1]
     var img = Buffer.from(imageData, "base64")
-    const resizedImageBuffer = await sharp(img).jpeg({ quality: 50 }).toBuffer()
+    const resizedImageBuffer = await sharp(img).jpeg({ quality: 60 }).toBuffer()
     const resizedImageData = resizedImageBuffer.toString("base64")
     const resizedBase64 = `data:${mimType};base64,${resizedImageData}`
     return resizedBase64
@@ -67,9 +68,13 @@ async function imageKitUpload(userId, imageSource): Promise<UploadImageRes> {
     return { error: e.message }
   }
 }
-async function uploadImage(params, userId) {
+async function uploadImage(params, userId, isProfilePicture) {
   try {
     const { base64 } = params
+
+    // wrap picture and profile picture have the same logic.
+    const pictureKey = isProfilePicture ? "picture" : "wrapPicture"
+    const pictureIdKey = isProfilePicture ? "pictureId" : "wrapPictureId"
 
     // get picture id from user
     const user: IUser = (await dbFind(USERS_COLLECTION, { userId }))[0]
@@ -88,8 +93,11 @@ async function uploadImage(params, userId) {
       { userId },
       {
         $set: {
-          picture: uploadImageResponse.name,
-          metadata: { ...user.metadata, pictureId: uploadImageResponse.fileId },
+          [pictureKey]: uploadImageResponse.name,
+          metadata: {
+            ...user.metadata,
+            [pictureIdKey]: uploadImageResponse.fileId,
+          },
         },
       },
       {}
@@ -164,7 +172,10 @@ export default async function handler(
 
     switch (method) {
       case UPLOAD_IMAGE:
-        result = await uploadImage(req.body, user.userId)
+        result = await uploadImage(req.body, user.userId, true)
+        break
+      case UPLOAD_WRAPPER_IMAGE:
+        result = await uploadImage(req.body, user.userId, false)
         break
       case REMOVE_IMAGE:
         result = await removeImage(user.userId)

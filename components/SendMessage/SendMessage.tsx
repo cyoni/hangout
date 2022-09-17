@@ -1,13 +1,11 @@
-import {
-  ChatBubbleOvalLeftEllipsisIcon,
-  ChatBubbleOvalLeftIcon,
-} from "@heroicons/react/24/outline"
+import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline"
 import { TextField } from "@mui/material"
 import React from "react"
 import ButtonIntegration from "../ButtonIntegration"
+import CustomAvatar from "../CustomAvatar"
 import useSendMessage from "./useSendMessage"
 
-function SendMessage({ name, theirId, closeModal }) {
+function SendMessage({ name, picture, theirId, closeModal }) {
   const { sendMessage, messageMutation, message, setMessage } =
     useSendMessage(theirId)
 
@@ -26,8 +24,16 @@ function SendMessage({ name, theirId, closeModal }) {
           </div>
         </div>
       ) : (
-        <div>
-          <div className="text-3xl">Send Message To {name}</div>
+        <>
+          <div className="flex items-center gap-2">
+            <CustomAvatar
+              userId={theirId}
+              picture={picture}
+              name={name}
+              className="h-16 w-16"
+            />
+            <div className="text-3xl font-semibold capitalize">{name}</div>
+          </div>
           <div className="flex flex-col my-10">
             <TextField
               id="outlined-basic"
@@ -39,10 +45,13 @@ function SendMessage({ name, theirId, closeModal }) {
               multiline
             />
           </div>
-          <ButtonIntegration buttonClassName="btn" onClick={sendMessage}>
-            Send Message
+          <ButtonIntegration
+            buttonClassName="btn w-fit block ml-auto px-10"
+            onClick={sendMessage}
+          >
+            Send
           </ButtonIntegration>
-        </div>
+        </>
       )}
     </div>
   )

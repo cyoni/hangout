@@ -89,7 +89,7 @@ function PostModal({ renderOptions, post, place }) {
             className="h-24 w-24"
           />
           <div>
-            <div className="text-3xl  mt-2 ">{name}</div>
+            <div className="text-3xl mt-2 capitalize">{name}</div>
             <p className="text-sm leading-5	">{getFullPlaceName(place)}</p>
             <p className="text-sm leading-3	">{getPastTime(timestamp)}</p>
           </div>
@@ -99,7 +99,7 @@ function PostModal({ renderOptions, post, place }) {
       <div className="border rounded-md p-2 min-h-[150px] my-5">
         {post.message}
       </div>
-      
+
       <div className="min-h-[150px] mt-3">
         {commentQuery.isLoading && (
           <div className="mx-auto w-fit mt-10">

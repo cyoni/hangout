@@ -45,13 +45,10 @@ function Inbox() {
     console.log("getMsgs", result)
 
     if (Array.isArray(result?.previewMsgs)) {
-      console.log("XXXXXXXXXX", result?.previewMsgs)
       const cities = result.previewMsgs.map((r) => r.profile[0]?.cityId)
       const places = await queryPlacesFromClient(cities)
       if (places) {
         setPlaces(places)
-        console.log("places##", places)
-        console.log("msg msg", result.previewMsgs)
         setUnreadMsgs(result.unreadMsgsIds)
         setMessages(result.previewMsgs)
       }
