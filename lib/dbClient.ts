@@ -27,16 +27,17 @@ export async function getProfile(userIds: string[]) {
   return profiles
 }
 
-
 export async function getPlace(cityIds: number[]) {
   console.log("get place start. input:", cityIds)
 
   if (!Array.isArray(cityIds))
     return { error: "bad request: expects to get an array of cityIds" }
 
- // const convertedCityIds: number[] = convertStringArrToNumber(cityIds)
+  const cleanedArray = cityIds.filter((x) => !isNaN(x))
+  console.log("cleaned array:", cleanedArray)
 
- // console.log("convertedCityIds",convertedCityIds)
+  // const convertedCityIds: number[] = convertStringArrToNumber(cityIds)
+  // console.log("convertedCityIds",convertedCityIds)
 
   let convertedCitiesFromStorage = {}
   let citiesFromStorage: number[] = []
@@ -55,7 +56,7 @@ export async function getPlace(cityIds: number[]) {
     citiesFromStorage = []
   }
 
-  const missingCities = getDifference(cityIds, citiesFromStorage)
+  const missingCities = getDifference(cleanedArray, citiesFromStorage)
 
   console.log("missingCities", missingCities)
   console.log("citiesFromStorage", citiesFromStorage)

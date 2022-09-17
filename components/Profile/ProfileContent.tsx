@@ -4,18 +4,18 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { getFullPlaceName } from "../../lib/scripts/place"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import Itinerary from "../Itinerary"
-import { isAuthenticated, isAuthor } from "../../lib/session"
+import { isAuthor } from "../../lib/session"
 import ButtonIntegration from "../ButtonIntegration"
 import useFollow from "../useFollow"
-import { FOLLOW } from "../../lib/consts"
+import { FOLLOW, UPLOAD_IMAGE } from "../../lib/consts"
 import { Avatar, Box, Fab, Tab, Tabs } from "@mui/material"
 import ChatModal from "../ChatModal"
 import EditIcon from "@mui/icons-material/Edit"
 import CustomAvatar from "../CustomAvatar"
 import useItinerary from "../useItinerary"
 import usePlace from "../usePlace"
-import { getCitiesAutoComplete } from "../../lib/AutoCompleteUtils"
 import { unique } from "../../lib/scripts/arrays"
+import { convertToBase64 } from "../../lib/scripts/images"
 
 interface Props {
   profile: Profile
@@ -36,11 +36,18 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
   console.log("userItineraryQuery.data", userItineraryQuery.data)
 
   const { getFirstPlace, getPlaceFromObject, placeQuery } = usePlace(cityIds)
-
+  {
+    console.log("userItineraryQuery", userItineraryQuery.data)
+  }
   useEffect(() => {
     if (userItineraryQuery.data) {
       const newData = []
-      userItineraryQuery.data.forEach((travel) => {
+      userItineraryQuery.data?.activeTravels?.forEach((travel) => {
+        travel.itineraries.forEach((itin) => {
+          newData.push(itin?.place?.city_id)
+        })
+      })
+      userItineraryQuery.data?.inactiveTravels?.forEach((travel) => {
         travel.itineraries.forEach((itin) => {
           newData.push(itin?.place?.city_id)
         })
@@ -48,6 +55,8 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
       setCityIds(unique(newData))
     }
   }, [userItineraryQuery.data])
+
+
 
   const setCities = new Set<number>()
   console.log("setCities", setCities)
@@ -85,6 +94,36 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
     )
   }
 
+  const renderTravelsCard = (data) => {
+    if (data && placeQuery.data) {
+      return (
+        <>
+          {data?.map((userItinerary) => {
+            {
+              console.log("userItinerary", userItinerary)
+            }
+            return (
+              <div key={userItinerary._id}>
+                <Itinerary
+                  {...userItinerary}
+                  getPlaceFromObject={getPlaceFromObject}
+                />
+              </div>
+            )
+          })}
+        </>
+      )
+    }
+  }
+
+  const handleImage = (e) => {
+    const update = async () => {
+      const base64 = await convertToBase64(e)
+      setImageMetadata({ base64, method: UPLOAD_IMAGE })
+    }
+    update()
+  }
+
   return (
     <div>
       <div className="mt-5 flex space-x-3">
@@ -104,7 +143,7 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
             <EditIcon />
           </Fab>
         </div>
-
+        <input type="file" name="file" onChange={(e) => handleImage(e)} />
         <div className="flex-1">
           <p className="text-3xl font-medium tracking-wide capitalize">
             {profile.name}
@@ -188,23 +227,19 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
         </TabPanel>
 
         <TabPanel value={value} index={1}>
-          <div className="pl-2 text-3xl">Travels</div>
+          {console.log("placeQuery.data ", placeQuery.data)}
 
-          {userItineraryQuery.data && placeQuery.data && (
+          {userItineraryQuery.data?.activeTravels && (
             <>
-              {userItineraryQuery.data.map((userItinerary) => {
-                {
-                  console.log("userItinerary", userItinerary)
-                }
-                return (
-                  <div key={userItinerary._id}>
-                    <Itinerary
-                      {...userItinerary}
-                      getPlaceFromObject={getPlaceFromObject}
-                    />
-                  </div>
-                )
-              })}
+              <div className="pl-2 text-3xl">Travels</div>
+              {renderTravelsCard(userItineraryQuery.data.activeTravels)}
+            </>
+          )}
+
+          {userItineraryQuery.data?.inactiveTravels && (
+            <>
+              <div className="pl-2 text-3xl mt-4">Past Travels</div>
+              {renderTravelsCard(userItineraryQuery.data.inactiveTravels)}
             </>
           )}
         </TabPanel>

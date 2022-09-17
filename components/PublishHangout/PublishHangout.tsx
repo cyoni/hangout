@@ -98,7 +98,6 @@ export default function PublishHangout({ place }: Props) {
 
       {renderCities()}
 
-
       <form
         className="mx-auto my-10 flex w-[40%] flex-col space-y-4 rounded-md border p-3 shadow-lg"
         method="post"

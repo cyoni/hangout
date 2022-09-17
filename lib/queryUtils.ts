@@ -9,7 +9,7 @@ export function JoinProfiles({
   foreignField = "userId",
   localField = "userId",
   as = "profile",
-}: Props) {
+}) {
   return {
     $lookup: {
       from: USERS_COLLECTION,

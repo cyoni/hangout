@@ -37,15 +37,71 @@ export async function getUserItineraries({ userIds }) {
     collection: TRAVELLING_TABLE,
     params: [
       {
-        $match: {
-          userId: { $in: userIdsArray },
+        $sort: { "itineraries.startDate": 1 },
+      },
+      {
+        $group: {
+          _id: null,
+          activeTravels: {
+            $push: {
+              $cond: {
+                if: {
+                  $gt: [
+                    { $arrayElemAt: ["$itineraries.endDate", -1] },
+                    new Date(),
+                  ],
+                },
+                then: "$$ROOT",
+                else: null,
+              },
+            },
+          },
+          inactiveTravels: {
+            $push: {
+              $cond: {
+                if: {
+                  $lt: [
+                    { $arrayElemAt: ["$itineraries.endDate", -1] },
+                    new Date(),
+                  ],
+                },
+                then: "$$ROOT",
+                else: null,
+              },
+            },
+          },
         },
       },
-      JoinProfiles(),
+
+      // $facet: {
+      //   activeTravels: [
+      //     {
+      //       $match: {
+      //         userId: { $in: userIdsArray },
+      //         $expr: {
+      //           $gt: [
+      //             { $arrayElemAt: ["$itineraries.endDate", -1] },
+      //             new Date(),
+      //           ],
+      //         },
+      //       },
+      //     },
+      //     {
+      //       $sort: { "itineraries.0.startDate": 1 },
+      //     },
+      //     JoinProfiles({}),
+      //   ],
+      //   pastTravels: [],
+      // },
     ],
   }
 
-  const result = await dbAggregate(request)
+  const data = (await dbAggregate(request))[0]
+  const result = {
+    activeTravels: data.activeTravels.filter((travel) => travel !== null),
+    inactiveTravels: data.inactiveTravels.filter((travel) => travel !== null),
+  }
+
   return result
 }
 
@@ -75,7 +131,7 @@ export async function getCityItineraries({ cityIds, page }) {
             matchFilter,
             { $skip: (pageNumber - 1) * MAX_POSTS_PER_PAGE },
             { $limit: MAX_POSTS_PER_PAGE },
-            JoinProfiles(),
+            JoinProfiles({}),
             {
               $project: {
                 startDate: 1,
@@ -100,7 +156,7 @@ export async function getCityItineraries({ cityIds, page }) {
     ],
   }
   const data = (await dbAggregate(request))[0]
-  
+
   const nextPage =
     data.metadata.length > 0 &&
     (pageNumber - 1) * MAX_POSTS_PER_PAGE + data.travelers.length !==

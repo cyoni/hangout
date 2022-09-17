@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb"
+
 type City = {
   city_id: number
   city: string
@@ -95,12 +97,14 @@ interface MongoUpdateRes {
   error?: string
 }
 
-interface IUser {
-  id: string
-  profile: {
-    name: string
-    picture: string
+type IUser = {
+  _id: ObjectId
+  metadata: {
+    pictureId: string
   }
+  userId: string
+  name: string
+  picture: string
 }
 
 type Profile = {

@@ -169,7 +169,7 @@ async function GetPostComments({ postId, page }) {
             { $sort: { timestamp: -1 } },
             { $skip: (pageNumber - 1) * MAX_POSTS_PER_PAGE },
             { $limit: MAX_POSTS_PER_PAGE },
-            JoinProfiles(),
+            JoinProfiles({}),
           ],
         },
       },

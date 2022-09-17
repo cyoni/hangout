@@ -3,11 +3,7 @@ import HeaderImage from "../../components/HeaderImage"
 import PublishHangout from "../../components/PublishHangout/PublishHangout"
 
 function index() {
-  return (
-    <div>
-      <PublishHangout />
-    </div>
-  )
+  return <PublishHangout />
 }
 
 export default index

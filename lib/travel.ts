@@ -57,7 +57,7 @@ export async function getRecentTravelersByCity(cityId: number) {
           ],
         },
       },
-      JoinProfiles(),
+      JoinProfiles({}),
       {
         $project: {
           userId: 1,
