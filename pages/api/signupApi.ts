@@ -1,9 +1,7 @@
-import { signIn } from "next-auth/react"
+import { sha256 } from "js-sha256"
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import dbFind from "../../lib/mongoUtils"
 import clientPromise from "../../lib/mongodb"
 import randomString from "../../lib/randomString"
-import { prisma } from "../../prisma"
 import { queryPlace } from "../../lib/place"
 
 async function findUser(db, { email }) {
@@ -13,10 +11,10 @@ async function findUser(db, { email }) {
 }
 
 async function addUser(db, params) {
-
   const newUser = { ...params }
-  const result =  await db.collection("users").insertOne(JSON.parse(JSON.stringify(newUser)))
-  
+  const result = await db
+    .collection("users")
+    .insertOne(JSON.parse(JSON.stringify(newUser)))
 }
 
 const getValueFromAddress = (addressComponents, type) => {
@@ -36,8 +34,6 @@ interface Props {
 
 async function signup(req) {
   try {
-    // const client = new Client({})
-
     const mongoClient = await clientPromise
     const db = mongoClient.db()
 
@@ -50,7 +46,6 @@ async function signup(req) {
     }
 
     // check if place id is valid
-
     const place = await queryPlace(city_id)
     console.log("place", place)
 
@@ -63,16 +58,19 @@ async function signup(req) {
       return { error: true, message: "user exists" }
     }
 
+    var hash = sha256.create()
+    hash.update(password)
+
     const userId = randomString(15)
     const newUser = {
       userId,
-      password,
+      password: hash.toString(),
       email,
       name,
       cityId: place.city_id,
     }
     console.log("newUser", newUser)
-     await addUser(db, newUser)
+    await addUser(db, newUser)
 
     return { isSuccess: true }
   } catch (error) {
@@ -83,7 +81,7 @@ async function signup(req) {
 
 export default async function handler(req, res) {
   const body = req.body
-  const result = await  signup(req)
+  const result = await signup(req)
   if (result?.isSuccess) res.status(200).json(result)
   else res.status(400).json(result)
 }

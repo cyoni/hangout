@@ -68,9 +68,9 @@ function FeedPost({ post }: Props) {
           callback={getMyFollowingList}
         >
           {following ? (
-            <UserPlusIcon className="h-5" />
+            <UserCircleIcon className="h-5" />
           ) : (
-            <UserCircleIcon className="h-6" />
+            <UserPlusIcon className="h-6" />
           )}
         </CircularButton>
 

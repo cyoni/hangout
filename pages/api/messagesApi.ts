@@ -86,7 +86,9 @@ async function getUnreadMsgsCount(userId) {
     }
     const result = (await dbAggregate(request))[0]
     console.log("results getNotifications", result)
-    return result
+    return {
+      unreadMessages: result?.unreadMessages || 0,
+    }
   } catch (e) {
     throw Error(e.message)
   }

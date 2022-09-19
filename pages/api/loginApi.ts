@@ -1,11 +1,16 @@
+import { sha256 } from "js-sha256"
 import { dbFind } from "../../lib/mongoUtils"
 import { queryPlace } from "../../lib/place"
 
 async function login({ email, password }) {
   console.log("req.body", email, password)
 
+  // encrypt password
+  var hash = sha256.create()
+  hash.update(password)
+
   // check if user exists
-  const userArray = await dbFind("users", { $and: [{ email, password }] })
+  const userArray = await dbFind("users", { $and: [{ email, password: hash.toString() }] })
   console.log("userArray", userArray)
 
   if (Array.isArray(userArray) && userArray.length === 1) {

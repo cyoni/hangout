@@ -8,11 +8,10 @@ function Itinerary({ description, itineraries, getPlaceFromObject }) {
     <div className=" justify-evenly mt-2 min-h-[200px] rounded-md  border p-2">
       <div className="flex justify-end">
 
-      <IconButton>
+      {/* <IconButton>
       <PencilIcon className="h-5"/>
-      </IconButton>
-    
-
+      </IconButton> */}
+  
       </div>
       <div className="flex flex-row-reverse	 justify-between">
         <div className="p-2 text-lg rounded-md basis-[65%]">{description}</div>

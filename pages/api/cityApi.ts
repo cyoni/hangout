@@ -78,6 +78,9 @@ export async function GetPosts({ cityId, take, page = 1 }) {
   const pageNumber = Number(page)
   if (pageNumber < 1) return { error: "page number must be greater than 0" }
 
+  const filter = {
+    cityId: Number(keys[0]),
+  }
   const request: AggregateReq = {
     collection: CITY_POSTS_TABLE,
     params: [
@@ -85,9 +88,7 @@ export async function GetPosts({ cityId, take, page = 1 }) {
         $facet: {
           metadata: [
             {
-              $match: {
-                cityId: Number(keys[0]),
-              },
+              $match: filter,
             },
             {
               $count: "count",
@@ -96,9 +97,7 @@ export async function GetPosts({ cityId, take, page = 1 }) {
           posts: [
             { $sort: { timestamp: -1 } },
             {
-              $match: {
-                cityId: Number(keys[0]),
-              },
+              $match: filter,
             },
             {
               $skip: (pageNumber - 1) * MAX_POSTS_PER_PAGE,

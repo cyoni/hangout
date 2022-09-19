@@ -43,6 +43,7 @@ const addEmptyProfileImageIfNeeded = (results) => {
 }
 
 export async function getRecentTravelersByCity(cityId: number) {
+  console.log("getRecentTravelersByCity", cityId)
   if (isNullOrEmpty(cityId)) return null
   const now = Date.now()
   const result = await dbAggregate({
@@ -51,8 +52,8 @@ export async function getRecentTravelersByCity(cityId: number) {
       {
         $match: {
           $and: [
-            { "itineraries.place.city_id": cityId },
-            { "itineraries.place.city_id": { $eq: cityId } },
+            { "itineraries.place.city_id": Number(cityId) },
+            { "itineraries.place.city_id": { $eq: Number(cityId) } },
             { "itineraries.startDate": { $gt: new Date() } },
           ],
         },
@@ -68,7 +69,7 @@ export async function getRecentTravelersByCity(cityId: number) {
               as: "travel",
               cond: {
                 $and: [
-                  { $eq: ["$$travel.place.city_id", cityId] },
+                  { $eq: ["$$travel.place.city_id", Number(cityId)] },
                   { $gt: ["$$travel.startDate", new Date()] },
                 ],
               },
@@ -86,7 +87,7 @@ export async function getRecentTravelersByCity(cityId: number) {
       },
     ],
   })
-  console.log("result: ", JSON.stringify(result))
+  console.log("getRecentTravelersByCity result: ", JSON.stringify(result))
   return result
 }
 

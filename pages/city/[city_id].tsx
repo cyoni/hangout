@@ -25,10 +25,11 @@ export default function Home({ place, myFollowing, user }: Props) {
   const isFollowingCity = isFollowing(place.city_id)
   const isShowFollowCityBtn =
     !user || (user && user.place.city_id !== place.city_id)
+    
   return (
     <div>
       <Head>
-        <title>Hangouts - {place?.city}</title>
+        <title>{place?.city} - Hangouts</title>
       </Head>
 
       <main>
@@ -79,16 +80,11 @@ export default function Home({ place, myFollowing, user }: Props) {
 export async function getServerSideProps(context) {
   try {
     const user = await getToken(context)
-
     const city_id = Number(context.query.city_id)
-
     console.log("cityQueryCode", city_id)
-
     const place = await queryPlace(city_id)
-
     const myFollowing = await getFollowing(user.userId)
     console.log("myFollowing", myFollowing)
-
     return {
       props: { place, myFollowing, user },
     }

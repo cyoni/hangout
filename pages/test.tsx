@@ -1,15 +1,13 @@
 import ImageKit from "imagekit"
 import * as React from "react"
 import { getImageKit } from "../lib/ImageKit"
-
+import { sha256 } from "js-sha256"
 export default function Test() {
-  const xxx = () => {
-    window.showOpenFilePicker()
-  }
-
+  var hash = sha256.create()
+  hash.update("123")
   return (
     <div>
-      <div onClick={() => xxx()}>click me</div>
+      {hash.toString()}
       {/* <input
         type="file"
         id="file-selector"

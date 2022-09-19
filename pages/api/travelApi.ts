@@ -10,6 +10,7 @@ import {
 import { dbAggregate, dbInsertMany } from "../../lib/mongoUtils"
 import { JoinProfiles } from "../../lib/queryUtils"
 import { convertStringToTypeArray } from "../../lib/scripts/arrays"
+import { getRecentTravelersByCity } from "../../lib/travel"
 
 export async function postNewItinerary({ itineraries, description }, userId) {
   const dataToDb = {
@@ -187,7 +188,7 @@ export default async function handler(req, res) {
         result = await getUserItineraries(req.query)
         break
       case GET_CITY_ITINERARIES:
-        result = await getCityItineraries(req.query)
+        result = await getRecentTravelersByCity(req.query.cityIds)
         break
       case POST_NEW_ITINERARY:
         result = await postNewItinerary(req.body, userId)

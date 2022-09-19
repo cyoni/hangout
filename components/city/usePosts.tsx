@@ -7,15 +7,16 @@ import { get, newGet, post } from "../../lib/postman"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 
 interface Props {
-  cityId: number
+  cityId?: number
+  followingPosts?: boolean
   take?: number
 }
-function usePosts({ cityId, take }: Props) {
+function usePosts({ cityId, followingPosts, take }: Props) {
   const [messageInput, setMessageInput] = useState<string>("")
   const [page, setPage] = useState<number>(1)
 
   const postsQuery = useQuery(
-    ["city-fetch-posts", page],
+    ["city-fetch-posts", cityId, followingPosts, page],
     () => fetchPosts(page),
     {
       staleTime: Infinity,
@@ -26,7 +27,7 @@ function usePosts({ cityId, take }: Props) {
       onSuccess: (data) => {
         setTotalPages(data.totalPages)
       },
-      enabled: !isNaN(cityId),
+      enabled: !isNaN(cityId) || !!followingPosts,
     }
   )
 
@@ -49,6 +50,7 @@ function usePosts({ cityId, take }: Props) {
     newGet(CITY_API, {
       method: GET_MESSAGES,
       cityId,
+      followingPosts,
       page: pageParam,
       take,
     })

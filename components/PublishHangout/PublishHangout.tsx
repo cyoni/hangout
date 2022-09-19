@@ -15,7 +15,7 @@ import usePublishHangout from "./usePublishHangout"
 import { useQueryClient } from "@tanstack/react-query"
 import { MobileDatePicker } from "@mui/x-date-pickers"
 import { formatDate } from "../../lib/dates"
-import { IconButton } from "@mui/material"
+import { IconButton, Tooltip } from "@mui/material"
 import { AutoComplete } from "../AutoComplete"
 
 interface Props {
@@ -31,7 +31,6 @@ export default function PublishHangout({ place }: Props) {
     currentItinerary,
     itineraries,
     currentIndex,
-    isValidForm,
     updateItinerary,
     addNewItinerary,
     handleSelectCity,
@@ -66,18 +65,18 @@ export default function PublishHangout({ place }: Props) {
               onClick={() => setCurrentIndex(i)}
             >
               <div className="flex ">
-                <div className="flex flex-col justify-center items-center hover:bg-gray-300 rounded-lg cursor-pointer ">
+                <div className="flex cursor-pointer flex-col items-center justify-center rounded-lg hover:bg-gray-300 ">
                   <div className={`flex ${isLast ? "min-w-[80px]" : ""}  `}>
-                    <div className=" bg-gray-500  h-[4px] w-10 mt-5"></div>
+                    <div className=" mt-5  h-[4px] w-10 bg-gray-500"></div>
                     <div className="text-3xl ">•</div>
                     {!isLast ? (
-                      <div className="bg-gray-500  h-[4px] w-10 mt-5"></div>
+                      <div className="mt-5  h-[4px] w-10 bg-gray-500"></div>
                     ) : null}
                   </div>
                   <div className="text-lg">{itinerary?.place?.city}</div>
                 </div>
                 {!isLast ? (
-                  <div className="mt-5 bg-gray-500  h-[4px] w-14"></div>
+                  <div className="mt-5 h-[4px]  w-14 bg-gray-500"></div>
                 ) : null}
               </div>
             </div>
@@ -107,9 +106,11 @@ export default function PublishHangout({ place }: Props) {
             Tell others about your upcoming travel
           </h1>
           <div>
-            <IconButton>
-              <PlusIcon onClick={addNewItinerary} className="h-7" />
-            </IconButton>
+            <Tooltip title="Add another place">
+              <IconButton>
+                <PlusIcon onClick={addNewItinerary} className="h-7" />
+              </IconButton>
+            </Tooltip>
           </div>
         </div>
         <div>

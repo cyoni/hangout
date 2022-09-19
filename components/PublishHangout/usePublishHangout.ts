@@ -6,6 +6,7 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 import { firePost, post } from "../../lib/postman"
 import { getFullPlaceName } from "../../lib/scripts/place"
 import { POST_NEW_ITINERARY } from "../../lib/consts"
+import { isNullOrEmpty } from "../../lib/scripts/strings"
 
 interface Itinerary {
   place: Place
@@ -50,9 +51,35 @@ function usePublishHangout(autoCompleteRef) {
   }
 
   const currentItinerary = itineraries[currentIndex]
-  console.log("currentItinerary..", currentItinerary)
+
+  const isFormValid = () => {
+    if (isNullOrEmpty(currentItinerary?.place?.city)) {
+      toast.error("Enter a place")
+      return false
+    }
+    if (currentItinerary?.startDate > currentItinerary?.endDate) {
+      toast.error("Start date can't be less than end date.")
+      return false
+    }
+
+    if (isNullOrEmpty(currentItinerary?.startDate)) {
+      toast.error("Please set a start date.")
+      return false
+    }
+
+    if (isNullOrEmpty(currentItinerary?.endDate)) {
+      toast.error("Please set an end date.")
+      return false
+    }
+
+    return true
+  }
 
   const addNewItinerary = () => {
+    console.log("currentItinerary..", currentItinerary)
+
+    if (!isFormValid()) return
+
     setCurrentIndex(currentIndex + 1)
     setItineraries([
       ...itineraries,
@@ -65,12 +92,6 @@ function usePublishHangout(autoCompleteRef) {
     autoCompleteRef?.current?.setAutoCompleteValue("")
   }
 
-  const isValidForm = () => {
-    let isValid = true
-
-    return isValid
-  }
-
   const triggerTravelMutation = (body) => {
     return post({
       url: TRAVEL_API,
@@ -81,6 +102,8 @@ function usePublishHangout(autoCompleteRef) {
   const travelMutation = useMutation(triggerTravelMutation)
 
   const publishTravels = async () => {
+    if (!isFormValid()) return
+
     await travelMutation.mutateAsync(
       {
         method: POST_NEW_ITINERARY,
@@ -98,7 +121,6 @@ function usePublishHangout(autoCompleteRef) {
     )
   }
 
-
   return {
     currentItinerary,
     description,
@@ -106,11 +128,10 @@ function usePublishHangout(autoCompleteRef) {
     itineraries,
     currentIndex,
     setCurrentIndex,
-    isValidForm,
     updateItinerary,
     addNewItinerary,
     handleSelectCity,
-    publishTravels
+    publishTravels,
   }
 }
 

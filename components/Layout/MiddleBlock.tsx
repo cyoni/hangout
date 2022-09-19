@@ -15,10 +15,14 @@ function MiddleBlock({ session, recentTravelers }) {
   const cityName = session?.place?.city
   const router = useRouter()
   const user = session?.user
-  console.log("sessiwefwfwon",session)
   const { sendPost, postsQuery, messageInput, setMessageInput } = usePosts({
     cityId: userCityId,
-    take: 10,
+    take: 5,
+  })
+
+  const { postsQuery: followingPostsQuery } = usePosts({
+    cityId: userCityId,
+    take: 5,
   })
 
   const renderRecentTravelers = () => {
@@ -67,7 +71,6 @@ function MiddleBlock({ session, recentTravelers }) {
 
       <div className="">
         <div className="mt-3 text-xl">Recent Discussion</div>
-
         <div className="my-5  space-x-2 pb-4">
           <div className="flex flex-1 space-x-2 ">
             <CustomAvatar
@@ -81,7 +84,7 @@ function MiddleBlock({ session, recentTravelers }) {
               id="outlined-multiline-flexible"
               placeholder="Start a discussion"
               rows={3}
-              className="outline-none w-full pl-1 mt-1"
+              className="mt-1 w-full pl-1 outline-none"
               value={messageInput}
               onChange={(e) => setMessageInput(e.target.value)}
             />
@@ -109,7 +112,29 @@ function MiddleBlock({ session, recentTravelers }) {
             )
           })}
         <button
-          className="btn-outline mt-2 block ml-auto"
+          className="btn-outline mt-2 ml-auto block"
+          onClick={() => router.push(`city/${userCityId}?view=${POST}`)}
+        >
+          More
+        </button>
+      </div>
+
+      <div className="">
+        <div className="mt-3 text-xl">
+          Recent Discussion of members you follow
+        </div>
+
+        {postsQuery.isFetching && <Spinner />}
+        {Array.isArray(postsQuery.data?.posts) &&
+          postsQuery.data?.posts.map((post) => {
+            return (
+              <div key={post._id}>
+                <FeedPost post={post} />
+              </div>
+            )
+          })}
+        <button
+          className="btn-outline mt-2 ml-auto block"
           onClick={() => router.push(`city/${userCityId}?view=${POST}`)}
         >
           More

@@ -1,10 +1,5 @@
-import { useState } from "react"
-import LocationAutoComplete from "../../components/LocationAutoComplete"
 import { queryPlace } from "../../lib/place"
-import HeaderImage from "../../components/HeaderImage"
-import toast from "react-hot-toast"
 import { useRouter } from "next/router"
-import { getFullPlaceName } from "../../lib/scripts/place"
 import PublishHangout from "../../components/PublishHangout/PublishHangout"
 
 interface Props {
@@ -15,11 +10,7 @@ export default function Travelling({ place }: Props) {
   const router = useRouter()
   console.log("xxxxxxx", router.query.city_id)
 
-  return (
-    <div>
-      <PublishHangout place={place} />
-    </div>
-  )
+  return <PublishHangout place={place} />
 }
 
 export async function getServerSideProps(context) {

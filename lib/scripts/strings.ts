@@ -1,4 +1,4 @@
-export function isNullOrEmpty(value: string | number): boolean {
+export function isNullOrEmpty(value: any): boolean {
   return (
     value == null ||
     (typeof value === "string" && value.trim() === "")
