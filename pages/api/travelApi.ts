@@ -10,21 +10,34 @@ import {
 import { dbAggregate, dbInsertMany } from "../../lib/mongoUtils"
 import { JoinProfiles } from "../../lib/queryUtils"
 import { convertStringToTypeArray } from "../../lib/scripts/arrays"
-import { getRecentTravelersByCity } from "../../lib/travel"
+
+function convertItineraries(itineraries) {
+  const convertedItineraries = []
+  itineraries.forEach((itinerary) => {
+    convertedItineraries.push({
+      startDate: new Date(itinerary.startDate),
+      endDate: new Date(itinerary.endDate),
+      place: {
+        city_id: Number(itinerary.place.city_id),
+      },
+    })
+  })
+  return convertedItineraries
+}
 
 export async function postNewItinerary({ itineraries, description }, userId) {
   const dataToDb = {
     userId,
     timestamp: Date.now(),
     description,
-    itineraries,
+    itineraries: convertItineraries(itineraries),
   }
   const data = [{ ...dataToDb }]
   console.log("data to db", data)
 
   const res: MongoInsertRes = await dbInsertMany(
     TRAVELING_TABLE,
-    JSON.parse(JSON.stringify(data))
+    data // JSON.parse(JSON.stringify(data))
   )
 
   if (res.acknowledged)
@@ -106,7 +119,13 @@ export async function getUserItineraries({ userIds }) {
   return result
 }
 
-export async function getCityItineraries({ cityIds, page }) {
+export async function getCityItineraries({
+  cityIds,
+  showAll = false,
+  page = 1,
+}) {
+  console.log("convertedCityArray", cityIds)
+
   const convertedCityArray = Array.isArray(cityIds)
     ? cityIds
     : convertStringToTypeArray(cityIds, Number)
@@ -118,7 +137,11 @@ export async function getCityItineraries({ cityIds, page }) {
 
   const matchFilter = {
     $match: {
-      "itineraries.place.city_id": { $in: convertedCityArray },
+      $and: [
+        { "itineraries.place.city_id": { $in: convertedCityArray } },
+        { "itineraries.startDate": { $gt: new Date() } },
+        { "itineraries.endDate": { $gt: new Date() } },
+      ],
     },
   }
 
@@ -173,6 +196,7 @@ export async function getCityItineraries({ cityIds, page }) {
   return result
 }
 
+// Controller
 export default async function handler(req, res) {
   try {
     const token = await getToken({ req })
@@ -188,7 +212,7 @@ export default async function handler(req, res) {
         result = await getUserItineraries(req.query)
         break
       case GET_CITY_ITINERARIES:
-        result = await getRecentTravelersByCity(req.query.cityIds)
+        result = await getCityItineraries({ ...req.query })
         break
       case POST_NEW_ITINERARY:
         result = await postNewItinerary(req.body, userId)

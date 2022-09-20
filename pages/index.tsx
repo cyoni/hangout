@@ -3,11 +3,11 @@ import HeaderImage from "../components/HeaderImage"
 import useFollow from "../components/useFollow"
 import { getToken } from "next-auth/jwt"
 import { getFollowing } from "./api/followApi"
-import { getRecentTravelersByCity } from "../lib/travel"
 import usePlace from "../components/usePlace"
 import MiddleBlock from "../components/Layout/MiddleBlock"
 import RightBlock from "../components/Layout/RightBlock"
 import LeftBlock from "../components/Layout/LeftBlock"
+import { getCityItineraries } from "./api/travelApi"
 
 export default function Home({ session, followData, recentTravelers }) {
   console.log("My session", session)
@@ -26,7 +26,7 @@ export default function Home({ session, followData, recentTravelers }) {
       <main className="">
         <HeaderImage title="Home" />
 
-        <div className="mx-auto mt-10 grid xl:max-w-[1300px] grid-cols-4">
+        <div className="mx-auto mt-10 grid grid-cols-4 xl:max-w-[1300px]">
           {/* Left block */}
           <LeftBlock />
 
@@ -58,7 +58,10 @@ export async function getServerSideProps(context) {
   const cityId = user.place.city_id
 
   const followData = await getFollowing(user.userId)
-  const recentTravelers = await getRecentTravelersByCity(cityId)
+  const recentTravelers = await getCityItineraries({
+    cityIds: [cityId],
+    showAll: true,
+  })
 
   return {
     props: { followData, recentTravelers },

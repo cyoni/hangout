@@ -1,5 +1,4 @@
 import Refresh from "@mui/icons-material/Refresh"
-import { Avatar, TextField } from "@mui/material"
 import { Session } from "next-auth"
 import { getSession } from "next-auth/react"
 import React, { Fragment, useEffect, useMemo, useState } from "react"
@@ -79,9 +78,9 @@ function PostModal({ renderOptions, post, place }) {
     data.pages[0].comments.length > 0
 
   return (
-    <div className="w-[80%] mx-auto mt-10">
-      <div className="flex justify-between ml-2">
-        <div className="flex space-x-2 mt-4">
+    <div className="mx-auto mt-10 w-[80%]">
+      <div className="ml-2 flex justify-between">
+        <div className="mt-4 flex space-x-2">
           <CustomAvatar
             name={name}
             picture={picture}
@@ -89,29 +88,29 @@ function PostModal({ renderOptions, post, place }) {
             className="h-24 w-24"
           />
           <div>
-            <div className="text-3xl mt-2 capitalize">{name}</div>
+            <div className="mt-2 text-3xl capitalize">{name}</div>
             <p className="text-sm leading-5	">{getFullPlaceName(place)}</p>
             <p className="text-sm leading-3	">{getPastTime(timestamp)}</p>
           </div>
         </div>
         <div>{renderOptions()}</div>
       </div>
-      <div className="border rounded-md p-2 min-h-[150px] my-5">
+      <div className="my-5 min-h-[150px] rounded-md border p-2">
         {post.message}
       </div>
 
-      <div className="min-h-[150px] mt-3">
+      <div className="mt-3 min-h-[150px]">
         {commentQuery.isLoading && (
-          <div className="mx-auto w-fit mt-10">
+          <div className="mx-auto mt-10 w-fit">
             <Spinner />
           </div>
         )}
 
         {commentQuery.isSuccess && (
-          <div className="py-5 mt-5">
+          <div className="mt-5 py-5">
             <div className="space-y-5">
-              <div className="flex justify-between items-center">
-                <div className="font-semibold text-xl">
+              <div className="flex items-center justify-between">
+                <div className="text-xl font-semibold">
                   {totalComments} Comment
                   {totalComments != 1 ? "s" : ""}
                 </div>
@@ -134,14 +133,14 @@ function PostModal({ renderOptions, post, place }) {
                 <textarea
                   id="outlined-multiline-flexible"
                   placeholder="Join the conversation"
-                  className="w-full bg-white outline-none"
+                  className="w-full rounded-md bg-white p-2 outline-none hover:ring-2"
                   value={message}
                   rows={4}
                   onChange={(e) => setMessage(e.target.value)}
                 />
               </div>
 
-              <div className="flex mt-2 justify-end">
+              <div className="mt-2 flex justify-end">
                 <ButtonIntegration
                   buttonClassName={`btn ${
                     isSubmitButtonDisabled ? "disabled" : ""

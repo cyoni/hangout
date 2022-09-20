@@ -9,7 +9,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import Stack from "@mui/material/Stack"
 import { getCitiesAutoComplete } from "../../lib/AutoCompleteUtils"
 import ButtonIntegration from "../ButtonIntegration"
-import { PlusIcon } from "@heroicons/react/24/outline"
+import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline"
 import generateRandomString from "../../lib/scripts/strings"
 import usePublishHangout from "./usePublishHangout"
 import { useQueryClient } from "@tanstack/react-query"
@@ -33,14 +33,13 @@ export default function PublishHangout({ place }: Props) {
     currentIndex,
     updateItinerary,
     addNewItinerary,
+    removeItinerary,
     handleSelectCity,
     setCurrentIndex,
     description,
     setDescription,
     publishTravels,
   } = usePublishHangout(autoCompleteRef)
-
-  const queryClient = useQueryClient()
 
   console.log("currentItinerary client", currentItinerary)
 
@@ -89,7 +88,7 @@ export default function PublishHangout({ place }: Props) {
   const handleNewItinerary = () => {}
 
   return (
-    <div>
+    <>
       <HeaderImage
         title="Publish a new hangout"
         // backgroundId={newPlace?.city ? newPlace.city : "spiral"}
@@ -101,77 +100,91 @@ export default function PublishHangout({ place }: Props) {
         className="mx-auto my-10 flex w-[40%] flex-col space-y-4 rounded-md border p-3 shadow-lg"
         method="post"
       >
-        <div className="flex justify-between">
-          <h1 className="mb-4 text-2xl font-medium">
-            Tell others about your upcoming travel
-          </h1>
-          <div>
-            <Tooltip title="Add another place">
-              <IconButton>
-                <PlusIcon onClick={addNewItinerary} className="h-7" />
-              </IconButton>
-            </Tooltip>
+        <h1 className="mb-4 text-2xl font-medium">Add Travel</h1>
+
+        <div className="flex flex-col space-y-4 rounded-md border p-3 ">
+          <div className="flex justify-between">
+            <h2 className="text-xl font-medium">
+              Tell others about your upcoming travel
+            </h2>
+            <div>
+              {currentIndex > 0 && (
+                <Tooltip title="Remove travel">
+                  <IconButton>
+                    <TrashIcon onClick={removeItinerary} className="h-6" />
+                  </IconButton>
+                </Tooltip>
+              )}
+
+              <Tooltip title="Add another travel">
+                <IconButton>
+                  <PlusIcon onClick={addNewItinerary} className="h-7" />
+                </IconButton>
+              </Tooltip>
+            </div>
           </div>
-        </div>
-        <div>
+          
           <AutoComplete
             label="Where are you going?"
             fetchFunction={getCitiesAutoComplete}
             handleSelect={handleSelectCity}
+            defaultValue="hello"
             getOptionLabel={getFullPlaceName}
             isOptionEqualToValue={isOptionEqualToValue}
             ref={autoCompleteRef}
           />
+
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <Stack spacing={3}>
+              <MobileDatePicker
+                label="When are you arriving?"
+                value={formatDate(currentItinerary?.startDate)}
+                onChange={(newValue) => {
+                  console.log("newValue", newValue)
+                  updateItinerary("startDate", newValue) //setStartDate(newValue)
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </Stack>
+          </LocalizationProvider>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <Stack spacing={3}>
+              <MobileDatePicker
+                label="When are you leaving?"
+                value={formatDate(currentItinerary?.endDate)}
+                onChange={(newValue) => {
+                  console.log("endDate newValue", newValue)
+                  updateItinerary("endDate", newValue)
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </Stack>
+          </LocalizationProvider>
         </div>
 
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <Stack spacing={3}>
-            <MobileDatePicker
-              label="When are you arriving?"
-              value={formatDate(currentItinerary?.startDate)}
-              onChange={(newValue) => {
-                console.log("newValue", newValue)
-                updateItinerary("startDate", newValue) //setStartDate(newValue)
-              }}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </Stack>
-        </LocalizationProvider>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <Stack spacing={3}>
-            <MobileDatePicker
-              label="When are you leaving?"
-              value={formatDate(currentItinerary?.endDate)}
-              onChange={(newValue) => {
-                console.log("endDate newValue", newValue)
-                updateItinerary("endDate", newValue)
-              }}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </Stack>
-        </LocalizationProvider>
-
-        <TextField
-          className=""
-          id="outlined-multiline-static"
-          label="Add some details about your trip"
-          multiline
-          rows={12}
-          value={description}
-          fullWidth
-          onChange={(e) => setDescription(e.target.value)}
-        />
-
-        <div className="mt-24">
-          <ButtonIntegration
-            externalClass="w-fit mx-auto"
-            buttonClassName="btn px-10  "
-            onClick={() => publishTravels()}
-          >
-            Publish
-          </ButtonIntegration>
+        <div className="rounded-md border p-3">
+          <h2 className="mb-7 text-xl font-medium ">
+            Add some details about your trip
+          </h2>
+          <TextField
+            className=""
+            id="outlined-multiline-static"
+            label="Some details here"
+            multiline
+            rows={12}
+            value={description}
+            fullWidth
+            onChange={(e) => setDescription(e.target.value)}
+          />
         </div>
+        <ButtonIntegration
+          externalClass="w-fit mx-auto"
+          buttonClassName="btn px-10 mt-5 mb-2 "
+          onClick={() => publishTravels()}
+        >
+          Publish
+        </ButtonIntegration>
       </form>
-    </div>
+    </>
   )
 }

@@ -6,6 +6,7 @@ import {
 import { dbAggregate, dbFind } from "./mongoUtils"
 import { isNullOrEmpty } from "./scripts/strings"
 import { JoinProfiles } from "./queryUtils"
+import { deprecate } from "util"
 
 const formatDate = (date) => {
   let d = new Date(date)
@@ -41,55 +42,56 @@ const addEmptyProfileImageIfNeeded = (results) => {
       results[i].profile.picture = EMPTY_PROFILE_PICTURE
   }
 }
-
-export async function getRecentTravelersByCity(cityId: number) {
-  console.log("getRecentTravelersByCity", cityId)
-  if (isNullOrEmpty(cityId)) return null
-  const now = Date.now()
-  const result = await dbAggregate({
-    collection: TRAVELLING_TABLE,
-    params: [
-      {
-        $match: {
-          $and: [
-            { "itineraries.place.city_id": Number(cityId) },
-            { "itineraries.place.city_id": { $eq: Number(cityId) } },
-            { "itineraries.startDate": { $gt: new Date() } },
-          ],
-        },
-      },
-      JoinProfiles({}),
-      {
-        $project: {
-          userId: 1,
-          profile: 1,
-          itinerary: {
-            $filter: {
-              input: "$itineraries",
-              as: "travel",
-              cond: {
-                $and: [
-                  { $eq: ["$$travel.place.city_id", Number(cityId)] },
-                  { $gt: ["$$travel.startDate", new Date()] },
-                ],
-              },
-            },
-          },
-        },
-      },
-      {
-        $sort: {
-          "itinerary.startDate": 1,
-        },
-      },
-      {
-        $limit: 1,
-      },
-    ],
-  })
-  console.log("getRecentTravelersByCity result: ", JSON.stringify(result))
-  return result
-}
+// @deprecate
+// export async function getRecentTravelersByCity(cityId: number) {
+//   console.log("getRecentTravelersByCity", cityId)
+//   if (isNullOrEmpty(cityId)) return null
+//   const now = Date.now()
+//   const result = await dbAggregate({
+//     collection: TRAVELLING_TABLE,
+//     params: [
+//       {
+//         $match: {
+//           $and: [
+//             { "itineraries.place.city_id": Number(cityId) },
+//             { "itineraries.place.city_id": { $eq: Number(cityId) } },
+//             { "itineraries.startDate": { $gt: new Date() } },
+//           ],
+//         },
+//       },
+//       JoinProfiles({}),
+//       {
+//         $project: {
+//           userId: 1,
+//           profile: 1,
+//           description: 1,
+//           itinerary: {
+//             $filter: {
+//               input: "$itineraries",
+//               as: "travel",
+//               cond: {
+//                 $and: [
+//                   { $eq: ["$$travel.place.city_id", Number(cityId)] },
+//                   { $gt: ["$$travel.startDate", new Date()] },
+//                 ],
+//               },
+//             },
+//           },
+//         },
+//       },
+//       {
+//         $sort: {
+//           "itinerary.startDate": 1,
+//         },
+//       },
+//       {
+//         $limit: 1,
+//       },
+//     ],
+//   })
+//   console.log("getRecentTravelersByCity result: ", JSON.stringify(result))
+//   return result
+// }
 
 export async function getTravelContent(userId) {
   if (!userId || userId === undefined) {

@@ -1,4 +1,4 @@
-import { MongoUpdateRes } from "../pages/typings/typings"
+import { MongoInsertRes, MongoUpdateRes } from "../pages/typings/typings"
 import clientPromise from "./mongodb"
 
 export async function dbFind(dbName, query) {
@@ -41,7 +41,7 @@ export async function dbInsertMany(
     const db = client.db()
     return await db
       .collection(database)
-      .insertMany(JSON.parse(JSON.stringify(query)))
+      .insertMany(query)
   } catch (e) {
     return { error: e.message }
   }

@@ -1,5 +1,5 @@
 import { toast } from "react-hot-toast"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import React from "react"
 import { TRAVEL_API } from "../../lib/consts/apis"
 import { useMutation, useQuery } from "@tanstack/react-query"
@@ -44,10 +44,23 @@ function usePublishHangout(autoCompleteRef) {
     console.log("itineraries", itineraries)
   }
 
+  useEffect(() => {
+    const place = itineraries[currentIndex]?.place
+    console.log("use effect", place)
+    const fullName = !isNullOrEmpty(place?.city) ? getFullPlaceName(place) : ""
+    autoCompleteRef?.current?.setAutoCompleteValue(fullName)
+  }, [currentIndex])
+
   console.log("itineraries", itineraries)
 
   const handleSelectCity = (place) => {
     updateItinerary("place", place)
+  }
+
+  const removeItinerary = () => {
+    const data = itineraries.filter((itineraries, i) => i !== currentIndex)
+    setItineraries(data)
+    setCurrentIndex((prev) => prev - 1)
   }
 
   const currentItinerary = itineraries[currentIndex]
@@ -129,6 +142,7 @@ function usePublishHangout(autoCompleteRef) {
     currentIndex,
     setCurrentIndex,
     updateItinerary,
+    removeItinerary,
     addNewItinerary,
     handleSelectCity,
     publishTravels,

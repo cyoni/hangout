@@ -23,9 +23,9 @@ export default function Home({ place, myFollowing, user }: Props) {
     useFollow(myFollowing)
 
   const isFollowingCity = isFollowing(place.city_id)
-  const isShowFollowCityBtn =
+  const showFollowCityBtn =
     !user || (user && user.place.city_id !== place.city_id)
-    
+
   return (
     <div>
       <Head>
@@ -41,7 +41,7 @@ export default function Home({ place, myFollowing, user }: Props) {
               : ""
           }
         >
-          {isShowFollowCityBtn && (
+          {showFollowCityBtn && (
             <ButtonIntegration
               externalClass="absolute right-10 top-[40%]"
               buttonClassName="btn text-white w-[200px]
