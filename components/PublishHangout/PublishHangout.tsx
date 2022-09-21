@@ -85,7 +85,7 @@ export default function PublishHangout({ place }: Props) {
     )
   }
   console.log("currentItinerary?.description", currentItinerary?.description)
-  const handleNewItinerary = () => {}
+ console.log("FFFFFFFF",itineraries)
 
   return (
     <>
@@ -108,7 +108,7 @@ export default function PublishHangout({ place }: Props) {
               Tell others about your upcoming travel
             </h2>
             <div>
-              {currentIndex > 0 && (
+              {itineraries.length > 1 && (
                 <Tooltip title="Remove travel">
                   <IconButton>
                     <TrashIcon onClick={removeItinerary} className="h-6" />
@@ -123,7 +123,7 @@ export default function PublishHangout({ place }: Props) {
               </Tooltip>
             </div>
           </div>
-          
+
           <AutoComplete
             label="Where are you going?"
             fetchFunction={getCitiesAutoComplete}

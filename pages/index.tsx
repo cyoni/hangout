@@ -15,6 +15,8 @@ export default function Home({ session, followData, recentTravelers }) {
 
   const cityIds = followQuery.data?.cities?.[0]?.cityIds
 
+  console.log("recentTravelers",recentTravelers)
+
   const { places, getPlaceFromObject } = usePlace(cityIds)
   console.log("places index", places)
   return (
@@ -62,6 +64,7 @@ export async function getServerSideProps(context) {
     cityIds: [cityId],
     showAll: true,
   })
+  console.log("$$$$$$$$$$$$$$$$$$$", recentTravelers)
 
   return {
     props: { followData, recentTravelers },

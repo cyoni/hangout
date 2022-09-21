@@ -256,7 +256,7 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
 
           {userItineraryQuery.data?.inactiveTravels && (
             <>
-              <div className=" pl-2 text-3xl  mb-5 mt-6">Past Travels</div>
+              <div className="pl-2 text-3xl  mb-5 mt-6">Past Travels</div>
               {renderTravelsCard(userItineraryQuery.data.inactiveTravels)}
             </>
           )}

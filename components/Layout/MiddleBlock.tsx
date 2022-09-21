@@ -27,8 +27,9 @@ function MiddleBlock({ session, recentTravelers }) {
 
   const renderRecentTravelers = () => {
     return (
-      Array.isArray(recentTravelers) &&
-      recentTravelers.map((item) => {
+      Array.isArray(recentTravelers?.travelers) &&
+      recentTravelers.travelers.map((item) => {
+        const itinerary = item.itineraries[0]
         const profile: Profile = item.profile[0]
         return (
           <CustomAvatar
@@ -121,7 +122,7 @@ function MiddleBlock({ session, recentTravelers }) {
 
       <div className="">
         <div className="mt-3 text-xl">
-          Recent Discussion of members you follow
+          Recent discussion of members you follow
         </div>
 
         {postsQuery.isFetching && <Spinner />}

@@ -186,13 +186,13 @@ export async function getCityItineraries({
     (pageNumber - 1) * MAX_POSTS_PER_PAGE + data.travelers.length !==
       data.metadata[0].count
       ? pageNumber + 1
-      : undefined
+      :null// undefined
 
   const result = {
     nextPage,
     travelers: data.travelers,
   }
-
+  console.log("dfgfdgfdgdfg", nextPage)
   return result
 }
 

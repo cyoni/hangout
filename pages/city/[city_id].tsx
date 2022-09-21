@@ -69,8 +69,6 @@ export default function Home({ place, myFollowing, user }: Props) {
           )}
         </HeaderImage>
 
-        <Cities />
-
         <CityPageTabs place={place} />
       </main>
     </div>
