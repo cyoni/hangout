@@ -4,6 +4,8 @@ import {
   ProfileParams,
   STOP_FOLLOW,
   USERS_COLLECTION,
+  XY_FOLLOW_EACH_OTHER,
+  X_FOLLOWS_Y,
 } from "./../../lib/consts"
 import { getToken } from "next-auth/jwt"
 import { NextApiRequest, NextApiResponse } from "next"
@@ -25,8 +27,6 @@ type Response = {
   error?: string
 }
 
-const X_FOLLOWS_Y = 1
-const XY_FOLLOW_EACH_OTHER = 2
 async function follow(body, me: string) {
   const { userId, cityId, type } = body
 
@@ -101,7 +101,7 @@ async function unfollowMember(userId: string, me: string) {
       const r = await dbUpdateOne(
         FOLLOW_TABLE,
         getFindTwoUsersFilter(me, userId),
-        { $set: { user1: userId, user2: me, method: X_FOLLOWS_Y } },
+        { $set: { user1: userId, user2: me, method: X_FOLLOWS_Y } }, // SWAP USERS
         {}
       )
     }
@@ -121,11 +121,11 @@ export async function getFollowing(userId) {
               {
                 $match: {
                   type: FOLLOW,
-                  $or: [{ user1: userId }, { user2: userId }],
-                  $and: [
+                  $or: [
+                    { $and: [{ user1: userId }, { method: X_FOLLOWS_Y }] },
                     {
-                      $or: [
-                        { method: X_FOLLOWS_Y },
+                      $and: [
+                        { user2: userId },
                         { method: XY_FOLLOW_EACH_OTHER },
                       ],
                     },
@@ -185,7 +185,7 @@ export async function getFollowing(userId) {
                   _id: 0,
                   cityIds: 1,
                 },
-              }
+              },
             ],
           },
         },
@@ -196,19 +196,6 @@ export async function getFollowing(userId) {
   }
 
   console.log("getFollowing", JSON.stringify(data))
-
-  // const result = data.reduce(
-  //   (acc, curr) => {
-  //     if (curr.type === CITY) {
-  //       acc.favoriteCities.push(curr.cityId)
-  //     } else if (curr.type === FOLLOW) {
-  //       const followerId = curr.user1 === userId ? curr.user2 : curr.user1
-  //       acc.membersImFollowing.push(followerId)
-  //     }
-  //     return acc
-  //   },
-  //   { favoriteCities: [], membersImFollowing: [] }
-  // )
 
   return data[0]
 }

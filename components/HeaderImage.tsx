@@ -33,10 +33,6 @@ function HeaderImage({
 
   useEffect(() => {
     if (customImageId) {
-      console.log(
-        "${process.env.PICTURES_SERVICE_ENDPOINT}/${customImageId}",
-        `${process.env.PICTURES_SERVICE_ENDPOINT}/${customImageId}`
-      )
       setBackgroundUrl(
         `${process.env.PICTURES_SERVICE_ENDPOINT}/${customImageId}`
       )

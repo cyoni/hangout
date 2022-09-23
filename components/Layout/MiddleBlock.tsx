@@ -29,7 +29,6 @@ function MiddleBlock({ session, recentTravelers }) {
     return (
       Array.isArray(recentTravelers?.travelers) &&
       recentTravelers.travelers.map((item) => {
-        const itinerary = item.itineraries[0]
         const profile: Profile = item.profile[0]
         return (
           <CustomAvatar

@@ -1,6 +1,5 @@
 import { useSession } from "next-auth/react"
-import { useRouter } from "next/router"
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import { getFullPlaceName } from "../../lib/scripts/place"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import Itinerary from "../Itinerary"
@@ -8,7 +7,7 @@ import { isAuthor } from "../../lib/session"
 import ButtonIntegration from "../ButtonIntegration"
 import useFollow from "../useFollow"
 import { FOLLOW, UPLOAD_IMAGE } from "../../lib/consts"
-import { Avatar, Box, Fab, Tab, Tabs } from "@mui/material"
+import { Avatar, AvatarGroup, Box, Fab, Tab, Tabs } from "@mui/material"
 import ChatModal from "../ChatModal"
 import EditIcon from "@mui/icons-material/Edit"
 import CustomAvatar from "../CustomAvatar"
@@ -18,21 +17,27 @@ import { unique } from "../../lib/scripts/arrays"
 import { convertToBase64 } from "../../lib/scripts/images"
 import useManageImages from "../useManageImages"
 import Loader from "../Loader"
-import { Place, Profile } from "../../pages/typings/typings"
+import { Following, Member, Place, Profile } from "../../pages/typings/typings"
 import Head from "next/head"
 
 interface Props {
   profile: Profile
   place: Place
   setOpenEditProfile: Function
+  following: Following
 }
 
-const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
+const ProfileContent = ({
+  profile,
+  following,
+  place,
+  setOpenEditProfile,
+}: Props) => {
   const [isModalMessageOpen, setIsModalMessageOpen] = useState<boolean>(false)
   const [cityIds, setCityIds] = useState<number[]>([])
   const session = useSession()
   const { follow, unFollow, isFollowing } = useFollow()
-  const { imageMetadata, triggerImage, imageMutation } = useManageImages()
+  const { triggerImage, imageMutation } = useManageImages()
   const { isLoading: isUploadingImage, isSuccess: isUploadingCompleted } =
     imageMutation
   const { getPlaceFromObject, placeQuery } = usePlace(cityIds)
@@ -55,6 +60,11 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
           newData.push(itin?.place?.city_id)
         })
       })
+
+      following.members.forEach((member) => {
+        newData.push(member.profile[0].city_id)
+      })
+
       setCityIds(unique(newData))
     }
   }, [userItineraryQuery.data])
@@ -127,14 +137,31 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
     update()
   }
 
+  const renderFollowing = () => {
+    if (!Array.isArray(following?.members) || following?.members.length === 0) {
+      return <div className="w-full text-left ">No following yet.</div>
+    }
+    return following.members.map((item, i) => {
+      if (i > 5) return
+      const profile: Profile = item.profile[0]
+      return (
+        <CustomAvatar
+          key={item._id}
+          name={profile.name}
+          userId={item.userId}
+          picture={profile.picture}
+        />
+      )
+    })
+  }
+
   return (
     <>
       <Head>
         <title>{name} - Profile</title>
       </Head>
+      {isUploadingImage && <Loader blur />}
       <div className="mt-5 flex space-x-3 ">
-        {/* {!imageMutation.isLoading && <Loader />} */}
-
         <div className="relative">
           <CustomAvatar
             name={name}
@@ -204,7 +231,7 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
           {isFollowing(userId) ? "Following" : "Follow"}
         </ButtonIntegration>
       </div>
-      <div className="mx-auto w-[80%]">
+      <div className="min-h-screen">
         <Box
           sx={{
             display: "flex",
@@ -222,14 +249,15 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
           >
             <Tab label="About" />
             <Tab label="Travels" />
+            <Tab label="Following" />
           </Tabs>
         </Box>
 
         <TabPanel value={value} index={0}>
-          <div>
+          <>
             <div className="pl-2 text-3xl ">About</div>
             <div
-              className={`mt-2 min-h-[400px] rounded-md border p-2 ${
+              className={`mt-2 min-h-[300px] rounded-md border p-2 ${
                 isNullOrEmpty(profile.aboutMe)
                   ? "flex items-center justify-center"
                   : ""
@@ -241,7 +269,30 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
                 <p className="text-2xl">No about yet.</p>
               )}
             </div>
-          </div>
+            <div className="mt-4 pl-2 text-3xl">Following</div>
+
+            <div className="mt-3 h-[150px] rounded-md border p-2">
+              <div className="flex justify-start">
+                <AvatarGroup
+                  total={Math.min(following?.members.length, 5)}
+                  sx={{
+                    "& .MuiAvatar-root": {
+                      width: 80,
+                      height: 80,
+                    },
+                  }}
+                >
+                  {renderFollowing()}
+                </AvatarGroup>
+              </div>
+              <button
+                className="btn-outline ml-auto block"
+                onClick={() => handleChange(null, 2)}
+              >
+                More
+              </button>
+            </div>
+          </>
         </TabPanel>
 
         <TabPanel value={value} index={1}>
@@ -249,17 +300,46 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
 
           {userItineraryQuery.data?.activeTravels && (
             <>
-              <div className="pl-2 text-3xl mb-5">Upcoming trips</div>
+              <div className="mb-5 pl-2 text-3xl">Upcoming trips</div>
               {renderTravelsCard(userItineraryQuery.data.activeTravels)}
             </>
           )}
 
           {userItineraryQuery.data?.inactiveTravels && (
             <>
-              <div className="pl-2 text-3xl  mb-5 mt-6">Past Travels</div>
+              <div className="mb-5 mt-6  pl-2 text-3xl">Past Travels</div>
               {renderTravelsCard(userItineraryQuery.data.inactiveTravels)}
             </>
           )}
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          <>
+            <div className="mb-5 pl-2 text-3xl">Following</div>
+            <div className="flex flex-wrap">
+              {following?.members?.map((member: Member) => {
+                const profile: Profile = member.profile[0]
+                return (
+                  <div
+                    key={member._id}
+                    className="flex max-w-[300px] flex-col items-center rounded-md border p-5"
+                  >
+                    <CustomAvatar
+                      name={profile.name}
+                      picture={profile.picture}
+                      userId={member.userId}
+                      className="h-36 w-36"
+                    />
+                    <p className="mt-2 text-lg font-bold capitalize">
+                      {profile.name}
+                    </p>
+                    <p className="text-sm leading-3">
+                      {getFullPlaceName(getPlaceFromObject(profile.cityId))}
+                    </p>
+                  </div>
+                )
+              })}
+            </div>
+          </>
         </TabPanel>
       </div>
 
@@ -268,7 +348,6 @@ const ProfileContent = ({ profile, place, setOpenEditProfile }: Props) => {
         isModalMessageOpen={isModalMessageOpen}
         setIsModalMessageOpen={setIsModalMessageOpen}
       />
-      {isUploadingImage && <Loader blur />}
     </>
   )
 }

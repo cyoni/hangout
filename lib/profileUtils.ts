@@ -1,23 +1,26 @@
+import { FOLLOW_TABLE } from "./consts/tables"
 import { ProfileParams, USERS_COLLECTION } from "./consts"
 import { dbAggregate } from "./mongoUtils"
+import { getFollowing } from "../pages/api/followApi"
+import { Following } from "../pages/typings/typings"
 
-export async function getProfile(userId) {
-  try {
-    const req: AggregateReq = {
-      collection: USERS_COLLECTION,
-      params: [
-        { $match: { userId } },
-        { $project: { ...ProfileParams, aboutMe: 1 } },
-      ],
-    }
-    const data = await dbAggregate(req)
-    if (Array.isArray(data) && data.length > 0) {
-      return { profile: data[0] }
-    } else {
-      throw Error(`could not find user ${userId}`)
-    }
-  } catch (e) {
-    return { error: true, message: e.message }
+export async function getProfile(userId, includeFollowing = false) {
+  const req: AggregateReq = {
+    collection: USERS_COLLECTION,
+    params: [
+      { $match: { userId } },
+      { $project: { ...ProfileParams, aboutMe: 1 } },
+    ],
+  }
+  const profile = (await dbAggregate(req))[0]
+
+  if (profile) {
+    let following: Following[] = []
+    if (!includeFollowing) following = (await getFollowing(userId)) || null
+    const result = { profile, following }
+    return result
+  } else {
+    return { error: "User not found" }
   }
 }
 

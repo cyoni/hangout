@@ -58,7 +58,7 @@ function FeedPost({ post }: Props) {
         </Tooltip>
 
         <CircularButton
-          tooltip="Follow"
+          tooltip={following ? "Unfollow" : "Follow"}
           circularProgressColor="text-blue-500"
           onClick={
             following

@@ -67,7 +67,7 @@ function usePublishHangout(autoCompleteRef) {
 
   const isFormValid = () => {
     if (isNullOrEmpty(currentItinerary?.place?.city)) {
-      toast.error("Enter a place")
+      toast.error("Please select a city.")
       return false
     }
     if (currentItinerary?.startDate > currentItinerary?.endDate) {

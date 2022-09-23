@@ -1,6 +1,5 @@
-import { ChatIcon } from "@heroicons/react/outline"
 import { CircularProgress, IconButton, Tooltip } from "@mui/material"
-import React, { Fragment, useState } from "react"
+import React, { useState } from "react"
 import { isNullOrEmpty } from "../lib/scripts/strings"
 
 interface Props {

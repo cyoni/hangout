@@ -7,7 +7,7 @@ interface Props {
 function Loader({ blur }: Props) {
   return (
     <div
-      className={`absolute top-0 left-0 z-10 h-full w-full ${
+      className={`fixed top-0 left-0 z-10 h-full w-full  ${
         !blur ? "bg-gray-50 opacity-80" : ""
       }`}
       style={{ backdropFilter: blur ? "blur(10px)" : null }}

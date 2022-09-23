@@ -138,15 +138,26 @@ type IComment = {
 }
 
 type UploadImageRes = {
-  fileId: string,
-  name: string,
-  size: number,
-  filePath: string,
-  url: string,
-  fileType: string,
-  height: number,
-  width: number,
-  thumbnailUrl: string,
-  AITags: any,
-  extensionStatus: { 'google-auto-tagging': string }
+  fileId: string
+  name: string
+  size: number
+  filePath: string
+  url: string
+  fileType: string
+  height: number
+  width: number
+  thumbnailUrl: string
+  AITags: any
+  extensionStatus: { "google-auto-tagging": string }
+}
+
+type Member = {
+  _id: string
+  userId: string
+  profile: Profile
+}
+
+type Following = {
+  members: Member[]
+  cities: { cityIds: number[] }
 }

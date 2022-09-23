@@ -1,10 +1,7 @@
 import { useRouter } from "next/router"
 import HeaderImage from "../components/HeaderImage"
-import { getCsrfToken, signIn, useSession } from "next-auth/react"
-import { redirect } from "next/dist/server/api-utils"
+import { getCsrfToken, signIn } from "next-auth/react"
 import { useState } from "react"
-import { flushSync } from "react-dom"
-import Spinner from "../components/Spinner"
 import Loader from "../components/Loader"
 import toast from "react-hot-toast"
 

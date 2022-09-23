@@ -14,9 +14,10 @@ import Loader from "../../components/Loader"
 
 interface Props {
   profile: Profile
+  following: Following[]
   followServiceProps: any
 }
-export default function Profile({ profile }: Props) {
+export default function Profile({ profile, following }: Props) {
   console.log("Profile", profile)
   const editProfileParams = useEditProfile(profile)
   const { places, getPlaceFromObject } = usePlace([profile?.cityId])
@@ -71,10 +72,11 @@ export default function Profile({ profile }: Props) {
         style={{ display: "none" }}
       />
 
-      <div className="mx-auto w-[80%]">
+      <div className="mx-auto w-[80%] min-h-screen">
         {profile ? (
           <ProfileContent
             profile={profile}
+            following={following}
             place={place}
             setOpenEditProfile={editProfileParams.setOpenEditProfile}
           />
@@ -93,10 +95,12 @@ export async function getServerSideProps(context) {
 
   if (userId && token) {
     const data = await getProfile(userId)
+    console.log("XXXXXXX", data)
     if (!data.error) {
       return {
         props: {
           profile: data.profile,
+          following: data.following
         },
       }
     }
