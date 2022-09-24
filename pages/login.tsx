@@ -43,12 +43,11 @@ export default function Login({ csrfToken, callbackUrl, session }) {
   }
 
   return (
-    <div>
+    <div className="min-h-[700px]">
       <HeaderImage title="Log in" />
-      session status: {session?.status}
       <div
         className={`shared-frame ${
-          unathorized ? " shadow-red-500 shadow-sm border-red-500" : ""
+          unathorized ? " shadow-xl ring-2 ring-red-600" : ""
         } relative`}
       >
         {isLoggingIn && <Loader />}
@@ -61,7 +60,7 @@ export default function Login({ csrfToken, callbackUrl, session }) {
           <label htmlFor="email">Email</label>
           <input
             type="text"
-            className="px-4 mt-2 rounded-full border py-2 text-gray-400 outline-none"
+            className="mt-2 rounded-full border px-4 py-2 text-gray-400 outline-none"
             name="email"
             id="email"
           />
@@ -71,7 +70,7 @@ export default function Login({ csrfToken, callbackUrl, session }) {
           </label>
           <input
             type="password"
-            className="px-4 mt-2 rounded-full border p-2 text-gray-400 outline-none"
+            className="mt-2 rounded-full border p-2 px-4 text-gray-400 outline-none"
             name="password"
             id="password"
           />

@@ -112,8 +112,8 @@ export async function getUserItineraries({ userIds }) {
 
   const data = (await dbAggregate(request))[0]
   const result = {
-    activeTravels: data.activeTravels.filter((travel) => travel !== null),
-    inactiveTravels: data.inactiveTravels.filter((travel) => travel !== null),
+    activeTravels: data?.activeTravels.filter((travel) => travel !== null),
+    inactiveTravels: data?.inactiveTravels.filter((travel) => travel !== null),
   }
 
   return result
@@ -182,7 +182,7 @@ export async function getCityItineraries({
   const data = (await dbAggregate(request))[0]
 
   const nextPage =
-    data.metadata.length > 0 &&
+    data?.metadata.length > 0 &&
     (pageNumber - 1) * MAX_POSTS_PER_PAGE + data.travelers.length !==
       data.metadata[0].count
       ? pageNumber + 1
@@ -190,7 +190,7 @@ export async function getCityItineraries({
 
   const result = {
     nextPage,
-    travelers: data.travelers,
+    travelers: data?.travelers,
   }
   console.log("dfgfdgfdgdfg", nextPage)
   return result

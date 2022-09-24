@@ -120,11 +120,11 @@ function MiddleBlock({ session, recentTravelers }) {
       </div>
 
       <div className="">
-        <div className="mt-3 text-xl">
+        <div className="mt-5 text-xl">
           Recent discussion of members you follow
         </div>
 
-        {postsQuery.isFetching && <Spinner />}
+        {postsQuery.isFetching && <Spinner className="mt-10" />}
         {Array.isArray(postsQuery.data?.posts) &&
           postsQuery.data?.posts.map((post) => {
             return (

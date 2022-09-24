@@ -64,7 +64,7 @@ function Inbox() {
         <title>Messages</title>
       </Head>
       <HeaderImage title="Messages" />
-      <div className="mx-auto mt-6 xl:max-w-[1300px]">
+      <div className="mx-auto mt-6 min-h-[500px] xl:max-w-[1300px]">
         {messages && (
           <Refresh
             className="mt-5 ml-5 mb-10 h-10 w-10 cursor-pointer rounded-full p-2

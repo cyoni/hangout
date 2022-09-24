@@ -5,10 +5,7 @@ import Layout from "../components/Layout/Layout"
 import Header from "../components/Header"
 import { Toaster } from "react-hot-toast"
 import { getSession, SessionProvider } from "next-auth/react"
-import {
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 const queryClient = new QueryClient()
@@ -22,7 +19,7 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
 
-        <Header session={session}/>
+        <Header session={session} />
 
         <Toaster />
 
@@ -36,9 +33,17 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
 }
 MyApp.getInitialProps = async (context) => {
   const session = await getSession(context)
+  if (!session) {
+    // context.res.writeHead(302, {
+    //   Location: '/some_url',
+    //   'Content-Type': 'text/html; charset=utf-8',
+    // });
+    // context.res.end();
 
+    // redirect to login page (if this is not login or signup pages)
+  }
   // check inbox here
-  
+
   return {
     pageProps: { session },
   }

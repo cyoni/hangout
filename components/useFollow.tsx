@@ -1,5 +1,5 @@
 import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query"
-import React from "react"
+import React, { useState } from "react"
 import toast from "react-hot-toast"
 import { START_FOLLOW, STOP_FOLLOW } from "../lib/consts"
 import { my_following_list } from "../lib/consts/query"
@@ -14,7 +14,7 @@ interface followReq {
 }
 function useFollow(initialData = null) {
   const followers = []
-  const following = []
+  const [tmpFollowing, setTmpFollowing] = useState([])
   console.log("initialData", initialData)
 
   const getOptions = () => {
@@ -52,7 +52,7 @@ function useFollow(initialData = null) {
       {
         onSuccess: () => {
           toast.success(`You started Following ${name}`)
-          following.push(userId)
+          setTmpFollowing([...tmpFollowing, userId])
         },
       }
     )
@@ -70,10 +70,7 @@ function useFollow(initialData = null) {
       {
         onSuccess: () => {
           toast.success(`You stopped following ${name}`)
-          const index = following.indexOf(userId)
-          if (index > -1) {
-            following.splice(index, 1)
-          }
+          setTmpFollowing([tmpFollowing.filter((userId) => userId !== userId)])
         },
       }
     )
@@ -81,9 +78,9 @@ function useFollow(initialData = null) {
 
   const isFollowing = (id: string | number) => {
     console.log("followQuery.data", followQuery.data)
-
+    console.log("isFollowing", tmpFollowing)
     return (
-      following.some((userId) => userId === String(id)) ||
+      tmpFollowing.some((userId) => userId === String(id)) ||
       followQuery.data?.members?.some(
         (member) => member.userId == String(id)
       ) ||

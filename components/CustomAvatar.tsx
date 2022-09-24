@@ -8,12 +8,14 @@ interface Props {
   userId?: string
   onClick?: Function
   disabled?: boolean
+  overrideLetterIfNoPicture?: boolean
 }
 function CustomAvatar({
   name,
   picture,
   userId,
   className,
+  overrideLetterIfNoPicture,
   onClick,
   disabled,
 }: Props) {
@@ -22,11 +24,9 @@ function CustomAvatar({
       className={`${disabled ? "" : "cursor-pointer"} shadow-xl  ${
         className ? className : ""
       }`}
-      alt={name?.charAt(0).toUpperCase()}
+      alt={name}
       src={
-        picture
-          ? `${process.env.PICTURES_SERVICE_ENDPOINT}/${picture}`
-          : "no-pic"
+        picture ? `${process.env.PICTURES_SERVICE_ENDPOINT}/${picture}` : null
       }
       onClick={
         !disabled
@@ -35,7 +35,9 @@ function CustomAvatar({
             : () => window.open(`/profile/${userId}`)
           : null
       }
-    />
+    >
+      {!overrideLetterIfNoPicture ? name?.charAt(0).toUpperCase() : null}
+    </Avatar>
   )
 }
 

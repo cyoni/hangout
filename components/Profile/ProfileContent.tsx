@@ -6,7 +6,7 @@ import Itinerary from "../Itinerary"
 import { isAuthor } from "../../lib/session"
 import ButtonIntegration from "../ButtonIntegration"
 import useFollow from "../useFollow"
-import { FOLLOW, UPLOAD_IMAGE } from "../../lib/consts"
+import { FOLLOW, REMOVE_IMAGE, UPLOAD_IMAGE } from "../../lib/consts"
 import { Avatar, AvatarGroup, Box, Fab, Tab, Tabs } from "@mui/material"
 import ChatModal from "../ChatModal"
 import EditIcon from "@mui/icons-material/Edit"
@@ -19,6 +19,12 @@ import useManageImages from "../useManageImages"
 import Loader from "../Loader"
 import { Following, Member, Place, Profile } from "../../pages/typings/typings"
 import Head from "next/head"
+
+import SpeedDial from "@mui/material/SpeedDial"
+import SpeedDialIcon from "@mui/material/SpeedDialIcon"
+import SpeedDialAction from "@mui/material/SpeedDialAction"
+import CameraAlt from "@mui/icons-material/CameraAlt"
+import Delete from "@mui/icons-material/Delete"
 
 interface Props {
   profile: Profile
@@ -42,6 +48,19 @@ const ProfileContent = ({
     imageMutation
   const { getPlaceFromObject, placeQuery } = usePlace(cityIds)
   const inputFile = useRef(null)
+  const actions = [
+    {
+      icon: <CameraAlt />,
+      name: "Upload Picture",
+      color: "#9900cc",
+      onClick: () => inputFile.current.click(),
+    },
+    {
+      icon: <Delete />,
+      name: "Remove Picture",
+      onClick: () => triggerImage({ method: "REMOVE_IMAGE" }),
+    },
+  ]
   const { userItineraryQuery } = useItinerary({
     userIds: [profile.userId],
     isUser: true,
@@ -138,9 +157,6 @@ const ProfileContent = ({
   }
 
   const renderFollowing = () => {
-    if (!Array.isArray(following?.members) || following?.members.length === 0) {
-      return <div className="w-full text-left ">No following yet.</div>
-    }
     return following.members.map((item, i) => {
       if (i > 5) return
       const profile: Profile = item.profile[0]
@@ -154,31 +170,55 @@ const ProfileContent = ({
       )
     })
   }
+  const menuButtonStyle =
+    "transition-all duration-500 btn bg-white text-blue-500 ring-2 hover:bg-gray-100 hover:ring-4"
 
   return (
     <>
       <Head>
         <title>{name} - Profile</title>
       </Head>
-      {isUploadingImage && <Loader blur />}
+      {isUploadingImage && <Loader blur allScreenOverlay />}
       <div className="mt-5 flex space-x-3 ">
         <div className="relative">
           <CustomAvatar
             name={name}
             userId={userId}
             picture={picture}
+            overrideLetterIfNoPicture
             disabled
             className="relative bottom-12 h-36 w-36  ring-4"
           />
 
-          <Fab
-            color="primary"
-            className="absolute top-14 right-0 z-[1] h-10 w-10 bg-blue-500"
-            aria-label="edit"
-            onClick={() => inputFile.current.click()}
-          >
-            <EditIcon />
-          </Fab>
+          {picture ? (
+            <SpeedDial
+              className="absolute bottom-8 right-0 z-[1] "
+              FabProps={{
+                size: "medium",
+                style: { backgroundColor: "rgb(59 130 246 )" },
+              }}
+              ariaLabel="fab for profile picture"
+              icon={<EditIcon />}
+            >
+              {actions.map((action) => (
+                <SpeedDialAction
+                  key={action.name}
+                  icon={action.icon}
+                  onClick={action.onClick}
+                  tooltipTitle={action.name}
+                />
+              ))}
+            </SpeedDial>
+          ) : (
+            <Fab
+              color="primary"
+              className="absolute top-14 right-0 z-[1] h-10 w-10 bg-blue-500"
+              aria-label="edit"
+              onClick={() => inputFile.current.click()}
+            >
+              <EditIcon />
+            </Fab>
+          )}
         </div>
 
         <input
@@ -199,7 +239,7 @@ const ProfileContent = ({
 
         {isAuthor(session, profile.userId) && (
           <button
-            className="btn self-start px-4"
+            className={`self-start px-4 ${menuButtonStyle}`}
             onClick={() => setOpenEditProfile(true)}
           >
             Edit Profile
@@ -207,13 +247,14 @@ const ProfileContent = ({
         )}
 
         <button
-          className="btn self-start px-4"
+          className={`self-start px-4 ${menuButtonStyle}`}
           onClick={(e) => handleSendMessage(e)}
         >
           Send Message
         </button>
         <ButtonIntegration
-          buttonClassName="btn"
+          buttonClassName={menuButtonStyle}
+          circularProgressColor="#80b3ff"
           onClick={() =>
             isFollowing(userId)
               ? unFollow({
@@ -231,7 +272,7 @@ const ProfileContent = ({
           {isFollowing(userId) ? "Following" : "Follow"}
         </ButtonIntegration>
       </div>
-      <div className="min-h-screen">
+      <div className="min-h-[500px]">
         <Box
           sx={{
             display: "flex",
@@ -269,59 +310,74 @@ const ProfileContent = ({
                 <p className="text-2xl">No about yet.</p>
               )}
             </div>
-            <div className="mt-4 pl-2 text-3xl">Following</div>
+            {following?.members.length > 0 && (
+              <div className="pl-2">
+                <div className="mt-4  text-3xl">Following</div>
 
-            <div className="mt-3 h-[150px] rounded-md border p-2">
-              <div className="flex justify-start">
-                <AvatarGroup
-                  total={Math.min(following?.members.length, 5)}
-                  sx={{
-                    "& .MuiAvatar-root": {
-                      width: 80,
-                      height: 80,
-                    },
-                  }}
-                >
-                  {renderFollowing()}
-                </AvatarGroup>
+                <div className="mt-3 h-[150px] rounded-md border">
+                  <div className="flex justify-start">
+                    <AvatarGroup
+                      total={Math.min(following?.members.length, 5)}
+                      sx={{
+                        "& .MuiAvatar-root": {
+                          width: 80,
+                          height: 80,
+                        },
+                      }}
+                    >
+                      {renderFollowing()}
+                    </AvatarGroup>
+                  </div>
+                  <button
+                    className="btn-outline ml-auto block"
+                    onClick={() => handleChange(null, 2)}
+                  >
+                    More
+                  </button>
+                </div>
               </div>
-              <button
-                className="btn-outline ml-auto block"
-                onClick={() => handleChange(null, 2)}
-              >
-                More
-              </button>
-            </div>
+            )}
           </>
         </TabPanel>
 
         <TabPanel value={value} index={1}>
           {console.log("placeQuery.data ", placeQuery.data)}
 
-          {userItineraryQuery.data?.activeTravels && (
-            <>
-              <div className="mb-5 pl-2 text-3xl">Upcoming trips</div>
-              {renderTravelsCard(userItineraryQuery.data.activeTravels)}
-            </>
-          )}
+          <div className="pl-2">
+            <div className="mb-5 text-3xl">Upcoming trips</div>
+            {userItineraryQuery.data?.activeTravels ? (
+              <>{renderTravelsCard(userItineraryQuery.data.activeTravels)}</>
+            ) : (
+              <div>
+                <p>No upcoming trips yet.</p>
+              </div>
+            )}
 
-          {userItineraryQuery.data?.inactiveTravels && (
-            <>
-              <div className="mb-5 mt-6  pl-2 text-3xl">Past Travels</div>
-              {renderTravelsCard(userItineraryQuery.data.inactiveTravels)}
-            </>
-          )}
+            <div className="mb-5 mt-6 text-3xl">Past trips</div>
+            {userItineraryQuery.data?.inactiveTravels ? (
+              <>{renderTravelsCard(userItineraryQuery.data.inactiveTravels)}</>
+            ) : (
+              <div>
+                <p>No past trips yet.</p>
+              </div>
+            )}
+          </div>
         </TabPanel>
         <TabPanel value={value} index={2}>
-          <>
-            <div className="mb-5 pl-2 text-3xl">Following</div>
-            <div className="flex flex-wrap">
+          <div className="pl-2">
+            <div className="text-3xl">Following</div>
+            <div className="mt-10 flex flex-wrap">
+              {following?.members?.length === 0 && (
+                <div className="text-xl">
+                  {name} is not following anyone yet
+                </div>
+              )}
               {following?.members?.map((member: Member) => {
                 const profile: Profile = member.profile[0]
                 return (
                   <div
                     key={member._id}
-                    className="flex max-w-[300px] flex-col items-center rounded-md border p-5"
+                    className="flex max-w-[300px] flex-col items-center rounded-md border p-5 hover:ring-2"
                   >
                     <CustomAvatar
                       name={profile.name}
@@ -339,7 +395,7 @@ const ProfileContent = ({
                 )
               })}
             </div>
-          </>
+          </div>
         </TabPanel>
       </div>
 

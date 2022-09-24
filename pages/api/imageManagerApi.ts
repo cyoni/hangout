@@ -1,4 +1,4 @@
-import { UPLOAD_WRAPPER_IMAGE } from "./../../lib/consts"
+import { REMOVE_WRAPPER_IMAGE, UPLOAD_WRAPPER_IMAGE } from "./../../lib/consts"
 import { UPLOAD_IMAGE, REMOVE_IMAGE, USERS_COLLECTION } from "../../lib/consts"
 import { getToken } from "next-auth/jwt"
 import { NextApiResponse } from "next"
@@ -73,12 +73,12 @@ async function uploadImage(params, userId, isProfilePicture) {
     const { base64 } = params
 
     // wrap picture and profile picture have the same logic.
-    const pictureKey = isProfilePicture ? "picture" : "wrapPicture"
-    const pictureIdKey = isProfilePicture ? "pictureId" : "wrapPictureId"
+    const pictureKey = getPictureKey(isProfilePicture)
+    const pictureIdKey = getPictureKeyType(isProfilePicture)
 
     // get picture id from user
     const user: IUser = (await dbFind(USERS_COLLECTION, { userId }))[0]
-    const pictureId = user.metadata?.pictureId
+    const pictureId = user.metadata?.[pictureIdKey]
 
     // upload new picture
     const uploadImageResponse = await imageKitUpload(userId, base64)
@@ -94,10 +94,7 @@ async function uploadImage(params, userId, isProfilePicture) {
       {
         $set: {
           [pictureKey]: uploadImageResponse.name,
-          metadata: {
-            ...user.metadata,
-            [pictureIdKey]: uploadImageResponse.fileId,
-          },
+          [`metadata.${pictureIdKey}`]: uploadImageResponse.fileId,
         },
       },
       {}
@@ -115,16 +112,28 @@ async function uploadImage(params, userId, isProfilePicture) {
     return { error: `error in uploadImage: ${e.message}` }
   }
 }
+function getPictureKey(isProfilePicture) {
+  return isProfilePicture ? "picture" : "wrapPicture"
+}
 
-async function removeImage(userId) {
+function getPictureKeyType(isProfilePicture) {
+  return isProfilePicture ? "pictureId" : "wrapPictureId"
+}
+
+async function removeImage(userId, isProfilePicture) {
   try {
     // get picture id from user
     const user: IUser = (await dbFind(USERS_COLLECTION, { userId }))[0]
-    const pictureId = user.metadata?.pictureId
+    const keyType = getPictureKeyType(isProfilePicture)
+    const pictureKey = getPictureKey(isProfilePicture)
+
+    const pictureIdKey = user.metadata[keyType]
+    console.log("user.metadata[keyType]", user.metadata[keyType])
+    console.log("user.metadata", user.metadata)
+    console.log("keyType", keyType)
 
     // remove old picture from user
-
-    const imageKitDeleteResponse = await imageKitDelete(pictureId)
+    const imageKitDeleteResponse = await imageKitDelete(pictureIdKey)
     if (imageKitDeleteResponse.error)
       throw new Error(imageKitDeleteResponse.error)
 
@@ -133,9 +142,10 @@ async function removeImage(userId) {
     const dbUploadImageResponse = await dbUpdateOne(
       USERS_COLLECTION,
       { userId },
-      { ...user, picture: null, metadata: { pictureId: null } },
+      { $set: { [pictureKey]: null, [`metadata.${keyType}`]: null } },
       {}
     )
+    console.log("dbUploadImageResponse", dbUploadImageResponse)
     if (!dbUploadImageResponse.modifiedCount) {
       throw new Error("could not update picture in db")
     }
@@ -178,8 +188,10 @@ export default async function handler(
         result = await uploadImage(req.body, user.userId, false)
         break
       case REMOVE_IMAGE:
-        result = await removeImage(user.userId)
+        result = await removeImage(user.userId, true)
         break
+      case REMOVE_WRAPPER_IMAGE:
+        result = await removeImage(user.userId, false)
     }
 
     if (!result || result.error)

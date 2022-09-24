@@ -32,8 +32,8 @@ function EditProfile({ editProfileParams, place }) {
   console.log("real", getFullPlaceName(place))
   return (
     <ModalWrapper
-      height="h-[95%]"
-      className="w-[60%]"
+      height="h-[800px]"
+      className="w-[700px]"
       isOpen={openEditProfile}
       onRequestClose={() => setOpenEditProfile(false)}
     >
@@ -51,10 +51,15 @@ function EditProfile({ editProfileParams, place }) {
 
 
       <form
-        className="w-[40%] mx-auto flex justify-center items-center flex-col space-y-5"
+        className="px-10 mx-auto flex justify-center items-center flex-col space-y-5"
         onSubmit={submitForm}
       >
-        <div className="font-bold mt-5 text-xl">Edit Profile</div>
+        <div className="font-bold mt-5 text-2xl border-b-sky-400 border-b-4 pb-1">
+          Edit Profile
+
+    
+          </div>
+
 
 
         <div className="w-full mt-4 p-2">

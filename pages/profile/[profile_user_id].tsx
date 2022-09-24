@@ -11,6 +11,8 @@ import { convertToBase64 } from "../../lib/scripts/images"
 import { UPLOAD_WRAPPER_IMAGE } from "../../lib/consts"
 import ProfileError from "../../components/Profile/ProfileError"
 import Loader from "../../components/Loader"
+import { Button, Menu, MenuItem } from "@mui/material"
+import toast from "react-hot-toast"
 
 interface Props {
   profile: Profile
@@ -22,13 +24,8 @@ export default function Profile({ profile, following }: Props) {
   const editProfileParams = useEditProfile(profile)
   const { places, getPlaceFromObject } = usePlace([profile?.cityId])
   const place = getPlaceFromObject(profile?.cityId)
-  console.log("new places", places)
-
-  const [value, setValue] = React.useState(0)
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue)
-  }
-  const { imageMetadata, triggerImage, imageMutation } = useManageImages()
+  const pickImage = () => inputFile.current.click()
+  const { triggerImage, imageMutation } = useManageImages()
   const inputFile = useRef(null)
   const handleImage = (e) => {
     const update = async () => {
@@ -37,9 +34,19 @@ export default function Profile({ profile, following }: Props) {
     }
     update()
   }
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (profile.wrapPicture) setAnchorEl(event.currentTarget)
+    else pickImage()
+  }
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
 
   useEffect(() => {
     if (imageMutation.isSuccess) {
+      toast.loading("Refreshing window...")
       window.location.reload()
     }
   }, [imageMutation.isSuccess])
@@ -50,12 +57,41 @@ export default function Profile({ profile, following }: Props) {
         headerExternalClass="h-96"
         customImageId={profile?.wrapPicture}
       >
+        <div>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem
+              onClick={() => {
+                pickImage()
+                handleClose()
+              }}
+            >
+              Upload Cover
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                triggerImage({ method: "REMOVE_WRAPPER_IMAGE" })
+                handleClose()
+              }}
+            >
+              Remove Cover
+            </MenuItem>
+          </Menu>
+        </div>
+
         <button
           className="
-          btn-outline absolute right-10 border
-        border-white px-4 py-1 font-bold
-        text-gray-200 shadow-2xl hover:border-sky-700 "
-          onClick={() => inputFile.current.click()}
+          btn-outline absolute right-10 border 
+        border-white bg-sky-200 bg-opacity-20 px-4 py-1 font-bold
+        text-gray-50 shadow-2xl hover:border-sky-600 "
+          onClick={handleClick}
         >
           Change Cover
         </button>
@@ -72,7 +108,7 @@ export default function Profile({ profile, following }: Props) {
         style={{ display: "none" }}
       />
 
-      <div className="mx-auto w-[80%] min-h-screen">
+      <div className="mx-auto w-[80%]">
         {profile ? (
           <ProfileContent
             profile={profile}
@@ -100,7 +136,7 @@ export async function getServerSideProps(context) {
       return {
         props: {
           profile: data.profile,
-          following: data.following
+          following: data.following,
         },
       }
     }

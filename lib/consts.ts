@@ -41,6 +41,7 @@ export const TRAVEL = "travel"
 export const UPLOAD_IMAGE = "UPLOAD_IMAGE"
 export const REMOVE_IMAGE = "REMOVE_IMAGE"
 export const UPLOAD_WRAPPER_IMAGE = "UPLOAD_WRAPPER_IMAGE"
+export const REMOVE_WRAPPER_IMAGE = "REMOVE_WRAPPER_IMAGE"
 export const MESSAGES_COLLECTION = "messages"
 export const X_FOLLOWS_Y = 1
 export const XY_FOLLOW_EACH_OTHER = 2

@@ -5,8 +5,12 @@ import { IMAGE_MANAGER_API } from "../lib/consts/apis"
 import { post } from "../lib/postman"
 
 interface ImageMetaData {
-  method: "UPLOAD_IMAGE" | "REMOVE_IMAGE" | "UPLOAD_WRAPPER_IMAGE"
-  base64: string
+  method:
+    | "UPLOAD_IMAGE"
+    | "REMOVE_IMAGE"
+    | "UPLOAD_WRAPPER_IMAGE"
+    | "REMOVE_WRAPPER_IMAGE"
+  base64?: string
 }
 function useManageImages() {
   const [imageMetadata, triggerImage] = useState<ImageMetaData>(null)

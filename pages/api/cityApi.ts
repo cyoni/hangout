@@ -180,7 +180,7 @@ async function GetPostComments({ postId, page }) {
   console.log("Comments result:", data)
 
   const nextPage =
-    data.metadata.length > 0 &&
+    data?.metadata.length > 0 &&
     (pageNumber - 1) * MAX_POSTS_PER_PAGE + data.comments.length !==
       data.metadata[0].count
       ? pageNumber + 1

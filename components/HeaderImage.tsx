@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react"
-import { defaultBackground } from "../lib/consts"
 import { getHeaderPicture } from "../lib/headerImage"
 
 interface Props {
@@ -39,17 +38,20 @@ function HeaderImage({
     }
   }, [customImageId])
 
+  const hasPicture = backgroundCityId || customImageId
+
   return (
     <div
       style={{
         backgroundImage: `url('${
-          backgroundCityId || customImageId ? backgroundUrl : defaultBackground
+          backgroundCityId || customImageId ? backgroundUrl : "/static/default-header.jpg"
         }')`,
-        filter: backgroundCityId && isLoading ? `blur(8px)` : "",
+        backgroundColor: !hasPicture ? "#1e81b0" : "",
+        filter: backgroundCityId && isLoading ? "blur(8px)" : "",
       }}
-      className={`relative h-56 rounded-sm
+      className={`relative h-56 
        border border-transparent bg-cover	
-       bg-center object-fill shadow-lg ${
+       bg-center object-fill shadow-xl border-b-red-500 border-b-2 ${
          headerExternalClass ? headerExternalClass : ""
        }`}
     >

@@ -85,6 +85,7 @@ function PostModal({ renderOptions, post, place }) {
             name={name}
             picture={picture}
             userId={post.userId}
+            overrideLetterIfNoPicture
             className="h-24 w-24"
           />
           <div>
