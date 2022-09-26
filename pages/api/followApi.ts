@@ -14,7 +14,6 @@ import {
   dbAggregate,
   dbDeleteOne,
   dbFind,
-  dbInsertOne,
   dbUpdateOne,
   findTwoUsers as getFindTwoUsersFilter,
 } from "../../lib/mongoUtils"
@@ -22,6 +21,7 @@ import { FOLLOW_TABLE } from "../../lib/consts/tables"
 import { convertArrayToDictionary } from "../../lib/scripts/arrays"
 import { queryPlace, queryPlaces } from "../../lib/place"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
+
 
 type Response = {
   error?: string

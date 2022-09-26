@@ -1,6 +1,8 @@
+import { USERS_COLLECTION } from "./../../lib/consts"
 import { sha256 } from "js-sha256"
 import { dbFind } from "../../lib/mongoUtils"
 import { queryPlace } from "../../lib/place"
+import { getUserByEmailAndPassword } from "../../lib/loginUtils"
 
 async function login({ email, password }) {
   console.log("req.body", email, password)
@@ -10,12 +12,9 @@ async function login({ email, password }) {
   hash.update(password)
 
   // check if user exists
-  const userArray = await dbFind("users", { $and: [{ email, password: hash.toString() }] })
-  console.log("userArray", userArray)
+  const user = await getUserByEmailAndPassword(email, hash.toString())
 
-  if (Array.isArray(userArray) && userArray.length === 1) {
-    const user = userArray[0]
-
+  if (user) {
     const place = await queryPlace(user.cityId)
     console.log("login place", place)
 

@@ -4,9 +4,7 @@ import { getCitiesAutoComplete } from "../../../lib/AutoCompleteUtils"
 import { getFullPlaceName } from "../../../lib/scripts/place"
 import AlertDialog from "../../AlertDialog"
 import { AutoComplete } from "../../AutoComplete"
-import Avatar from "../../Avatar"
 import ButtonIntegration from "../../ButtonIntegration"
-import HeaderImage from "../../HeaderImage"
 import ModalWrapper from "../../ModalWrapper"
 
 function EditProfile({ editProfileParams, place }) {
@@ -49,20 +47,15 @@ function EditProfile({ editProfileParams, place }) {
         />
       )}
 
-
       <form
-        className="px-10 mx-auto flex justify-center items-center flex-col space-y-5"
+        className="mx-auto flex flex-col items-center justify-center space-y-5 px-10"
         onSubmit={submitForm}
       >
-        <div className="font-bold mt-5 text-2xl border-b-sky-400 border-b-4 pb-1">
+        <div className="mt-5 border-b-4 border-b-sky-400 pb-1 text-2xl font-bold">
           Edit Profile
+        </div>
 
-    
-          </div>
-
-
-
-        <div className="w-full mt-4 p-2">
+        <div className="mt-4 w-full p-2">
           <AutoComplete
             label="City"
             defaultValue={place}
@@ -74,7 +67,7 @@ function EditProfile({ editProfileParams, place }) {
         </div>
 
         <TextField
-          className="mt-5 border outline-none rounded-md p-2"
+          className="mt-5 rounded-md border p-2 outline-none"
           fullWidth
           id="outlined-basic"
           onChange={(e) => setName(e.target.value)}
@@ -84,7 +77,7 @@ function EditProfile({ editProfileParams, place }) {
         />
 
         <TextField
-          className="rounded-md h-[300px] outline-none p-2"
+          className="h-[300px] rounded-md p-2 outline-none"
           id="outlined-multiline-static"
           label="About Me"
           multiline
@@ -97,14 +90,13 @@ function EditProfile({ editProfileParams, place }) {
         <ButtonIntegration
           externalClass="mt-24"
           buttonClassName="btn px-10 mt-5"
-          
           onClick={submitForm}
         >
           Save
         </ButtonIntegration>
 
-        <div className="border-b w-full mt-5 "></div>
-        <button className="btn-outline py-2 mt-5" onClick={handleDeleteAccount}>
+        <div className="mt-5 w-full border-b "></div>
+        <button className="btn-outline mt-5 py-2" onClick={handleDeleteAccount}>
           Delete Account
         </button>
       </form>

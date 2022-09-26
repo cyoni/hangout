@@ -22,7 +22,7 @@ export async function post(req: PostRequest): Promise<any> {
 
 export async function newGet(url, params: {} = null): Promise<any> {
   let ans = ""
-  const paramsDictionary = convertObjectToDictionary(params)
+  const paramsDictionary = params ? convertObjectToDictionary(params) : []
 
   const convertedParams = paramsDictionary.reduce(
     (prev, curr) => `${prev}${curr[1] ? `${curr[0]}=${curr[1]}&` : ""}`,

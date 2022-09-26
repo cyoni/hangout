@@ -6,14 +6,18 @@ import { post } from "../../../lib/postman"
 import { sleep } from "../../../lib/scripts/general"
 import { getFullPlaceName } from "../../../lib/scripts/place"
 
-function useEditProfile(profile: Profile) {
+interface Props {
+  profile: Profile,
+  toggleOnFinishCallback?: Function
+}
+function useEditProfile({profile, toggleOnFinishCallback}: Props) {
   const [name, setName] = useState<string>(profile?.name)
   const [cityId, setCityId] = useState<number>(profile?.cityId)
   const [aboutMe, setAboutMe] = useState<string>(profile?.aboutMe)
   const [openEditProfile, setOpenEditProfile] = useState<boolean>(false)
   const [showDeleteAccountDialog, setShowDeleteAccountDialog] =
     useState<boolean>(false)
-    
+
   const submitForm = async () => {
     const result = await post({
       url: "/api/profileApi",
@@ -21,9 +25,10 @@ function useEditProfile(profile: Profile) {
     })
     if (!result.error) {
       setOpenEditProfile(false)
-      toast.success("Updated successfully!")
-      await sleep(1000)
-      window.location.reload()
+      // toast.success("Updated successfully!")
+      // await sleep(1000)
+      // window.location.reload()
+      toggleOnFinishCallback?.()
     } else toast.error("Update failed.")
   }
 

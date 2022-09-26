@@ -7,8 +7,8 @@
     @apply cursor-pointer hover:underline;
   }
   .btn {
-    @apply rounded-full bg-blue-600 px-5 py-1 
-    text-lg font-medium text-white  min-w-[100px] min-h-[35px]
+    @apply block min-h-[35px] min-w-[100px] rounded-full 
+    bg-blue-600 px-5 py-1 text-lg font-medium text-white
     hover:bg-blue-500;
   }
 
@@ -17,7 +17,7 @@
   }
 
   .btn-outline {
-    @apply h-9 rounded-md w-fit px-4 cursor-pointer transition duration-300  hover:border-white hover:bg-sky-600 hover:text-white;
+    @apply block h-9 w-fit cursor-pointer rounded-md px-4 transition duration-300  hover:border-white hover:bg-sky-600 hover:text-white;
   }
 
   .shared-frame {

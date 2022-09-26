@@ -1,10 +1,15 @@
+import GoogleProvider from "next-auth/providers/google"
 import NextAuth from "next-auth"
 import type { NextAuthOptions } from "next-auth"
-import { encode } from "next-auth/jwt"
 import CredentialsProvider from "next-auth/providers/credentials"
+import { createUser, getUserByEmail } from "../../../lib/loginUtils"
 
-export const authOptions: NextAuthOptions = {
+export const authOptions = (req) => ({
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_SIGN_IN_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_SIGN_IN_SECRET_KEY,
+    }),
     CredentialsProvider({
       // The name to display on the sign in form (e.g. 'Sign in with...')
       name: "Credentials",
@@ -56,18 +61,48 @@ export const authOptions: NextAuthOptions = {
     signOut: "/",
   },
   callbacks: {
-    async jwt({ token, account, user }) {
+    async jwt({ token, account, user, profile }) {
+      // UPDATE TOKEN AFTER SIGN UP
+      console.log("req.url", req.url)
+      if (String(req.url).includes("session?q=update")) {
+        const { cityId } = req.query
+        token.place = { cityId: Number(cityId) }
+        console.log("NEW TOKEN", token)
+        return token
+      }
+
       console.log("AUTH USER", user)
-      // Persist the OAuth access_token to the token right after signin
+      console.log("AUTH ACCOUNT", account)
+      console.log("AUTH TOKEN", token)
+
+      let userInstance = { ...user }
+
       if (user) {
-        token.place = user.place
-        token.userId = user.userId
-        token.picture = user.picture
+        // gets here only during login
+        // check if user exists, if so return their data
+        console.log("user email is", token.email)
+        const userFromDb = await getUserByEmail(token.email)
+        console.log("userFromDb", userFromDb)
+        if (userFromDb) {
+          userInstance = { ...userFromDb }
+        } else {
+          // if not, create a new one
+
+          const newUser = await createUser(user)
+          if (!newUser) {
+            console.log("CREATING NEW USER FAILED")
+          }
+        }
+
+        token.place = { cityId: userInstance.cityId }
+        token.userId = userInstance.userId
+        token.picture = userInstance.picture || userInstance.image
       }
       console.log("NEXT AUTH: USER TOKEN ", token)
       return token
     },
     async session({ session, token, user }) {
+      console.log("REQ.URL in sesion", req.url)
       // Send properties to the client, like an access_token from a provider.
       session.place = token.place
       session.userId = token.userId
@@ -88,5 +123,10 @@ export const authOptions: NextAuthOptions = {
       console.debug(code, metadata)
     },
   },
+})
+// export default NextAuth(req, res, authOptions(req))
+
+const NextAuthWrapper = async (req, res) => {
+  return NextAuth(req, res, authOptions(req))
 }
-export default NextAuth(authOptions)
+export default NextAuthWrapper

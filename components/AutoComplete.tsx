@@ -15,6 +15,7 @@ interface Props {
   disableUnderline?: boolean
   disableClearable?: boolean
   defaultValue?: string
+  className?: string
   variant?: any
 }
 
@@ -30,6 +31,7 @@ export const CustomAutoComplete = (
     disableUnderline,
     disableClearable,
     defaultValue,
+    className,
     variant = "outlined",
   }: Props,
   ref
@@ -87,6 +89,7 @@ export const CustomAutoComplete = (
       freeSolo={true}
       onInputChange={(e, v, r) => setInput(v)}
       inputValue={input}
+      className={className}
       renderInput={(params) => (
         <TextField
           {...params}

@@ -22,7 +22,7 @@ export async function getProfiles({ userIds }) {
       { $project: { _id: 0, userId: 1, picture: 1, cityId: 1, name: 1 } },
     ],
   })
-  console.log("#######$#",profiles)
+  console.log("#######$#", profiles)
   return profiles
 }
 
@@ -52,11 +52,10 @@ export default async function handler(
   res: NextApiResponse<Response>
 ) {
   try {
-
     const { method } = req.body
     const token = await getToken({ req })
-    if (!token) return { error: "true", message: "Invalid token" }
- 
+    if (!token?.userId) return res.status(400).json({ error: "Invalid token" })
+
     let result = null
 
     switch (method) {

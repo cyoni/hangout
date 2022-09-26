@@ -31,17 +31,32 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
     </SessionProvider>
   )
 }
-MyApp.getInitialProps = async (context) => {
-  const session = await getSession(context)
-  if (!session) {
-    // context.res.writeHead(302, {
-    //   Location: '/some_url',
-    //   'Content-Type': 'text/html; charset=utf-8',
-    // });
-    // context.res.end();
 
-    // redirect to login page (if this is not login or signup pages)
+function redirect(ctx, uri) {
+  ctx.res.writeHead(302, { Location: uri })
+  ctx.res.end()
+}
+MyApp.getInitialProps = async (context) => {
+  const { ctx, router } = context
+  const session = await getSession(context)
+
+  console.log("session aaaaaa", session)
+  if (!session) {
+    if (
+      !router.route.startsWith("/login") &&
+      !router.route.startsWith("/signup")
+    ) {
+      redirect(ctx, "/login")
+    }
+  } else if (
+    !session.place?.cityId &&
+    !router.route.startsWith("/account/setupaccount")
+  ) {
+    // user should configure their place
+    redirect(ctx, "/account/setupaccount")
   }
+  // check for user id
+
   // check inbox here
 
   return {

@@ -19,15 +19,21 @@ function CustomAvatar({
   onClick,
   disabled,
 }: Props) {
+
+  const profilePictureUrl = picture
+    ? picture.startsWith("http")
+      ? picture
+      : `${process.env.PICTURES_SERVICE_ENDPOINT}/${picture}`
+    : null
+
+
   return (
     <Avatar
       className={`${disabled ? "" : "cursor-pointer"} shadow-xl  ${
         className ? className : ""
       }`}
       alt={name}
-      src={
-        picture ? `${process.env.PICTURES_SERVICE_ENDPOINT}/${picture}` : null
-      }
+      src={profilePictureUrl}
       onClick={
         !disabled
           ? onClick

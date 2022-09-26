@@ -4,16 +4,17 @@ import { getCsrfToken, signIn } from "next-auth/react"
 import { useState } from "react"
 import Loader from "../components/Loader"
 import toast from "react-hot-toast"
+import Script from "next/script"
 
 export default function Login({ csrfToken, callbackUrl, session }) {
   const router = useRouter()
-  const [unathorized, setUnathorized] = useState<boolean>(false)
+  const [unauthorized, setUnauthorized] = useState<boolean>(false)
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false)
   const handleSubmit = async (e) => {
     e.preventDefault()
 
     setIsLoggingIn(true)
-    setUnathorized(false)
+    setUnauthorized(false)
 
     const email = e.target.email.value
     const password = e.target.password.value
@@ -25,14 +26,12 @@ export default function Login({ csrfToken, callbackUrl, session }) {
     console.log("res", response)
 
     if (response.status === 200) {
-      router.push(callbackUrl)
-      //window.location = callbackUrl
+      //router.push(callbackUrl)
       toast.success(`Welcome back!`)
-    } else if (response.status === 401) {
-      setIsLoggingIn(false)
-      setUnathorized(true)
-      renderFailureToast()
     } else {
+      setIsLoggingIn(false)
+      setUnauthorized(true)
+      renderFailureToast()
       console.log("error", response)
     }
   }
@@ -42,16 +41,23 @@ export default function Login({ csrfToken, callbackUrl, session }) {
     toast.error("Email or password is invalid.")
   }
 
+  function handleCredentialResponse(response) {
+    console.log("GOOGLE RESPONSE", JSON.stringify(response))
+  }
+
   return (
     <div className="min-h-[700px]">
       <HeaderImage title="Log in" />
       <div
         className={`shared-frame ${
-          unathorized ? " shadow-xl ring-2 ring-red-600" : ""
+          unauthorized ? " shadow-xl ring-2 ring-red-600" : ""
         } relative`}
       >
         {isLoggingIn && <Loader />}
 
+        <button className="btn" onClick={() => signIn("google")}>
+          Sign in with GOOGLE
+        </button>
         <form
           onSubmit={handleSubmit}
           className="flex flex-col p-5 "
