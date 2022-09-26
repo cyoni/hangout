@@ -1,14 +1,10 @@
+import { ACCOUNT_EXISTS_CODE } from "./../../lib/consts"
 import { sha256 } from "js-sha256"
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import clientPromise from "../../lib/mongodb"
 import randomString from "../../lib/randomString"
 import { queryPlace } from "../../lib/place"
-
-async function findUser(db, { email }) {
-  console.log("email: ", email)
-  const user = await db.collection("users").find({ email: email }).toArray()
-  return user
-}
+import { getUserByEmail } from "../../lib/loginUtils"
 
 async function addUser(db, params) {
   const newUser = { ...params }
@@ -29,7 +25,7 @@ interface Props {
   name: string
   email: string
   password: string
-  city_id: number
+  cityId: number
 }
 
 async function signup(req) {
@@ -39,23 +35,27 @@ async function signup(req) {
 
     console.log("req.body", req.body)
 
-    const { name, email, password, city_id }: Props = req.body
+    const { name, email, password, cityId }: Props = req.body
 
-    if (isNaN(city_id)) {
+    if (isNaN(cityId)) {
       throw new Error("Invalid place IDs")
     }
 
     // check if place id is valid
-    const place = await queryPlace(city_id)
+    const place = await queryPlace(cityId)
     console.log("place", place)
 
     if (!place) {
       throw new Error("Place was not found")
     }
 
-    const user = await findUser(db, req.body)
-    if (user?.length > 0) {
-      return { error: true, message: "user exists" }
+    const user = await getUserByEmail(email)
+    if (user) {
+      return {
+        error: true,
+        message: "user already exists",
+        codeId: ACCOUNT_EXISTS_CODE,
+      }
     }
 
     var hash = sha256.create()

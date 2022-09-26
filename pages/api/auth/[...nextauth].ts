@@ -86,14 +86,20 @@ export const authOptions = (req) => ({
         if (userFromDb) {
           userInstance = { ...userFromDb }
         } else {
-          // if not, create a new one
-
+          // if not, create a new account
+          console.log("user.name", user.name)
+          user.name = (user.name?.split(" "))[0]
+          console.log("new use is", user)
           const newUser = await createUser(user)
+          userInstance = { ...newUser }
           if (!newUser) {
             console.log("CREATING NEW USER FAILED")
+            return null
           }
+          userInstance.userId = newUser.userId
         }
 
+        token.name = userInstance.name
         token.place = { cityId: userInstance.cityId }
         token.userId = userInstance.userId
         token.picture = userInstance.picture || userInstance.image

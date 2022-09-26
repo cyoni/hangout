@@ -1,5 +1,3 @@
-import { LongWithoutOverridesClass } from "bson"
-import { access } from "fs"
 import { convertObjectToDictionary } from "./scripts/objects"
 
 export async function post(req: PostRequest): Promise<any> {
@@ -17,7 +15,7 @@ export async function post(req: PostRequest): Promise<any> {
     return response
   }
 
-  return Promise.reject("post - error: " + response?.error?.message)
+  return Promise.reject(response)
 }
 
 export async function newGet(url, params: {} = null): Promise<any> {

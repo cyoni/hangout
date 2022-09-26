@@ -23,6 +23,10 @@
   .shared-frame {
     @apply mx-auto mt-20 w-[500px] rounded-md border shadow-md;
   }
+
+  .text-default {
+    @apply focus:ring-2 pl-4 py-2;
+  }
 }
 
 .title-shadow {

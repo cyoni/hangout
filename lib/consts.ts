@@ -46,3 +46,4 @@ export const MESSAGES_COLLECTION = "messages"
 export const X_FOLLOWS_Y = 1
 export const XY_FOLLOW_EACH_OTHER = 2
 export const SEND_SIGN_UP_EMAIL = "SEND_SIGN_UP_EMAIL"
+export const ACCOUNT_EXISTS_CODE = "ACCOUNT_EXISTS_CODE"

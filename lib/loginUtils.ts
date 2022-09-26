@@ -20,13 +20,16 @@ export async function getUserByEmailAndPassword(
 }
 
 export async function createUser({ email, name, image }) {
-  if (isNullOrEmpty(email) || isNullOrEmpty(name)) return false
-  const user = await dbInsertOne(USERS_COLLECTION, {
+  if (isNullOrEmpty(email) || isNullOrEmpty(name)) return null
+  const user = {
     userId: generateRandomString(10),
     email,
     name,
     picture: image,
+  }
+  const result = await dbInsertOne(USERS_COLLECTION, {
+    ...user,
   })
-  if (user.acknowledged) return true
-  return false
+  if (result.acknowledged) return user
+  return null
 }

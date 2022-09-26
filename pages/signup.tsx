@@ -1,80 +1,51 @@
 import { useState } from "react"
-import LocationAutoComplete from "../components/LocationAutoComplete"
-import { useRouter } from "next/router"
 import HeaderImage from "../components/HeaderImage"
-import { signIn } from "next-auth/react"
+import { AutoComplete, CustomAutoComplete } from "../components/AutoComplete"
+import { getFullPlaceName } from "../lib/scripts/place"
+import { getCitiesAutoComplete } from "../lib/AutoCompleteUtils"
+import GoogleSignInButton from "../components/GoogleSignInButton"
+import Head from "next/head"
+import Loader from "../components/Loader"
+import useSignIn from "../components/Signin/useSignin"
 
 export default function Signup() {
-  const [placeId, setPlaceId] = useState(null)
   const [place, setPlace] = useState<Place>(null)
+  const [isRedirecting, setIsRedirecting] = useState<boolean>(false)
+  const { SignInUser, signInMutation } = useSignIn()
+  const isLoading = signInMutation.isLoading || isRedirecting
 
   const handleSelect = (place) => {
     setPlace(place)
-    console.log("Got place", place)
-  }
-
-  const getDataFromAutoComplete = (data) => {
-    console.log("got data:", data)
-    if (data && data["place_id"]) {
-      setPlaceId(data["place_id"])
-    }
-  }
-
-  const handleOnChange = (inputRef) => {
-    if (place) {
-      setPlace(null)
-      inputRef.current.value = ""
-    }
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const email = e.target.email.value
-    const password = e.target.password.value
     const data = {
       name: e.target.name.value,
-      email,
-      password,
-      city_id: place.city_id,
+      email: e.target.email.value,
+      password: e.target.password.value,
+      cityId: place?.city_id,
     }
-    const JSONdata = JSON.stringify(data)
-    const endpoint = "api/signupApi"
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSONdata,
-    }
-    const response = await fetch(endpoint, options)
-    const result = await response.json()
-
-    if (result.isSuccess) {
-      console.log("HELLO")
-      await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      })
-      window.location.href = "/"
-    }
-
-    console.log("response", result)
+    SignInUser(data)
   }
 
   return (
-    <div>
+    <>
+      <Head>
+        <title>Sign up</title>
+      </Head>
       <HeaderImage title="Sign up" />
-      <div className="mx-auto mt-20 w-[500px] rounded-md border py-5 shadow-md">
+      <div className="relative mx-auto mt-20 w-[500px] rounded-md border py-5 shadow-md">
+        {isLoading && <Loader />}
         <form
           onSubmit={handleSubmit}
           method="post"
-          className="flex flex-col p-2"
+          className="flex flex-col p-2 px-4"
         >
           <label htmlFor="name">Name</label>
           <input
             type="text"
-            className="my-2 rounded-full border p-2 text-gray-400 outline-none"
+            className="text-default my-2 rounded-full border text-gray-400 outline-none"
             name="name"
             id="name"
           />
@@ -82,7 +53,7 @@ export default function Signup() {
           <label htmlFor="email">Email</label>
           <input
             type="text"
-            className="my-2 rounded-full border p-2 text-gray-400 outline-none"
+            className="text-default my-2 rounded-full border text-gray-400 outline-none"
             name="email"
             id="email"
           />
@@ -90,23 +61,35 @@ export default function Signup() {
           <label htmlFor="dates">Password</label>
           <input
             type="password"
-            className="my-2 rounded-full border p-2 text-gray-400 outline-none"
+            className="text-default my-2 rounded-full border text-gray-400 outline-none"
             name="password"
             id="password"
           />
 
           <label>City</label>
-          <LocationAutoComplete
-            className="mt-2 rounded-full border p-2 text-gray-400 outline-none"
-            onChange={handleOnChange}
-            toggleFunction={handleSelect}
+          <AutoComplete
+            defaultValue={place}
+            fetchFunction={getCitiesAutoComplete}
+            handleSelect={handleSelect}
+            getOptionLabel={getFullPlaceName}
           />
 
-          <button type="submit" className="btn mt-6">
+          <button type="submit" className="btn mx-auto mt-6 w-fit px-10">
             Sign up
           </button>
         </form>
+
+        <div>
+          <div className="mx-3 h-10 border-b text-center">
+            <span className="relative top-6 bg-white px-5 text-sm text-gray-400">
+              Or
+            </span>
+          </div>
+          <GoogleSignInButton
+            triggerBeforeSignInAction={() => setIsRedirecting(true)}
+          />
+        </div>
       </div>
-    </div>
+    </>
   )
 }

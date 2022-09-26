@@ -14,7 +14,7 @@ import PersonIcon from "@mui/icons-material/Person"
 import SettingsIcon from "@mui/icons-material/Settings"
 
 function Menubar({ newMessages }) {
-  console.log("fgerwgferge",newMessages)
+  console.log("fgerwgferge", newMessages)
   const router = useRouter()
   const session = useSession()
   const renderMyAvatar = () => {
@@ -67,7 +67,7 @@ function Menubar({ newMessages }) {
             <MenubarRow
               title="Sign up"
               link="/signup"
-              externalClass="btn hover:bg-blue-500"
+              externalClass="btn hover:bg-blue-500 active:bg-blue-400"
             />
           </>
         )}

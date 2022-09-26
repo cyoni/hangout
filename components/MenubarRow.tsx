@@ -18,22 +18,20 @@ function MenubarRow({
   notifications,
   onClick,
 }: Props) {
-
   return (
     <Link href={link}>
       <div
         onClick={() => (onClick ? onClick() : null)}
-        className={`relative flex cursor-pointer
-      items-center space-x-2
-      rounded-full px-3 py-2
-      text-xl hover:bg-gray-100 hover:shadow-sm
-       ${externalClass ? externalClass : ""}`}
+        className={`${
+          externalClass ? externalClass : ""
+        } relative flex cursor-pointer active:bg-gray-200 items-center rounded-full py-2 px-4 text-xl transition-all duration-100 hover:bg-gray-100 hover:shadow-sm
+       `}
       >
         <Badge badgeContent={notifications} color="error">
-          {Icon && <Icon className="h-6" />}
+          {Icon && <Icon className="mr-2 h-6" />}
         </Badge>
 
-        <div>{title}</div>
+        <span className="w-full text-center">{title}</span>
       </div>
     </Link>
   )

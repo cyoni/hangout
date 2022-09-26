@@ -1,3 +1,4 @@
+import { getToken } from "next-auth/jwt"
 import Head from "next/head"
 import { useRouter } from "next/router"
 import React from "react"
@@ -8,6 +9,7 @@ import useEditProfile from "../../components/Profile/EditProfile/useEditProfile"
 import { getCitiesAutoComplete } from "../../lib/AutoCompleteUtils"
 import { newGet } from "../../lib/postman"
 import { getFullPlaceName } from "../../lib/scripts/place"
+import { isNullOrEmpty } from "../../lib/scripts/strings"
 
 function SetUpAccount() {
   const router = useRouter()
@@ -64,3 +66,18 @@ function SetUpAccount() {
 }
 
 export default SetUpAccount
+
+export async function getServerSideProps(context) {
+  const user = await getToken(context)
+  if (user.place.cityId > 0) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/",
+      },
+    }
+  }
+  return {
+    props: {},
+  }
+}

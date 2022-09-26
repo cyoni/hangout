@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast"
 import { getSession, SessionProvider } from "next-auth/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+import { isNullOrEmpty } from "../lib/scripts/strings"
 
 const queryClient = new QueryClient()
 
@@ -40,7 +41,6 @@ MyApp.getInitialProps = async (context) => {
   const { ctx, router } = context
   const session = await getSession(context)
 
-  console.log("session aaaaaa", session)
   if (!session) {
     if (
       !router.route.startsWith("/login") &&
@@ -49,13 +49,12 @@ MyApp.getInitialProps = async (context) => {
       redirect(ctx, "/login")
     }
   } else if (
-    !session.place?.cityId &&
+    isNullOrEmpty(session.place?.cityId) &&
     !router.route.startsWith("/account/setupaccount")
   ) {
     // user should configure their place
     redirect(ctx, "/account/setupaccount")
   }
-  // check for user id
 
   // check inbox here
 
