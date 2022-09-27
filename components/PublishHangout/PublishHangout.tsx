@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react"
-import toast from "react-hot-toast"
 import { useRouter } from "next/router"
-import HeaderImage from "../HeaderImage"
+import HeaderImage from "../Header/HeaderImage"
 import { getFullPlaceName } from "../../lib/scripts/place"
 import TextField from "@mui/material/TextField"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
@@ -17,6 +16,7 @@ import { MobileDatePicker } from "@mui/x-date-pickers"
 import { formatDate } from "../../lib/dates"
 import { IconButton, Tooltip } from "@mui/material"
 import { AutoComplete } from "../AutoComplete"
+import Head from "next/head"
 
 interface Props {
   place?: Place
@@ -85,10 +85,13 @@ export default function PublishHangout({ place }: Props) {
     )
   }
   console.log("currentItinerary?.description", currentItinerary?.description)
- console.log("FFFFFFFF",itineraries)
+  console.log("FFFFFFFF", itineraries)
 
   return (
     <>
+      <Head>
+        <title>Publish new trip</title>
+      </Head>
       <HeaderImage
         title="Publish a new hangout"
         // backgroundId={newPlace?.city ? newPlace.city : "spiral"}

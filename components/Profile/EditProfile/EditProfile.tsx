@@ -2,10 +2,10 @@ import { TextField } from "@mui/material"
 import React from "react"
 import { getCitiesAutoComplete } from "../../../lib/AutoCompleteUtils"
 import { getFullPlaceName } from "../../../lib/scripts/place"
-import AlertDialog from "../../AlertDialog"
+import AlertDialog from "../../Dialog/AlertDialog"
 import { AutoComplete } from "../../AutoComplete"
 import ButtonIntegration from "../../Buttons/ButtonIntegration"
-import ModalWrapper from "../../ModalWrapper"
+import ModalWrapper from "../../Modal/ModalWrapper"
 
 function EditProfile({ editProfileParams, place }) {
   const {

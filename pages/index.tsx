@@ -1,5 +1,5 @@
 import Head from "next/head"
-import HeaderImage from "../components/HeaderImage"
+import HeaderImage from "../components/Header/HeaderImage"
 import useFollow from "../components/Hooks/useFollow"
 import { getToken } from "next-auth/jwt"
 import { getFollowing } from "./api/followApi"
@@ -13,11 +13,12 @@ export default function Home({ session, followData, recentTravelers }) {
   console.log("My session", session)
   const { followQuery } = useFollow(followData)
 
-  const cityIds = followQuery.data?.cities?.[0]?.cityIds
+  const myCityId = session.place.cityId
+  const cityIds = followQuery.data?.cities?.[0]?.cityIds || []
 
-  console.log("recentTravelers",recentTravelers)
+  console.log("recentTravelers", recentTravelers)
 
-  const { places, getPlaceFromObject } = usePlace(cityIds)
+  const { places, getPlaceFromObject } = usePlace([...cityIds, myCityId])
   console.log("places index", places)
   return (
     <div>
@@ -33,7 +34,11 @@ export default function Home({ session, followData, recentTravelers }) {
           <LeftBlock />
 
           {/* Middle block */}
-          <MiddleBlock session={session} recentTravelers={recentTravelers} />
+          <MiddleBlock
+            session={session}
+            recentTravelers={recentTravelers}
+            getPlaceFromObject={getPlaceFromObject}
+          />
 
           {/* Right block - Favorite cities */}
           <RightBlock
@@ -49,6 +54,7 @@ export default function Home({ session, followData, recentTravelers }) {
 
 export async function getServerSideProps(context) {
   const user = await getToken(context)
+
   if (!user) {
     return {
       props: {
@@ -57,7 +63,7 @@ export async function getServerSideProps(context) {
     }
   }
 
-  const cityId = user.place.city_id
+  const cityId = user.place?.cityId
 
   const followData = await getFollowing(user.userId)
   const recentTravelers = await getCityItineraries({

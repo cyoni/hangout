@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { getHeaderPicture } from "../lib/headerImage"
+import { getHeaderPicture } from "../../lib/headerImage"
 
 interface Props {
   headerExternalClass?: string

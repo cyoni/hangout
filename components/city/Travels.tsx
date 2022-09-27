@@ -1,6 +1,6 @@
 import { useRouter } from "next/router"
 import ButtonIntegration from "../Buttons/ButtonIntegration"
-import Spinner from "../Spinner"
+import Spinner from "../Loaders/Spinner"
 import useItinerary from "../Hooks/useItinerary"
 import usePlace from "../Hooks/usePlace"
 import TravelItem from "./TravelItem"

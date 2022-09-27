@@ -1,20 +1,15 @@
 import { useSession } from "next-auth/react"
 import Head from "next/head"
 import React, { useEffect, useState } from "react"
-import HeaderImage from "../../components/HeaderImage"
-import PreviewMessage from "../../components/PreviewMessage"
-import Refresh from "../../components/Refresh"
-import Spinner from "../../components/Spinner"
+import HeaderImage from "../../components/Header/HeaderImage"
+import PreviewMessage from "../../components/Chat/PreviewMessage"
+import Refresh from "../../components/Buttons/Refresh"
+import Spinner from "../../components/Loaders/Spinner"
 import { GET_PREVIEW_MESSAGES_METHOD } from "../../lib/consts"
 import { MESSAGES_API } from "../../lib/consts/apis"
 import { queryPlacesFromClient } from "../../lib/dbClient"
 import { post } from "../../lib/postman"
-import { unique } from "../../lib/scripts/arrays"
-import {
-  isAuthenticated,
-  isNotAuthenticated,
-  isSessionReady,
-} from "../../lib/session"
+import { isAuthenticated } from "../../lib/session"
 
 interface PreviewMessage {
   _id: string

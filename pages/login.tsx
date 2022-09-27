@@ -1,8 +1,8 @@
 import { useRouter } from "next/router"
-import HeaderImage from "../components/HeaderImage"
+import HeaderImage from "../components/Header/HeaderImage"
 import { getCsrfToken, signIn } from "next-auth/react"
 import { useState } from "react"
-import Loader from "../components/Loader"
+import Loader from "../components/Loaders/Loader"
 import toast from "react-hot-toast"
 import Script from "next/script"
 import Head from "next/head"
@@ -31,7 +31,7 @@ export default function Login({ callbackUrl, session }) {
     console.log("res", response)
 
     if (response.status === 200) {
-      router.push(callbackUrl)
+      router.push("/")
       toast.success(`Welcome back!`)
     } else {
       setIsLoggingIn(false)
@@ -74,7 +74,7 @@ export default function Login({ callbackUrl, session }) {
             <label htmlFor="email">Email</label>
             <input
               type="text"
-              className="mt-2 rounded-full border px-4 py-2 text-gray-400 outline-none focus:ring-2"
+              className="text-default mt-2 rounded-full border px-4 text-gray-400"
               name="email"
               id="email"
             />
@@ -84,7 +84,7 @@ export default function Login({ callbackUrl, session }) {
             </label>
             <input
               type="password"
-              className="mt-2 rounded-full border p-2 px-4 text-gray-400 outline-none focus:ring-2"
+              className="text-default mt-2 rounded-full border text-gray-400"
               name="password"
               id="password"
             />
@@ -114,8 +114,8 @@ export async function getServerSideProps(context) {
       },
     }
   }
-  const callbackUrl = context.query.callbackUrl || "/"
+  ///const callbackUrl = context.query.callbackUrl || "/"
   return {
-    props: { callbackUrl },
+    props: {},
   }
 }

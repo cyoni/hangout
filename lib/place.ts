@@ -56,7 +56,7 @@ export async function queryPlaces(
       [curr.id]: {
         city: curr?.name,
         provinceId: curr.state_id,
-        province: curr.state.name,
+        province: curr.state?.name,
         province_short: curr.state_code,
         countryId: curr.country_code,
         country: curr.country?.name,

@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import ChatModal from "../ChatModal"
+import ChatModal from "../Modal/ChatModal"
 
 function useChatModal(item) {
 

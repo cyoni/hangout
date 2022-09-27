@@ -2,21 +2,21 @@ import { useSession } from "next-auth/react"
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { getFullPlaceName } from "../../lib/scripts/place"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
-import Itinerary from "../Itinerary"
+import Itinerary from "../City/Itinerary"
 import { isAuthor } from "../../lib/session"
 import ButtonIntegration from "../Buttons/ButtonIntegration"
 import useFollow from "../Hooks/useFollow"
 import { FOLLOW, REMOVE_IMAGE, UPLOAD_IMAGE } from "../../lib/consts"
 import { Avatar, AvatarGroup, Box, Fab, Tab, Tabs } from "@mui/material"
-import ChatModal from "../ChatModal"
+import ChatModal from "../Modal/ChatModal"
 import EditIcon from "@mui/icons-material/Edit"
-import CustomAvatar from "../CustomAvatar"
+import CustomAvatar from "../Avatar/CustomAvatar"
 import useItinerary from "../Hooks/useItinerary"
 import usePlace from "../Hooks/usePlace"
 import { unique } from "../../lib/scripts/arrays"
 import { convertToBase64 } from "../../lib/scripts/images"
 import useManageImages from "../Hooks/useManageImages"
-import Loader from "../Loader"
+import Loader from "../Loaders/Loader"
 import { Following, Member, Place, Profile } from "../../pages/typings/typings"
 import Head from "next/head"
 
@@ -176,7 +176,7 @@ const ProfileContent = ({
   return (
     <>
       <Head>
-        <title>{name} - Profile</title>
+        <title>{name} - profile</title>
       </Head>
       {isUploadingImage && <Loader blur allScreenOverlay />}
       <div className="mt-5 flex space-x-3 ">

@@ -69,8 +69,9 @@ export const authOptions = (req) => ({
       // UPDATE TOKEN AFTER SIGN UP
       console.log("req.url", req.url)
       if (String(req.url).includes("session?q=update")) {
-        const { cityId } = req.query
-        token.place = { cityId: Number(cityId) }
+        const { cityId, picture } = req.query
+        if (cityId) token.place = { cityId: Number(cityId) }
+        token.picture = picture === "REMOVE" ? null : picture || token.picture
         console.log("NEW TOKEN", token)
         return token
       }
@@ -131,6 +132,9 @@ export const authOptions = (req) => ({
       console.log("session. ", session)
       return session
     },
+    // async redirect({ url, baseUrl }) {
+    //   return baseUrl
+    // },
   },
   logger: {
     error(code, metadata) {

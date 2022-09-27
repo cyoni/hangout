@@ -1,25 +1,22 @@
 import {
   ChatBubbleBottomCenterTextIcon,
-  EllipsisHorizontalCircleIcon,
   UserCircleIcon,
   UserPlusIcon,
 } from "@heroicons/react/24/outline"
-import SendRoundedIcon from "@mui/icons-material/SendRounded"
-
 import React, { useState } from "react"
 import { getPastTime } from "../../lib/scripts/general"
-import ModalWrapper from "../ModalWrapper"
+import ModalWrapper from "../Modal/ModalWrapper"
 import useFollow from "../Hooks/useFollow"
 import usePlace from "../Hooks/usePlace"
 import DeleteIcon from "@mui/icons-material/Delete"
 import ChatRoundedIcon from "@mui/icons-material/ChatRounded"
 import CircularButton from "../Buttons/CircularButton"
-import Spinner from "../Spinner"
+import Spinner from "../Loaders/Spinner"
 import { FOLLOW } from "../../lib/consts"
-import SendMessage from "../SendMessage/SendMessage"
+import SendMessage from "../Chat/SendMessage"
 import PostModal from "./PostModal"
-import ChatModal from "../ChatModal"
-import CustomAvatar from "../CustomAvatar"
+import ChatModal from "../Modal/ChatModal"
+import CustomAvatar from "../Avatar/CustomAvatar"
 import { IconButton, Tooltip } from "@mui/material"
 
 interface Props {

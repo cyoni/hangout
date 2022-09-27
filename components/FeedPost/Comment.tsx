@@ -2,7 +2,7 @@ import { Avatar } from "@mui/material"
 import React from "react"
 import { getPastTime } from "../../lib/scripts/general"
 import { getFullPlaceName } from "../../lib/scripts/place"
-import CustomAvatar from "../CustomAvatar"
+import CustomAvatar from "../Avatar/CustomAvatar"
 import usePlace from "../Hooks/usePlace"
 interface Props extends IComment {
   place: Place

@@ -1,7 +1,7 @@
 import React, { useState } from "react"
-import { Profile } from "../pages/typings/typings"
+import { Profile } from "../../pages/typings/typings"
 import ModalWrapper from "./ModalWrapper"
-import SendMessage from "./SendMessage/SendMessage"
+import SendMessage from "../Chat/SendMessage"
 
 interface Props {
   profile: Profile

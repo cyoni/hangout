@@ -5,3 +5,12 @@ export function getFullPlaceName(place: Place) {
   }`
   return answer
 }
+
+export function getPartsOfPlace(place, city, state = false, country = false) {
+  if (!place) return ""
+  const arr = []
+  if (city) arr.push(place.city)
+  if (state) arr.push(place.state)
+  if (country) arr.push(place.country)
+  return arr.join(", ")
+}

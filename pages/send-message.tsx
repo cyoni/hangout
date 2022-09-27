@@ -1,5 +1,5 @@
 import { useState } from "react"
-import HeaderImage from "../components/HeaderImage"
+import HeaderImage from "../components/Header/HeaderImage"
 import toast from "react-hot-toast"
 export default function SendMessagePage({ receiverId, receiverName }) {
   const [message, setMessage] = useState("")

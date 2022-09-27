@@ -2,10 +2,10 @@ import { Pagination, TextField, Tooltip } from "@mui/material"
 import React, { Fragment, useState } from "react"
 import CircularButton from "../Buttons/CircularButton"
 import FeedPost from "../FeedPost/FeedPost"
-import Spinner from "../Spinner"
+import Spinner from "../Loaders/Spinner"
 import usePosts from "./usePosts"
 import SendRoundedIcon from "@mui/icons-material/SendRounded"
-import Loader from "../Loader"
+import Loader from "../Loaders/Loader"
 function CityPosts({ place }) {
   const {
     sendPost,

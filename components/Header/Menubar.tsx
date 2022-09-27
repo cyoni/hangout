@@ -6,7 +6,7 @@ import {
 } from "@heroicons/react/24/outline"
 import AvatarMenu from "./AvatarMenu"
 import { signIn, signOut, useSession } from "next-auth/react"
-import { isAuthenticated, isNotAuthenticated } from "../lib/session"
+import { isAuthenticated, isNotAuthenticated } from "../../lib/session"
 import { useRouter } from "next/router"
 import { ListItemIcon, MenuItem } from "@mui/material"
 import Logout from "@mui/icons-material/Logout"
@@ -45,7 +45,7 @@ function Menubar({ newMessages }) {
   }
   return (
     <div className="col-span-2 border-gray-100">
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-1">
         {/* <MenubarRow title="Notifications" Icon={BellAlertIcon} link="/" /> */}
         <MenubarRow
           title="Messages"
@@ -63,11 +63,15 @@ function Menubar({ newMessages }) {
         {isAuthenticated(session) && renderMyAvatar()}
         {isNotAuthenticated(session) && (
           <>
-            <MenubarRow title="Login" onClick={() => signIn()} link="/" />
+            <MenubarRow
+              title="Login"
+              onClick={() => signIn(undefined, { callbackUrl: "/" })}
+              link="/"
+            />
             <MenubarRow
               title="Sign up"
               link="/signup"
-              externalClass="btn hover:bg-blue-500 active:bg-blue-400"
+              externalClass="btn hover:bg-blue-500 active:bg-blue-600 "
             />
           </>
         )}

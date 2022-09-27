@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query"
 import React, { useEffect, useState } from "react"
 import { IMAGE_MANAGER_API } from "../../lib/consts/apis"
 import { post } from "../../lib/postman"
+import { updateSessionData } from "../../lib/session"
 
 interface ImageMetaData {
   method:
@@ -25,7 +26,16 @@ function useManageImages() {
     })
   }
 
-  const imageMutation = useMutation(triggerImageMutation)
+  const imageMutation = useMutation({
+    mutationFn: triggerImageMutation,
+    onSuccess: async (response) => {
+      if (
+        imageMetadata.method === "UPLOAD_IMAGE" ||
+        imageMetadata.method === "REMOVE_IMAGE"
+      )
+        await updateSessionData({ picture: response.picture || "REMOVE" })
+    },
+  })
 
   const action = async () => {
     try {

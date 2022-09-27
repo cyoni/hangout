@@ -2,17 +2,18 @@ import { Avatar, AvatarGroup } from "@mui/material"
 import { useRouter } from "next/router"
 import React from "react"
 import { POST, TRAVEL } from "../../lib/consts"
+import { getFullPlaceName, getPartsOfPlace } from "../../lib/scripts/place"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import { Profile } from "../../pages/typings/typings"
 import ButtonIntegration from "../Buttons/ButtonIntegration"
-import usePosts from "../city/usePosts"
-import CustomAvatar from "../CustomAvatar"
+import usePosts from "../City/usePosts"
+import CustomAvatar from "../Avatar/CustomAvatar"
 import FeedPost from "../FeedPost/FeedPost"
-import Spinner from "../Spinner"
+import Spinner from "../Loaders/Spinner"
 
-function MiddleBlock({ session, recentTravelers }) {
-  const userCityId = session?.place?.city_id
-  const cityName = session?.place?.city
+function MiddleBlock({ session, recentTravelers, getPlaceFromObject }) {
+  const userCityId = session?.place?.cityId
+  const cityName = getPartsOfPlace(getPlaceFromObject(userCityId), true)
   const router = useRouter()
   const user = session?.user
   const { sendPost, postsQuery, messageInput, setMessageInput } = usePosts({
@@ -84,7 +85,7 @@ function MiddleBlock({ session, recentTravelers }) {
               id="outlined-multiline-flexible"
               placeholder="Start a discussion"
               rows={3}
-              className="mt-1 w-full pl-1 outline-none"
+              className=" text-default rounded-md pl-2 mt-1 w-full"
               value={messageInput}
               onChange={(e) => setMessageInput(e.target.value)}
             />

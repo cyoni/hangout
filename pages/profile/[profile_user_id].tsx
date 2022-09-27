@@ -1,6 +1,6 @@
 import { getToken } from "next-auth/jwt"
 import React, { useEffect, useRef, useState } from "react"
-import HeaderImage from "../../components/HeaderImage"
+import HeaderImage from "../../components/Header/HeaderImage"
 import { getProfile } from "../../lib/profileUtils"
 import useEditProfile from "../../components/Profile/EditProfile/useEditProfile"
 import EditProfile from "../../components/Profile/EditProfile/EditProfile"
@@ -10,7 +10,7 @@ import useManageImages from "../../components/Hooks/useManageImages"
 import { convertToBase64 } from "../../lib/scripts/images"
 import { UPLOAD_WRAPPER_IMAGE } from "../../lib/consts"
 import ProfileError from "../../components/Profile/ProfileError"
-import Loader from "../../components/Loader"
+import Loader from "../../components/Loaders/Loader"
 import { Button, Menu, MenuItem } from "@mui/material"
 import toast from "react-hot-toast"
 
@@ -21,8 +21,12 @@ interface Props {
 }
 export default function Profile({ profile, following }: Props) {
   console.log("Profile", profile)
-  const editProfileParams = useEditProfile(profile)
-  const { places, getPlaceFromObject } = usePlace([profile?.cityId])
+  const toggleOnFinishCallback = () => {
+    window.location.reload()
+    toast.success("Updated successfully!")
+  }
+  const editProfileParams = useEditProfile({ profile, toggleOnFinishCallback })
+  const { getPlaceFromObject } = usePlace([profile?.cityId])
   const place = getPlaceFromObject(profile?.cityId)
   const pickImage = () => inputFile.current.click()
   const { triggerImage, imageMutation } = useManageImages()

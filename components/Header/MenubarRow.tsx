@@ -24,14 +24,18 @@ function MenubarRow({
         onClick={() => (onClick ? onClick() : null)}
         className={`${
           externalClass ? externalClass : ""
-        } relative flex cursor-pointer active:bg-gray-200 items-center rounded-full py-2 px-4 text-xl transition-all duration-100 hover:bg-gray-100 hover:shadow-sm
+        } relative flex cursor-pointer items-center rounded-full py-2 px-4 text-xl transition-all duration-100 hover:bg-gray-100 hover:shadow-sm active:bg-gray-200
        `}
       >
-        <Badge badgeContent={notifications} color="error">
-          {Icon && <Icon className="mr-2 h-6" />}
-        </Badge>
+        <div className="flex gap-2 items-center">
+          {Icon && (
+            <Badge badgeContent={notifications} color="error">
+              <Icon className="h-6" />
+            </Badge>
+          )}
 
-        <span className="w-full text-center">{title}</span>
+          <span className="w-full text-center">{title}</span>
+        </div>
       </div>
     </Link>
   )

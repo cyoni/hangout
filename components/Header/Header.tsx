@@ -1,22 +1,19 @@
-import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import React, { useEffect, useState } from "react"
-import { GET_NOTIFICATION_METHOD } from "../lib/consts"
-import { newGet, post } from "../lib/postman"
-import { isAuthenticated } from "../lib/session"
+import React, { useState } from "react"
+import { GET_NOTIFICATION_METHOD } from "../../lib/consts"
+import { newGet } from "../../lib/postman"
 import Menubar from "./Menubar"
-import LocationAutoComplete from "./LocationAutoComplete"
-import { AutoComplete } from "./AutoComplete"
-import { getCitiesAutoComplete } from "../lib/AutoCompleteUtils"
+import { getCitiesAutoComplete } from "../../lib/AutoCompleteUtils"
 import { useQuery } from "@tanstack/react-query"
+import { AutoComplete } from "../AutoComplete"
 
 function Header({ session }) {
   const router = useRouter()
   const [newMessages, setNewMessages] = useState<number>(0)
   const [cityId, setCityId] = useState<number>(null)
 
-  const unReadMessagesCounterQuery = useQuery(
+  useQuery(
     ["unRead-messages-counter"],
     async () => {
       return await newGet("/api/messagesApi", {

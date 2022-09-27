@@ -1,5 +1,5 @@
 import React from "react"
-import HeaderImage from "../../components/HeaderImage"
+import HeaderImage from "../../components/Header/HeaderImage"
 import PublishHangout from "../../components/PublishHangout/PublishHangout"
 
 function index() {

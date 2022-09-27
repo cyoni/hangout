@@ -10,15 +10,16 @@ import { getCitiesAutoComplete } from "../../lib/AutoCompleteUtils"
 import { newGet } from "../../lib/postman"
 import { getFullPlaceName } from "../../lib/scripts/place"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
+import { updateSessionData } from "../../lib/session"
 
 function SetUpAccount() {
   const router = useRouter()
   const toggleOnFinishCallback = () => {
     // update session only if update is successful
     const updateCityInSession = async () => {
-      const ans = await newGet("/api/auth/session", { q: "update", cityId })
+      const ans = await updateSessionData({ cityId })
       console.log("ans", ans)
-      if (ans?.place?.cityId === cityId) {
+      if (ans?.place.cityId === cityId) {
         console.log("TOKEN HAS BEEN UPDATED")
         router.push("/")
         toast.success(`Welcome, ${ans.user.name}`)
@@ -46,7 +47,7 @@ function SetUpAccount() {
 
           <AutoComplete
             label="City"
-            className="my-10 "
+            className="my-10"
             fetchFunction={getCitiesAutoComplete}
             handleSelect={handleSelect}
             getOptionLabel={getFullPlaceName}

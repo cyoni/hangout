@@ -103,7 +103,7 @@ async function uploadImage(params, userId, isProfilePicture) {
       throw new Error("Picture could not be updated in db.")
     }
 
-    return "image was successfully uploaded!"
+    return { status: "success", picture: uploadImageResponse.name }
   } catch (e) {
     console.log(`error in uploadImage: ${e.message}`)
     return { error: `error in uploadImage: ${e.message}` }
@@ -147,7 +147,7 @@ async function removeImage(userId, isProfilePicture) {
       throw new Error("could not update picture in db")
     }
 
-    return "image was successfully removed!"
+    return { status: "success" }
   } catch (e) {
     console.log(`error in removeImage: ${e.message}`)
     return { error: `error in removeImage: ${e.message}` }

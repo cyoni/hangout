@@ -1,11 +1,11 @@
 import { useState } from "react"
-import HeaderImage from "../components/HeaderImage"
+import HeaderImage from "../components/Header/HeaderImage"
 import { AutoComplete, CustomAutoComplete } from "../components/AutoComplete"
 import { getFullPlaceName } from "../lib/scripts/place"
 import { getCitiesAutoComplete } from "../lib/AutoCompleteUtils"
 import GoogleSignInButton from "../components/Buttons/GoogleSignInButton"
 import Head from "next/head"
-import Loader from "../components/Loader"
+import Loader from "../components/Loaders/Loader"
 import useSignIn from "../components/Signin/useSignin"
 import { getToken } from "next-auth/jwt"
 
@@ -46,7 +46,7 @@ export default function Signup() {
           <label htmlFor="name">Name</label>
           <input
             type="text"
-            className="text-default my-2 rounded-full border text-gray-400 outline-none"
+            className="text-default my-2 rounded-full border text-gray-400"
             name="name"
             id="name"
           />
@@ -54,7 +54,7 @@ export default function Signup() {
           <label htmlFor="email">Email</label>
           <input
             type="text"
-            className="text-default my-2 rounded-full border text-gray-400 outline-none"
+            className="text-default my-2 rounded-full border text-gray-400"
             name="email"
             id="email"
           />
@@ -62,7 +62,7 @@ export default function Signup() {
           <label htmlFor="dates">Password</label>
           <input
             type="password"
-            className="text-default my-2 rounded-full border text-gray-400 outline-none"
+            className="text-default my-2 rounded-full border text-gray-400"
             name="password"
             id="password"
           />

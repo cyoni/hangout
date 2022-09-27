@@ -7,10 +7,10 @@ import { sleep } from "../../../lib/scripts/general"
 import { getFullPlaceName } from "../../../lib/scripts/place"
 
 interface Props {
-  profile: Profile,
+  profile: Profile
   toggleOnFinishCallback?: Function
 }
-function useEditProfile({profile, toggleOnFinishCallback}: Props) {
+function useEditProfile({ profile, toggleOnFinishCallback }: Props) {
   const [name, setName] = useState<string>(profile?.name)
   const [cityId, setCityId] = useState<number>(profile?.cityId)
   const [aboutMe, setAboutMe] = useState<string>(profile?.aboutMe)
@@ -25,9 +25,6 @@ function useEditProfile({profile, toggleOnFinishCallback}: Props) {
     })
     if (!result.error) {
       setOpenEditProfile(false)
-      // toast.success("Updated successfully!")
-      // await sleep(1000)
-      // window.location.reload()
       toggleOnFinishCallback?.()
     } else toast.error("Update failed.")
   }

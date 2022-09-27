@@ -1,3 +1,5 @@
+import { newGet } from "./postman"
+
 export const isAuthenticated = (session) => {
   return isSessionReady(session) && session.status === "authenticated"
 }
@@ -12,4 +14,9 @@ export const isNotAuthenticated = (session) => {
 
 export const isSessionReady = (session) => {
   return session && session.status !== "loading"
+}
+
+export const updateSessionData = async (body) => {
+  const result = await newGet("/api/auth/session", { q: "update", ...body })
+  return result
 }

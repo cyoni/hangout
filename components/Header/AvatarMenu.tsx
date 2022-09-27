@@ -2,7 +2,7 @@ import * as React from "react"
 import Box from "@mui/material/Box"
 import Menu from "@mui/material/Menu"
 import IconButton from "@mui/material/IconButton"
-import CustomAvatar from "./CustomAvatar"
+import CustomAvatar from "../Avatar/CustomAvatar"
 
 function AvatarMenu({ session, children }) {
   interface Props {

@@ -14,7 +14,7 @@ function usePlace(cityIds: number[]) {
     ["city-data-controller", cityIds],
     async () => await fetchPlaces(cityIds),
     {
-      enabled: !!Array.isArray(cityIds) && cityIds.length > 0,
+      enabled: Array.isArray(cityIds) && cityIds.length > 0,
     }
   )
 

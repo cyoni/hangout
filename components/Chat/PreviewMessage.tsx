@@ -1,7 +1,7 @@
 import React from "react"
 import moment from "moment"
-import { getPastTime } from "../lib/scripts/general"
-import CustomAvatar from "./CustomAvatar"
+import { getPastTime } from "../../lib/scripts/general"
+import CustomAvatar from "../Avatar/CustomAvatar"
 
 interface Props extends MessageObj {
   places: Place[]

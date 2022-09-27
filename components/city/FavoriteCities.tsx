@@ -1,5 +1,5 @@
 import React from "react"
-import generateRandomString from "../lib/scripts/strings"
+import generateRandomString from "../../lib/scripts/strings"
 
 function FavoriteCities({ places, cityIds, getPlaceFromObject }) {
   return (
