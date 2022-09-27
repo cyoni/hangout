@@ -8,7 +8,7 @@ import Refresh from "../../../components/Buttons/Refresh"
 import Spinner from "../../../components/Spinner"
 import { getProfiles } from "../../api/profileApi"
 import Message from "./Message"
-import useConversation from "./useConversation"
+import useConversation from "../../../components/Chat/useConversation"
 
 function Messages({ theirId, profile, session }) {
   console.log("msgs session", session)

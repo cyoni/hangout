@@ -4,10 +4,10 @@ import {
   GET_ALL_MESSAGES_BY_USER_METHOD,
   SEND_MESSAGE_API,
   SEND_MESSAGE_METHOD,
-} from "../../../lib/consts"
-import { post } from "../../../lib/postman"
-import randomString from "../../../lib/randomString"
-import { isNullOrEmpty } from "../../../lib/scripts/strings"
+} from "../../lib/consts"
+import { post } from "../../lib/postman"
+import randomString from "../../lib/randomString"
+import { isNullOrEmpty } from "../../lib/scripts/strings"
 
 function useConversation({
   theirId,
