@@ -1,8 +1,12 @@
 import GoogleProvider from "next-auth/providers/google"
 import NextAuth from "next-auth"
-import type { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { createUser, getUserByEmail } from "../../../lib/loginUtils"
+import {
+  createUser,
+  getUserByEmail,
+  registerUserFlow,
+} from "../../../lib/loginUtils"
+import { updateUserPictureInDb } from "../../../lib/profileUtils"
 
 export const authOptions = (req) => ({
   providers: [
@@ -78,7 +82,7 @@ export const authOptions = (req) => ({
       let userInstance = { ...user }
 
       if (user) {
-        // gets here only during login
+        // gets here only during login / sign in via social network
         // check if user exists, if so return their data
         console.log("user email is", token.email)
         const userFromDb = await getUserByEmail(token.email)
@@ -90,7 +94,7 @@ export const authOptions = (req) => ({
           console.log("user.name", user.name)
           user.name = (user.name?.split(" "))[0]
           console.log("new use is", user)
-          const newUser = await createUser(user)
+          const newUser = await registerUserFlow(user)
           userInstance = { ...newUser }
           if (!newUser) {
             console.log("CREATING NEW USER FAILED")
@@ -102,8 +106,18 @@ export const authOptions = (req) => ({
         token.name = userInstance.name
         token.place = { cityId: userInstance.cityId }
         token.userId = userInstance.userId
-        token.picture = userInstance.picture || userInstance.image
+        token.picture = userInstance.picture || user.image
+
+        if (!userInstance.picture && user.image) {
+          // update user picture in db
+          await updateUserPictureInDb({
+            userId: userInstance.userId,
+            pictureKey: "picture",
+            name: user.image,
+          })
+        }
       }
+
       console.log("NEXT AUTH: USER TOKEN ", token)
       return token
     },

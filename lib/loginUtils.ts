@@ -1,3 +1,4 @@
+import { followCity } from "../pages/api/followApi"
 import { USERS_COLLECTION } from "./consts"
 import { dbFind, dbInsertOne } from "./mongoUtils"
 import generateRandomString, { isNullOrEmpty } from "./scripts/strings"
@@ -19,12 +20,27 @@ export async function getUserByEmailAndPassword(
   return user
 }
 
-export async function createUser({ email, name, image }) {
+interface ICreateUser {
+  email: string
+  name: string
+  password?: string // optional in favor of social networks
+  cityId?: number // optional in favor of social networks
+  image?: string
+}
+export async function createUser({
+  email,
+  name,
+  password,
+  cityId,
+  image,
+}: ICreateUser) {
   if (isNullOrEmpty(email) || isNullOrEmpty(name)) return null
   const user = {
-    userId: generateRandomString(10),
+    userId: generateRandomString(15),
+    password,
     email,
     name,
+    cityId,
     picture: image,
   }
   const result = await dbInsertOne(USERS_COLLECTION, {
@@ -32,4 +48,10 @@ export async function createUser({ email, name, image }) {
   })
   if (result.acknowledged) return user
   return null
+}
+
+export async function registerUserFlow(user: ICreateUser) {
+  const newUser = await createUser(user)
+  await followCity(newUser.cityId, newUser.userId)
+  return newUser
 }

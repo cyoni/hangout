@@ -8,7 +8,7 @@ import Script from "next/script"
 import Head from "next/head"
 import Image from "next/image"
 import { getToken } from "next-auth/jwt"
-import GoogleSignInButton from "../components/GoogleSignInButton"
+import GoogleSignInButton from "../components/Buttons/GoogleSignInButton"
 
 export default function Login({ callbackUrl, session }) {
   const router = useRouter()

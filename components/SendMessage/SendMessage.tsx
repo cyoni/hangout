@@ -1,7 +1,7 @@
 import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline"
 import { TextField } from "@mui/material"
 import React from "react"
-import ButtonIntegration from "../ButtonIntegration"
+import ButtonIntegration from "../Buttons/ButtonIntegration"
 import CustomAvatar from "../CustomAvatar"
 import useSendMessage from "./useSendMessage"
 

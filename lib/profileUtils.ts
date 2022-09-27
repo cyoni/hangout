@@ -1,8 +1,9 @@
 import { FOLLOW_TABLE } from "./consts/tables"
 import { ProfileParams, USERS_COLLECTION } from "./consts"
-import { dbAggregate } from "./mongoUtils"
+import { dbAggregate, dbUpdateOne } from "./mongoUtils"
 import { getFollowing } from "../pages/api/followApi"
 import { Following } from "../pages/typings/typings"
+import { isNullOrEmpty } from "./scripts/strings"
 
 export async function getProfile(userId, includeFollowing = false) {
   const req: AggregateReq = {
@@ -24,7 +25,41 @@ export async function getProfile(userId, includeFollowing = false) {
   }
 }
 
-export async function updateProfile() {
-  try {
-  } catch (e) {}
+interface IUpdateUserPicture {
+  userId: string
+  pictureKey: "picture" | "wrapPicture"
+  pictureIdKey?: "pictureId" | "wrapPictureId"
+  fileId?: string
+  name: string
+}
+
+export async function updateUserPictureInDb({
+  userId,
+  pictureKey,
+  pictureIdKey,
+  fileId,
+  name,
+}: IUpdateUserPicture) {
+  if (isNullOrEmpty(userId)) return { error: "user can't be null" }
+
+  const obj = {
+    [pictureKey]: name,
+  }
+  if (pictureIdKey && fileId) {
+    obj[`metadata.${pictureIdKey}`] = fileId
+  }
+  const dbUploadImageResponse = await dbUpdateOne(
+    USERS_COLLECTION,
+    { userId },
+    {
+      $set: {
+        ...obj,
+      },
+    },
+    {}
+  )
+  if (!dbUploadImageResponse.modifiedCount) {
+    return { error: "Picture could not be updated in db." }
+  }
+  return true
 }

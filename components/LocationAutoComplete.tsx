@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
-
+// this class is deprecated
 interface Props {
   placeholder?: string
   className: string

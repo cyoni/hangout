@@ -1,5 +1,4 @@
 import React from "react"
-import Avatar from "./Avatar"
 import moment from "moment"
 import { getPastTime } from "../lib/scripts/general"
 import CustomAvatar from "./CustomAvatar"

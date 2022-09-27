@@ -3,7 +3,7 @@ import React from "react"
 import { getPastTime } from "../../lib/scripts/general"
 import { getFullPlaceName } from "../../lib/scripts/place"
 import CustomAvatar from "../CustomAvatar"
-import usePlace from "../usePlace"
+import usePlace from "../Hooks/usePlace"
 interface Props extends IComment {
   place: Place
 }

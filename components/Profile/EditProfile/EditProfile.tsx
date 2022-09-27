@@ -4,7 +4,7 @@ import { getCitiesAutoComplete } from "../../../lib/AutoCompleteUtils"
 import { getFullPlaceName } from "../../../lib/scripts/place"
 import AlertDialog from "../../AlertDialog"
 import { AutoComplete } from "../../AutoComplete"
-import ButtonIntegration from "../../ButtonIntegration"
+import ButtonIntegration from "../../Buttons/ButtonIntegration"
 import ModalWrapper from "../../ModalWrapper"
 
 function EditProfile({ editProfileParams, place }) {

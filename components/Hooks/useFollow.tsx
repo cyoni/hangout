@@ -1,10 +1,10 @@
 import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query"
 import  { useState } from "react"
 import toast from "react-hot-toast"
-import { START_FOLLOW, STOP_FOLLOW } from "../lib/consts"
-import { my_following_list } from "../lib/consts/query"
-import { post } from "../lib/postman"
-import { FollowingQuery } from "../lib/queries"
+import { START_FOLLOW, STOP_FOLLOW } from "../../lib/consts"
+import { my_following_list } from "../../lib/consts/query"
+import { post } from "../../lib/postman"
+import { FollowingQuery } from "../../lib/queries"
 
 interface followReq {
   userId?: string

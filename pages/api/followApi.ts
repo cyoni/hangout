@@ -18,8 +18,7 @@ import {
   findTwoUsers as getFindTwoUsersFilter,
 } from "../../lib/mongoUtils"
 import { FOLLOW_TABLE } from "../../lib/consts/tables"
-import { convertArrayToDictionary } from "../../lib/scripts/arrays"
-import { queryPlace, queryPlaces } from "../../lib/place"
+import { queryPlace } from "../../lib/place"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 
 
@@ -230,7 +229,7 @@ async function followMember(userId: any, me: string) {
   console.log("r", r)
   return { result: "OK" }
 }
-async function followCity(cityId: number, me: string) {
+export async function followCity(cityId: number, me: string) {
   if (isNullOrEmpty(cityId)) return { error: "city id id empty" }
   const type = CITY
 
@@ -248,27 +247,6 @@ async function followCity(cityId: number, me: string) {
   if (result.acknowledged) return { message: "success" }
   else return { error: "could not update db" }
 
-  // // check if the user already follows the city
-  // const dbCheck = await dbFind(FOLLOW_TABLE, {
-  //   cityId: cityId,
-  //   type: CITY,
-  //   $in: { userIds: me },
-  // })
-
-  // create a new document
-
-  // if (dbCheck.length == 0) {
-  //   //const r =
-
-  //   const result: MongoInsertOneRes = await dbInsertOne(FOLLOW_TABLE, {
-  //     userId: me,
-  //     type: CITY,
-  //     cityId,
-  //   })
-  //   console.log("follow result", result)
-  //   if (result.acknowledged) return { message: "Success" }
-  //   else return { error: "could not insert a new document in follow table" }
-  // } else return { message: "Already following city" }
 }
 
 // Controller

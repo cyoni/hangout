@@ -1,8 +1,8 @@
 import { useRouter } from "next/router"
-import ButtonIntegration from "../ButtonIntegration"
+import ButtonIntegration from "../Buttons/ButtonIntegration"
 import Spinner from "../Spinner"
-import useItinerary from "../useItinerary"
-import usePlace from "../usePlace"
+import useItinerary from "../Hooks/useItinerary"
+import usePlace from "../Hooks/usePlace"
 import TravelItem from "./TravelItem"
 
 function Travels({ place }) {

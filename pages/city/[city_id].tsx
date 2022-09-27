@@ -6,8 +6,8 @@ import Cities from "../../components/Cities"
 import CityPageTabs from "../../components/city/CityPageTabs"
 import { getFollowing } from "../api/followApi"
 import { getToken } from "next-auth/jwt"
-import ButtonIntegration from "../../components/ButtonIntegration"
-import useFollow from "../../components/useFollow"
+import ButtonIntegration from "../../components/Buttons/ButtonIntegration"
+import useFollow from "../../components/Hooks/useFollow"
 import { CITY } from "../../lib/consts"
 
 interface Props {

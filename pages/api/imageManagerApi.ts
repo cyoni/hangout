@@ -8,6 +8,7 @@ import { IUser, UploadImageRes } from "../typings/typings"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import { getImageKit } from "../../lib/ImageKit"
 import sharp from "sharp"
+import { updateUserPictureInDb } from "../../lib/profileUtils"
 
 type Response = {
   error?: string
@@ -33,7 +34,7 @@ async function getCompressedImage(imageSource) {
 
 async function imageKitDelete(pictureId) {
   try {
-    if (isNullOrEmpty(pictureId)) throw new Error("pictureId is null or empty")
+    if (isNullOrEmpty(pictureId)) return
     const result = await imageKit.deleteFile(pictureId)
     return result
   } catch (e) {
@@ -88,20 +89,16 @@ async function uploadImage(params, userId, isProfilePicture) {
     if (pictureId) await imageKitDelete(pictureId)
 
     // update picture id and picture url in user profile
-    const dbUploadImageResponse = await dbUpdateOne(
-      USERS_COLLECTION,
-      { userId },
-      {
-        $set: {
-          [pictureKey]: uploadImageResponse.name,
-          [`metadata.${pictureIdKey}`]: uploadImageResponse.fileId,
-        },
-      },
-      {}
-    )
+    const dbUploadImageResponse = await updateUserPictureInDb({
+      userId,
+      name: uploadImageResponse.name,
+      fileId: uploadImageResponse.fileId,
+      pictureIdKey,
+      pictureKey,
+    })
 
     // check if picture was updated in db
-    if (!dbUploadImageResponse.modifiedCount) {
+    if (dbUploadImageResponse.error) {
       await imageKitDelete(uploadImageResponse.fileId)
       throw new Error("Picture could not be updated in db.")
     }
@@ -157,6 +154,7 @@ async function removeImage(userId, isProfilePicture) {
   }
 }
 
+// important for uploads (in use!)
 export const config = {
   api: {
     bodyParser: {
@@ -171,7 +169,7 @@ export default async function handler(
 ) {
   try {
     const user = await getToken({ req })
-    if (!user)
+    if (!user?.userId)
       return res.status(400).json({ error: "user is not authenticated" })
 
     const { method } = req.body

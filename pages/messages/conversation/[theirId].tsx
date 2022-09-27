@@ -1,7 +1,7 @@
 import { Button, Menu, MenuItem } from "@mui/material"
 import Head from "next/head"
 import React, { useEffect, useRef, useState } from "react"
-import Back from "../../../components/Back"
+import Back from "../../../components/Buttons/Back"
 import CustomAvatar from "../../../components/CustomAvatar"
 import HeaderImage from "../../../components/HeaderImage"
 import Refresh from "../../../components/Refresh"

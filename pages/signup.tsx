@@ -3,10 +3,11 @@ import HeaderImage from "../components/HeaderImage"
 import { AutoComplete, CustomAutoComplete } from "../components/AutoComplete"
 import { getFullPlaceName } from "../lib/scripts/place"
 import { getCitiesAutoComplete } from "../lib/AutoCompleteUtils"
-import GoogleSignInButton from "../components/GoogleSignInButton"
+import GoogleSignInButton from "../components/Buttons/GoogleSignInButton"
 import Head from "next/head"
 import Loader from "../components/Loader"
 import useSignIn from "../components/Signin/useSignin"
+import { getToken } from "next-auth/jwt"
 
 export default function Signup() {
   const [place, setPlace] = useState<Place>(null)
@@ -92,4 +93,19 @@ export default function Signup() {
       </div>
     </>
   )
+}
+
+export async function getServerSideProps(context) {
+  const token = await getToken(context)
+  if (token) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/",
+      },
+    }
+  }
+  return {
+    props: {},
+  }
 }

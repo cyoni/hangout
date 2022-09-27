@@ -5,7 +5,7 @@ import { formatDate } from "../../lib/dates"
 import { getFullPlaceName } from "../../lib/scripts/place"
 import ChatModal from "../ChatModal"
 import CustomAvatar from "../CustomAvatar"
-import IconButtonCustom from "../IconButtonCustom"
+import IconButtonCustom from "../Buttons/IconButtonCustom"
 
 function TravelItem({ item, getPlaceFromObject }) {
   const [isModalMessageOpen, setIsModalMessageOpen] = useState<boolean>(false)

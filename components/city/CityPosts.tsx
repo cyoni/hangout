@@ -1,6 +1,6 @@
 import { Pagination, TextField, Tooltip } from "@mui/material"
 import React, { Fragment, useState } from "react"
-import CircularButton from "../CircularButton"
+import CircularButton from "../Buttons/CircularButton"
 import FeedPost from "../FeedPost/FeedPost"
 import Spinner from "../Spinner"
 import usePosts from "./usePosts"

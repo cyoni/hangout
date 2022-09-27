@@ -4,14 +4,8 @@ import { sha256 } from "js-sha256"
 import clientPromise from "../../lib/mongodb"
 import randomString from "../../lib/randomString"
 import { queryPlace } from "../../lib/place"
-import { getUserByEmail } from "../../lib/loginUtils"
-
-async function addUser(db, params) {
-  const newUser = { ...params }
-  const result = await db
-    .collection("users")
-    .insertOne(JSON.parse(JSON.stringify(newUser)))
-}
+import { createUser, getUserByEmail, registerUserFlow } from "../../lib/loginUtils"
+import { followCity } from "./followApi"
 
 const getValueFromAddress = (addressComponents, type) => {
   for (let i = 0; i < addressComponents.length; i++) {
@@ -49,8 +43,8 @@ async function signup(req) {
       throw new Error("Place was not found")
     }
 
-    const user = await getUserByEmail(email)
-    if (user) {
+    const userFromDb = await getUserByEmail(email)
+    if (userFromDb) {
       return {
         error: true,
         message: "user already exists",
@@ -61,16 +55,16 @@ async function signup(req) {
     var hash = sha256.create()
     hash.update(password)
 
-    const userId = randomString(15)
-    const newUser = {
-      userId,
+    const newUser = await registerUserFlow({
       password: hash.toString(),
       email,
       name,
       cityId: place.city_id,
+    })
+
+    if (!newUser) {
+      throw new Error("there was an error creating the user")
     }
-    console.log("newUser", newUser)
-    await addUser(db, newUser)
 
     return { isSuccess: true }
   } catch (error) {
