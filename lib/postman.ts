@@ -46,7 +46,7 @@ export async function newGet(url, params: {} = null): Promise<any> {
 }
 
 export async function get(url, params = null): Promise<ResponseObject> {
-  const serviceUrl = `${url}?${params}`
+  const serviceUrl = `${url}${params ? "?" + params : ""}`
   const data = await fetch(serviceUrl, {
     method: "GET",
   })
