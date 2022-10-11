@@ -17,8 +17,8 @@ import {
   dbUpdateOne,
   findTwoUsers as getFindTwoUsersFilter,
 } from "../../lib/mongoUtils"
-import { FOLLOW_TABLE } from "../../lib/consts/tables"
-import { queryPlace } from "../../lib/place"
+import { FOLLOW_TABLE } from "../../lib/consts/collections"
+import { queryPlace } from "../../lib/Places/placeUtils"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 
 

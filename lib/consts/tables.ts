@@ -1,1 +1,0 @@
-export const FOLLOW_TABLE = "follow"

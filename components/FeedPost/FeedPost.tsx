@@ -110,7 +110,8 @@ function FeedPost({ post }: Props) {
         {post.message}
       </div>
       <ModalWrapper
-        height={"h-[80%]"}
+        height={"h-[100vh] md:h-[80vh]"}
+        width={"w-[100vw] md:w-[60vw]"}
         isOpen={isOpen}
         onRequestClose={() => setIsOpen(false)}
       >

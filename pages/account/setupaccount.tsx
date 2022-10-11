@@ -8,7 +8,7 @@ import ButtonIntegration from "../../components/Buttons/ButtonIntegration"
 import useEditProfile from "../../components/Profile/EditProfile/useEditProfile"
 import { getCitiesAutoComplete } from "../../lib/AutoCompleteUtils"
 import { newGet } from "../../lib/postman"
-import { getFullPlaceName } from "../../lib/scripts/place"
+import { getFullPlaceName } from "../../lib/consts/place"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import { updateSessionData } from "../../lib/session"
 

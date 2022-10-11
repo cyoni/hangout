@@ -4,7 +4,7 @@ import toast from "react-hot-toast"
 import { UPDATE_PROFILE_METHOD } from "../../../lib/consts"
 import { post } from "../../../lib/postman"
 import { sleep } from "../../../lib/scripts/general"
-import { getFullPlaceName } from "../../../lib/scripts/place"
+import { getFullPlaceName } from "../../../lib/consts/place"
 
 interface Props {
   profile: Profile

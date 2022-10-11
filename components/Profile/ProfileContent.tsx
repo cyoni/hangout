@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react"
 import React, { useEffect, useMemo, useRef, useState } from "react"
-import { getFullPlaceName } from "../../lib/scripts/place"
+import { getFullPlaceName } from "../../lib/consts/place"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import Itinerary from "../City/Itinerary"
 import { isAuthor } from "../../lib/session"

@@ -1,7 +1,7 @@
 import { USERS_COLLECTION } from "./../../lib/consts"
 import { sha256 } from "js-sha256"
 import { dbFind } from "../../lib/mongoUtils"
-import { queryPlace } from "../../lib/place"
+import { queryPlace } from "../../lib/Places/placeUtils"
 import { getUserByEmailAndPassword } from "../../lib/loginUtils"
 
 async function login({ email, password }) {

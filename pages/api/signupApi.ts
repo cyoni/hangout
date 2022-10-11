@@ -3,7 +3,7 @@ import { sha256 } from "js-sha256"
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import clientPromise from "../../lib/mongodb"
 import randomString from "../../lib/randomString"
-import { queryPlace } from "../../lib/place"
+import { queryPlace } from "../../lib/Places/placeUtils"
 import { createUser, getUserByEmail, registerUserFlow } from "../../lib/loginUtils"
 import { followCity } from "./followApi"
 

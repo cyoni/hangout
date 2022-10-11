@@ -1,7 +1,7 @@
 import Head from "next/head"
 import HeaderImage from "../../components/Header/HeaderImage"
 import { formatDate } from "../../lib/dates"
-import { queryPlace } from "../../lib/place"
+import { queryPlace } from "../../lib/Places/placeUtils"
 import Cities from "../../components/Cities"
 import CityPageTabs from "../../components/City/CityPageTabs"
 import { getFollowing } from "../api/followApi"

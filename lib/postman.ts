@@ -28,7 +28,7 @@ export async function newGet(url, params: {} = null): Promise<any> {
   )
 
   console.log("convertedParams", convertedParams)
-  const serviceUrl = `${url}?${convertedParams}`
+  const serviceUrl = `${url}${convertedParams ? "?" + convertedParams : ""}`
   const data = await fetch(serviceUrl, {
     method: "GET",
   })

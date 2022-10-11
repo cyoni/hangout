@@ -1,22 +1,29 @@
 import { ObjectId } from "mongodb"
 
 type City = {
-  city_id: number
   city: string
 }
 
 type Country = {
-  country_id: number
+  countryCode: string
   country: string
 }
 
-type Province = {
-  province_id: number
-  province: string
-  province_short: string
+type State = {
+  state: string
+  //state_code: string
 }
 
-type Place = {} & City & Province & Country
+type Place = {
+  placeId: string
+  resultType: "city" | "country" 
+  lon: number
+  lat: number
+  queryKey: string
+  formatted: string
+} & City &
+  State &
+  Country
 
 type ResponseObject = {
   data?: any

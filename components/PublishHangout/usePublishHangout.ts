@@ -4,7 +4,7 @@ import React from "react"
 import { TRAVEL_API } from "../../lib/consts/apis"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { firePost, post } from "../../lib/postman"
-import { getFullPlaceName } from "../../lib/scripts/place"
+import { getFullPlaceName } from "../../lib/consts/place"
 import { POST_NEW_ITINERARY } from "../../lib/consts"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 

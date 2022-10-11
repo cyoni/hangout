@@ -1,6 +1,6 @@
 import * as React from "react"
 import { formatDate } from "../../lib/dates"
-import { getFullPlaceName } from "../../lib/scripts/place"
+import { getFullPlaceName } from "../../lib/consts/place"
 import generateRandomString from "../../lib/scripts/strings"
 
 export default function TravelTimeLine({ itineraries, getPlaceFromObject }) {

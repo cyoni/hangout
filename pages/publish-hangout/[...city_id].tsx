@@ -1,4 +1,4 @@
-import { queryPlace } from "../../lib/place"
+import { queryPlace } from "../../lib/Places/placeUtils"
 import { useRouter } from "next/router"
 import PublishHangout from "../../components/PublishHangout/PublishHangout"
 

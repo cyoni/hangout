@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react"
 import { useRouter } from "next/router"
 import HeaderImage from "../Header/HeaderImage"
-import { getFullPlaceName } from "../../lib/scripts/place"
+import { getFullPlaceName } from "../../lib/consts/place"
 import TextField from "@mui/material/TextField"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
