@@ -1,8 +1,6 @@
-import { USERS_COLLECTION } from "./../../lib/consts"
 import { sha256 } from "js-sha256"
-import { dbFind } from "../../lib/mongoUtils"
-import { queryPlace } from "../../lib/Places/placeUtils"
 import { getUserByEmailAndPassword } from "../../lib/loginUtils"
+import { queryPlace } from "./placesAcApi"
 
 async function login({ email, password }) {
   console.log("req.body", email, password)
@@ -15,7 +13,7 @@ async function login({ email, password }) {
   const user = await getUserByEmailAndPassword(email, hash.toString())
 
   if (user) {
-    const place = await queryPlace(user.cityId)
+    const place = await queryPlace(user.placeId)
     console.log("login place", place)
 
     console.log("Connecting OK")

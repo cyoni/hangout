@@ -3,10 +3,11 @@ import React, { Fragment, useState } from "react"
 import CircularButton from "../Buttons/CircularButton"
 import FeedPost from "../FeedPost/FeedPost"
 import Spinner from "../Loaders/Spinner"
-import usePosts from "./usePosts"
 import SendRoundedIcon from "@mui/icons-material/SendRounded"
 import Loader from "../Loaders/Loader"
+import usePosts from "./usePosts"
 function CityPosts({ place }) {
+  console.log("nvweuvnoweuvn", place)
   const {
     sendPost,
     postsQuery,
@@ -17,7 +18,7 @@ function CityPosts({ place }) {
     page,
     setPage,
     totalPages,
-  } = usePosts({ cityId: place?.city_id })
+  } = usePosts({ placeId: place?.placeId })
 
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,

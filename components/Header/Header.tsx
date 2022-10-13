@@ -14,7 +14,6 @@ import { convertPlaceToQuery } from "../../lib/Places/placeUtils"
 function Header({ session }) {
   const router = useRouter()
   const [newMessages, setNewMessages] = useState<number>(0)
-  const [cityId, setCityId] = useState<string>(null)
 
   useQuery(
     ["unRead-messages-counter"],
@@ -32,8 +31,7 @@ function Header({ session }) {
   )
 
   const handleSelect = (place: Place) => {
-    if (place && place.place_id) {
-      setCityId(place.place_id)
+    if (place) {
       router.push(`/city/${convertPlaceToQuery(place)}`)
     }
   }

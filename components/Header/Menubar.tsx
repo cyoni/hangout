@@ -57,7 +57,7 @@ function Menubar({ newMessages }) {
           title="Publish hangout"
           Icon={GlobeEuropeAfricaIcon}
           link={`/publish-hangout/${
-            router.query.city_id ? `city/${router.query.city_id}` : ""
+            router.query.placeId ? `city/${router.query.placeId}` : ""
           }`}
         />
         {isAuthenticated(session) && renderMyAvatar()}

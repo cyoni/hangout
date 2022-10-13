@@ -34,15 +34,13 @@ export async function dbAggregate(request: AggregateReq) {
 
 export async function dbInsertMany(
   database: string,
-  documents: any[],
-  isOrdered = true
+  query: any[],
+  isOrdered = true 
 ): Promise<MongoInsertRes> {
   try {
     const client = await clientPromise
     const db = client.db()
-    return await db
-      .collection(database)
-      .insertMany(documents, { ordered: isOrdered })
+    return await db.collection(database).insertMany(query, { isOrdered })
   } catch (e) {
     return { error: e.message }
   }

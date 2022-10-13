@@ -69,8 +69,8 @@ export const authOptions = (req) => ({
       // UPDATE TOKEN AFTER SIGN UP
       console.log("req.url", req.url)
       if (String(req.url).includes("session?q=update")) {
-        const { cityId, picture } = req.query
-        if (cityId) token.place = { cityId: Number(cityId) }
+        const { placeId, picture } = req.query
+        if (placeId) token.place = { placeId: Number(placeId) }
         token.picture = picture === "REMOVE" ? null : picture || token.picture
         console.log("NEW TOKEN", token)
         return token
@@ -105,7 +105,7 @@ export const authOptions = (req) => ({
         }
 
         token.name = userInstance.name
-        token.place = { cityId: userInstance.cityId }
+        token.place = { placeId: userInstance.placeId }
         token.userId = userInstance.userId
         token.picture = userInstance.picture || user.image
 

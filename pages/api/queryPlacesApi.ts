@@ -1,4 +1,4 @@
-import { queryPlaces } from "../../lib/Places/placeUtils"
+import { queryPlaces } from "./placesAcApi"
 
 export default async function handler(req, res) {
   try {

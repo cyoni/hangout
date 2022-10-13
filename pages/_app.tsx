@@ -52,7 +52,7 @@ MyApp.getInitialProps = async (context) => {
       redirect(ctx, "/login")
     }
   } else if (
-    isNullOrEmpty(session.place?.cityId) &&
+    isNullOrEmpty(session.place?.placeId) &&
     !router.route.startsWith("/account/setupaccount")
   ) {
     // user should configure their place

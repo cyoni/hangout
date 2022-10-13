@@ -27,7 +27,7 @@ export const ProfileParams = {
   name: 1,
   picture: 1,
   wrapPicture: 1,
-  cityId: 1,
+  placeId: 1,
   userId: 1,
 }
 export const GET_FOLLOWING = "GET_FOLLOWING"

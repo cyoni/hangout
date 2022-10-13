@@ -19,19 +19,19 @@ export async function getProfiles({ userIds }) {
     collection: "users",
     params: [
       { $match: { userId: { $in: userIds } } },
-      { $project: { _id: 0, userId: 1, picture: 1, cityId: 1, name: 1 } },
+      { $project: { _id: 0, userId: 1, picture: 1, placeId: 1, name: 1 } },
     ],
   })
   console.log("#######$#", profiles)
   return profiles
 }
 
-async function saveProfile({ userId, name, cityId, aboutMe }) {
+async function saveProfile({ userId, name, placeId, aboutMe }) {
   const fieldsToUpdate = {}
 
   if (!isNullOrEmpty(name)) fieldsToUpdate["name"] = name
   if (!isNullOrEmpty(aboutMe)) fieldsToUpdate["aboutMe"] = aboutMe
-  if (!isNullOrEmpty(cityId)) fieldsToUpdate["cityId"] = cityId
+  if (!isNullOrEmpty(placeId)) fieldsToUpdate["placeId"] = placeId
 
   const result = await dbUpdateOne(
     USERS_COLLECTION,

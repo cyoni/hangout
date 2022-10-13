@@ -27,17 +27,17 @@ export async function getProfile(userIds: string[]) {
   return profiles
 }
 
-export async function getPlace(cityIds: number[]) {
-  console.log("get place start. input:", cityIds)
+export async function getPlace(placeIds: string[]) {
+  console.log("get place start. input:", placeIds)
 
-  if (!Array.isArray(cityIds))
-    return { error: "bad request: expects to get an array of cityIds" }
+  if (!Array.isArray(placeIds))
+    return { error: "bad request: expects to get an array of placeIds" }
 
-  const cleanedArray = cityIds.filter((x) => !isNaN(x))
+  const cleanedArray = placeIds.filter((x) => x)
   console.log("cleaned array:", cleanedArray)
 
-  // const convertedCityIds: number[] = convertStringArrToNumber(cityIds)
-  // console.log("convertedCityIds",convertedCityIds)
+  // const convertedplaceIds: number[] = convertStringArrToNumber(placeIds)
+  // console.log("convertedplaceIds",convertedplaceIds)
 
   let convertedCitiesFromStorage = {}
   let citiesFromStorage: number[] = []
@@ -67,7 +67,7 @@ export async function getPlace(cityIds: number[]) {
   // bring the missing data we don't have
   const result = await get(
     CITY_API,
-    `method=${GET_CITY_DATA}&cityIds=${missingCities.toString()}`
+    `method=${GET_CITY_DATA}&placeIds=${missingCities.toString()}`
   )
   console.log("get city result", result)
 

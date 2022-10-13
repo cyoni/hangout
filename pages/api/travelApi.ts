@@ -18,7 +18,7 @@ function convertItineraries(itineraries) {
       startDate: new Date(itinerary.startDate),
       endDate: new Date(itinerary.endDate),
       place: {
-        city_id: Number(itinerary.place.city_id),
+        placeId: Number(itinerary.place.placeId),
       },
     })
   })
@@ -120,15 +120,15 @@ export async function getUserItineraries({ userIds }) {
 }
 
 export async function getCityItineraries({
-  cityIds,
+  placeIds,
   showAll = false,
   page = 1,
 }) {
-  console.log("convertedCityArray", cityIds)
+  console.log("convertedCityArray", placeIds)
 
-  const convertedCityArray = Array.isArray(cityIds)
-    ? cityIds
-    : convertStringToTypeArray(cityIds, Number)
+  const convertedCityArray = Array.isArray(placeIds)
+    ? placeIds
+    : convertStringToTypeArray(placeIds, Number)
 
   const pageNumber = Number(page)
 
@@ -138,7 +138,7 @@ export async function getCityItineraries({
   const matchFilter = {
     $match: {
       $and: [
-        { "itineraries.place.city_id": { $in: convertedCityArray } },
+        { "itineraries.place.placeId": { $in: convertedCityArray } },
         { "itineraries.startDate": { $gt: new Date() } },
         { "itineraries.endDate": { $gt: new Date() } },
       ],
@@ -168,7 +168,7 @@ export async function getCityItineraries({
                     input: "$itineraries",
                     as: "itinerary",
                     cond: {
-                      $in: ["$$itinerary.place.city_id", convertedCityArray],
+                      $in: ["$$itinerary.place.placeId", convertedCityArray],
                     },
                   },
                 },

@@ -38,7 +38,7 @@ function TravelItem({ item, getPlaceFromObject }) {
               {formatDate(item.itineraries[0].endDate)}
               {/* country */}
               <div className="">
-                {getFullPlaceName(getPlaceFromObject(item.profile[0].cityId))}
+                {getFullPlaceName(getPlaceFromObject(item.profile[0].placeId))}
               </div>
               <div className="line-clamp-5">{item.description}</div>
             </div>

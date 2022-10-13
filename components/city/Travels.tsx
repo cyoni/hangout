@@ -10,7 +10,7 @@ function Travels({ place }) {
 
   const { cityItineraryQuery } = useItinerary({
     isCity: true,
-    cityIds: [place.city_id],
+    placeIds: [place.placeId],
   })
 
   const travelers = cityItineraryQuery.data
@@ -18,15 +18,15 @@ function Travels({ place }) {
     Array.isArray(travelers?.pages) && travelers.pages[0]?.travelers?.length > 0
 
   console.log("travelers", travelers)
-  const cityIds: number[] = travelers?.pages.map((page) =>
-    page?.travelers?.map((travel) => travel.profile[0].cityId)
+  const placeIds: number[] = travelers?.pages.map((page) =>
+    page?.travelers?.map((travel) => travel.profile[0].placeId)
   )
 
-  const { places, getPlaceFromObject, placeQuery } = usePlace([cityIds])
+  const { places, getPlaceFromObject, placeQuery } = usePlace([placeIds])
 
   const isLoading = cityItineraryQuery.isFetching
 
-  console.log("travelers city ids", cityIds)
+  console.log("travelers city ids", placeIds)
 
   return (
     <div className="mx-auto w-[60%]">
@@ -34,7 +34,7 @@ function Travels({ place }) {
         <div className="text-2xl">Travelers</div>
         <button
           className="btn"
-          onClick={() => router.push(`/publish-hangout/city/${place.city_id}`)}
+          onClick={() => router.push(`/publish-hangout/city/${place.placeId}`)}
         >
           Add travel
         </button>

@@ -3,8 +3,6 @@ import { MongoClient } from 'mongodb'
 const uri = process.env.MONGODB_URI
 const options = {}
 
-console.log("$$$$$", uri)
-
 let client
 let clientPromise
 

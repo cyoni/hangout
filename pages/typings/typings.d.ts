@@ -31,7 +31,7 @@ type ResponseObject = {
 }
 
 interface TravelingObject {
-  cityId: number
+  placeId: number
   startDate: string
   endDate: string
   description: string
@@ -118,7 +118,7 @@ type Profile = {
   userId: string
   name: string
   picture: string
-  cityId: number
+  placeId: number
   aboutMe: string
   timeline: any
 }
@@ -133,7 +133,7 @@ type Post = {
 
 type MyFollowing = {
   members: { _id: string; profile: Profile; userId: string }[]
-  cities: { cityIds: number[] }
+  cities: { placeIds: number[] }
 }
 
 type IComment = {
@@ -166,5 +166,5 @@ type Member = {
 
 type Following = {
   members: Member[]
-  cities: { cityIds: number[] }
+  cities: { placeIds: number[] }
 }

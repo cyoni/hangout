@@ -14,7 +14,7 @@ function HeaderImage({
   title,
   titleExternalClass,
   headerExternalClass,
-  backgroundId: backgroundCityId,
+  backgroundId: backgroundplaceId,
   customImageId,
   children,
 }: Props) {
@@ -23,12 +23,12 @@ function HeaderImage({
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const result = await getHeaderPicture(backgroundCityId)
+      const result = await getHeaderPicture(backgroundplaceId)
       setBackgroundUrl(result)
       setIsLoading(false)
     }
-    if (backgroundCityId) fetchData()
-  }, [backgroundCityId])
+    if (backgroundplaceId) fetchData()
+  }, [backgroundplaceId])
 
   useEffect(() => {
     if (customImageId) {
@@ -38,16 +38,16 @@ function HeaderImage({
     }
   }, [customImageId])
 
-  const hasPicture = backgroundCityId || customImageId
+  const hasPicture = backgroundplaceId || customImageId
 
   return (
     <div
       style={{
         backgroundImage: `url('${
-          backgroundCityId || customImageId ? backgroundUrl : "/static/default-header.jpg"
+          backgroundplaceId || customImageId ? backgroundUrl : "/static/default-header.jpg"
         }')`,
         backgroundColor: !hasPicture ? "#1e81b0" : "",
-        filter: backgroundCityId && isLoading ? "blur(8px)" : "",
+        filter: backgroundplaceId && isLoading ? "blur(8px)" : "",
       }}
       className={`relative h-56 
        border border-transparent bg-cover	

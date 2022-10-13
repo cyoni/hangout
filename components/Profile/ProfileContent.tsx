@@ -40,13 +40,13 @@ const ProfileContent = ({
   setOpenEditProfile,
 }: Props) => {
   const [isModalMessageOpen, setIsModalMessageOpen] = useState<boolean>(false)
-  const [cityIds, setCityIds] = useState<number[]>([])
+  const [placeIds, setplaceIds] = useState<number[]>([])
   const session = useSession()
   const { follow, unFollow, isFollowing } = useFollow()
   const { triggerImage, imageMutation } = useManageImages()
   const { isLoading: isUploadingImage, isSuccess: isUploadingCompleted } =
     imageMutation
-  const { getPlaceFromObject, placeQuery } = usePlace(cityIds)
+  const { getPlaceFromObject, placeQuery } = usePlace(placeIds)
   const inputFile = useRef(null)
   const actions = [
     {
@@ -71,20 +71,20 @@ const ProfileContent = ({
       const newData = []
       userItineraryQuery.data?.activeTravels?.forEach((travel) => {
         travel.itineraries.forEach((itin) => {
-          newData.push(itin?.place?.city_id)
+          newData.push(itin?.place?.placeId)
         })
       })
       userItineraryQuery.data?.inactiveTravels?.forEach((travel) => {
         travel.itineraries.forEach((itin) => {
-          newData.push(itin?.place?.city_id)
+          newData.push(itin?.place?.placeId)
         })
       })
 
       following.members.forEach((member) => {
-        newData.push(member.profile[0].city_id)
+        newData.push(member.profile[0].placeId)
       })
 
-      setCityIds(unique(newData))
+      setplaceIds(unique(newData))
     }
   }, [userItineraryQuery.data])
 
@@ -389,7 +389,7 @@ const ProfileContent = ({
                       {profile.name}
                     </p>
                     <p className="text-sm leading-3">
-                      {getFullPlaceName(getPlaceFromObject(profile.cityId))}
+                      {getFullPlaceName(getPlaceFromObject(profile.placeId))}
                     </p>
                   </div>
                 )

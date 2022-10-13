@@ -25,7 +25,7 @@ export default function Signup() {
       name: e.target.name.value,
       email: e.target.email.value,
       password: e.target.password.value,
-      cityId: place?.city_id,
+      placeId: place?.placeId,
     }
     SignInUser(data)
   }

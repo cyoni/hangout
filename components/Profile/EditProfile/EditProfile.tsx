@@ -11,8 +11,8 @@ function EditProfile({ editProfileParams, place }) {
   const {
     name,
     setName,
-    cityId,
-    setCityId,
+    placeId,
+    setplaceId,
     aboutMe,
     setAboutMe,
     showDeleteAccountDialog,

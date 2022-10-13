@@ -26,8 +26,8 @@ export default function Profile({ profile, following }: Props) {
     toast.success("Updated successfully!")
   }
   const editProfileParams = useEditProfile({ profile, toggleOnFinishCallback })
-  const { getPlaceFromObject } = usePlace([profile?.cityId])
-  const place = getPlaceFromObject(profile?.cityId)
+  const { getPlaceFromObject } = usePlace([profile?.placeId])
+  const place = getPlaceFromObject(profile?.placeId)
   const pickImage = () => inputFile.current.click()
   const { triggerImage, imageMutation } = useManageImages()
   const inputFile = useRef(null)

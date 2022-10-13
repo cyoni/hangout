@@ -17,9 +17,9 @@ function SetUpAccount() {
   const toggleOnFinishCallback = () => {
     // update session only if update is successful
     const updateCityInSession = async () => {
-      const ans = await updateSessionData({ cityId })
+      const ans = await updateSessionData({ placeId })
       console.log("ans", ans)
-      if (ans?.place.cityId === cityId) {
+      if (ans?.place.placeId === placeId) {
         console.log("TOKEN HAS BEEN UPDATED")
         router.push("/")
         toast.success(`Welcome, ${ans.user.name}`)
@@ -30,7 +30,7 @@ function SetUpAccount() {
     }
     updateCityInSession()
   }
-  const { handleSelect, submitForm, cityId } = useEditProfile({
+  const { handleSelect, submitForm, placeId } = useEditProfile({
     profile: null,
     toggleOnFinishCallback,
   })
@@ -70,7 +70,7 @@ export default SetUpAccount
 
 export async function getServerSideProps(context) {
   const user = await getToken(context)
-  if (user.place.cityId > 0) {
+  if (user.place.placeId > 0) {
     return {
       redirect: {
         permanent: false,

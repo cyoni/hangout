@@ -8,7 +8,7 @@ import { ACCOUNT_EXISTS_CODE } from "../../lib/consts"
 
 function useSignIn() {
   const router = useRouter()
-  const isValid = ({ name, email, password, cityId }) => {
+  const isValid = ({ name, email, password, placeId }) => {
     if (isNullOrEmpty(name)) {
       toast.error("Please enter a name.")
       return false
@@ -24,7 +24,7 @@ function useSignIn() {
       return false
     }
 
-    if (isNullOrEmpty(cityId)) {
+    if (isNullOrEmpty(placeId)) {
       toast.error("Please enter a city.")
       return false
     }

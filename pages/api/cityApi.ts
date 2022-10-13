@@ -14,30 +14,30 @@ import { getToken } from "next-auth/jwt"
 import { NextApiResponse } from "next"
 import { NextApiRequest } from "next"
 import { dbAggregate, dbFind, dbInsertOne } from "../../lib/mongoUtils"
-import { queryPlace, queryPlaces } from "../../lib/Places/placeUtils"
 import { getObjectKeys } from "../../lib/scripts/objects"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import { MESSAGE_EMPTY, POST_WAS_NOT_FOUND } from "../../lib/consts/error"
 import { ObjectId } from "mongodb"
 import { JoinProfiles } from "../../lib/queryUtils"
+import { queryPlaces } from "./placesAcApi"
 
-async function getValidCities(cityIds) {
-  const validCities = await queryPlaces(cityIds)
+async function getValidCities(placeIds) {
+  const validCities = await queryPlaces(placeIds)
   return validCities
 }
 
-async function PostMessage({ message, cityId }, userId) {
+async function PostMessage({ message, placeId }, userId) {
   if (isNullOrEmpty(String(message).trim()))
     return { error: "post is empty", id: MESSAGE_EMPTY }
-  const validPlaces = await getValidCities([cityId])
-  const keys = getObjectKeys(validPlaces)
-  if (keys.length === 0) return { error: "invalid city." }
+  const validPlaces = await getValidCities([placeId])
+  const verifiedplaceId = getObjectKeys(validPlaces)[0]
+  if (!verifiedplaceId) return { error: "invalid city." }
 
   const result = await dbInsertOne(CITY_POSTS_TABLE, {
     timestamp: Date.now(),
     userId,
     message,
-    cityId: Number(keys[0]),
+    placeId: verifiedplaceId,
   })
   if (!result.insertedId) return { error: "Error updating city table" }
 
@@ -55,7 +55,7 @@ async function PostComment({ message, postId }, userId) {
   if (postCheck.length === 0)
     return { error: "post was not found", id: POST_WAS_NOT_FOUND }
 
-  //const cityId = postCheck[0].cityId
+  //const placeId = postCheck[0].placeId
 
   const result = await dbInsertOne(CITY_COMMENTS_TABLE, {
     timestamp: Date.now(),
@@ -68,8 +68,8 @@ async function PostComment({ message, postId }, userId) {
   return { message: "comment uploaded successfully" }
 }
 
-export async function GetPosts({ cityId, take, page = 1 }) {
-  const validPlaces = await getValidCities([cityId])
+export async function GetPosts({ placeId, take, page = 1 }) {
+  const validPlaces = await getValidCities([placeId])
   const keys = getObjectKeys(validPlaces)
 
   if (keys.length === 0) return { error: "invalid city." }
@@ -79,7 +79,7 @@ export async function GetPosts({ cityId, take, page = 1 }) {
   if (pageNumber < 1) return { error: "page number must be greater than 0" }
 
   const filter = {
-    cityId: Number(keys[0]),
+    placeId: keys[0],
   }
   const request: AggregateReq = {
     collection: CITY_POSTS_TABLE,
@@ -198,10 +198,10 @@ async function GetPostComments({ postId, page }) {
   return result
 }
 
-async function getCityData(cityIdsInput: string | string[]) {
-  const cityIds = String(cityIdsInput)
-  const cityIdsArray = cityIds.split(",")
-  const validPlaces = await getValidCities(cityIdsArray)
+async function getCityData(placeIdsInput: string | string[]) {
+  const placeIds = String(placeIdsInput)
+  const placeIdsArray = placeIds.split(",")
+  const validPlaces = await getValidCities(placeIdsArray)
   if (
     !validPlaces ||
     validPlaces.error ||
@@ -242,7 +242,7 @@ export default async function handler(
         break
       case GET_MESSAGES:
         result = await GetPosts({
-          cityId: req.query.cityId,
+          placeId: req.query.placeId,
           page: req.query.page,
           take: req.query.take || null,
         })
@@ -251,7 +251,7 @@ export default async function handler(
         result = await GetPostComments(req.query)
         break
       case GET_CITY_DATA:
-        result = await getCityData(req.query.cityIds)
+        result = await getCityData(req.query.placeIds)
         break
     }
 
