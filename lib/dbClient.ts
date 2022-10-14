@@ -40,7 +40,7 @@ export async function getPlace(placeIds: string[]) {
   // console.log("convertedplaceIds",convertedplaceIds)
 
   let convertedCitiesFromStorage = {}
-  let citiesFromStorage: number[] = []
+  let citiesFromStorage: string[] = []
 
   const citiesFromStorageRaw = getValue("places")
   console.log("citiesFromStorageRaw", citiesFromStorageRaw)
@@ -49,9 +49,6 @@ export async function getPlace(placeIds: string[]) {
 
     console.log("json", convertedCitiesFromStorage)
 
-    citiesFromStorage = convertStringArrToNumber(
-      getObjectKeys(convertedCitiesFromStorage)
-    )
   } catch (e) {
     citiesFromStorage = []
   }

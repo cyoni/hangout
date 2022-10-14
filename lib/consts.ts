@@ -1,5 +1,5 @@
 export const USERS_COLLECTION = "users"
-export const TRAVELLING_TABLE = "future_travelling"
+export const ITINERARIES_TABLE = "itineraries"
 export const defaultBackground = "/static/images/logo-1.jpg"
 export const GET_NOTIFICATION_METHOD = "getNotifications"
 export const GET_PREVIEW_MESSAGES_METHOD = "getPrviewMessages"

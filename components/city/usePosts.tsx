@@ -74,10 +74,8 @@ function usePosts({ placeId, followingPosts, take }: Props) {
   console.log("pages", pages)
 
   const noContent =
-    !postsQuery.isFetching &&
-    Array.isArray(pages) &&
-    pages.length > 0 &&
-    pages[0].posts?.length === 0
+    (!postsQuery.isFetching && Array.isArray(pages) && pages.length == 0) ||
+    !pages
 
   return {
     sendPost,

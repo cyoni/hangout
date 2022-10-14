@@ -52,6 +52,6 @@ export async function createUser({
 
 export async function registerUserFlow(user: ICreateUser) {
   const newUser = await createUser(user)
- //  await followCity(newUser.placeId, newUser.userId)
+  await followCity(newUser.placeId, newUser.userId)
   return newUser
 }

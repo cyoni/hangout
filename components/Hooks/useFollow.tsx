@@ -76,7 +76,7 @@ function useFollow(initialData = null) {
     )
   }
 
-  const isFollowing = (id: string | number) => {
+  const isFollowing = (id: string) => {
     console.log("followQuery.data", followQuery.data)
     console.log("isFollowing", tmpFollowing)
     return (
@@ -85,7 +85,7 @@ function useFollow(initialData = null) {
         (member) => member.userId == String(id)
       ) ||
       followQuery.data?.cities?.[0]?.placeIds?.some(
-        (placeId) => placeId === Number(id)
+        (placeId) => placeId === id
       )
     )
   }

@@ -1,3 +1,4 @@
+import { useRouter } from "next/router"
 import { toast } from "react-hot-toast"
 import { useEffect, useState } from "react"
 import React from "react"
@@ -19,6 +20,7 @@ function usePublishHangout(autoCompleteRef) {
   const [itineraries, setItineraries] = useState<Itinerary[]>([])
   const [currentIndex, setCurrentIndex] = useState<number>(0)
   const [description, setDescription] = useState<string>("")
+  const router = useRouter()
 
   const updateItinerary = (key, value) => {
     const oldItinerary = itineraries[currentIndex]
@@ -125,7 +127,8 @@ function usePublishHangout(autoCompleteRef) {
       },
       {
         onSuccess: () => {
-          toast.success(`Your itinerary is live`)
+          toast.success("Your itinerary is live")
+          router.push("/profile")
         },
         onError: () => {
           toast.error(`Your post could not be published right now.`)

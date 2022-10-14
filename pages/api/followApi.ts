@@ -229,7 +229,7 @@ async function followMember(userId: any, me: string) {
   console.log("r", r)
   return { result: "OK" }
 }
-export async function followCity(placeId: number, me: string) {
+export async function followCity(placeId: string, me: string) {
   if (isNullOrEmpty(placeId)) return { error: "city id id empty" }
   const type = CITY
 

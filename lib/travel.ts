@@ -1,6 +1,6 @@
 import {
   EMPTY_PROFILE_PICTURE,
-  TRAVELLING_TABLE,
+  ITINERARIES_TABLE,
   USERS_COLLECTION,
 } from "./consts"
 import { dbAggregate, dbFind } from "./mongoUtils"
@@ -17,7 +17,7 @@ const formatDate = (date) => {
 }
 
 export async function getAllTravelling() {
-  const travelling = await dbFind("future_travelling", {})
+  const travelling = await dbFind(ITINERARIES_TABLE, {})
   const userIds = travelling.map((x, i) => {
     return x.userId
   })
@@ -48,7 +48,7 @@ const addEmptyProfileImageIfNeeded = (results) => {
 //   if (isNullOrEmpty(placeId)) return null
 //   const now = Date.now()
 //   const result = await dbAggregate({
-//     collection: TRAVELLING_TABLE,
+//     collection: ITINERARIES_TABLE,
 //     params: [
 //       {
 //         $match: {
@@ -99,7 +99,7 @@ export async function getTravelContent(userId) {
   }
   console.log("getTravelContent", userId)
   const profileRaw = (await dbFind(USERS_COLLECTION, { userId }))[0]
-  const travelsRaw = await dbFind("future_travelling", { userId })
+  const travelsRaw = await dbFind(ITINERARIES_TABLE, { userId })
 
   const travels = travelsRaw.map((travel) => {
     return {

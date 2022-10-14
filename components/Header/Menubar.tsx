@@ -54,7 +54,7 @@ function Menubar({ newMessages }) {
           notifications={newMessages}
         />
         <MenubarRow
-          title="Publish hangout"
+          title="Publish trip"
           Icon={GlobeEuropeAfricaIcon}
           link={`/publish-hangout/${
             router.query.placeId ? `city/${router.query.placeId}` : ""

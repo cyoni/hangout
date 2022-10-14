@@ -27,6 +27,7 @@ function usePlace(placeIds: string[]) {
 
   const getPlaceFromObject = (id): Place => {
     console.log("getPlaceFromObject", places)
+    console.log("get places. id:", id)
     return places ? { placeId: id, ...places[id] } : null
   }
 

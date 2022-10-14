@@ -43,8 +43,6 @@ export default function PublishHangout({ place }: Props) {
 
   console.log("currentItinerary client", currentItinerary)
 
-  const handleOnChange = (ref) => {}
-
   const isOptionEqualToValue = (option: Place, value: Place) => {
     return option.city === value.city
   }
@@ -93,7 +91,7 @@ export default function PublishHangout({ place }: Props) {
         <title>Publish new trip</title>
       </Head>
       <HeaderImage
-        title="Publish a new hangout"
+        title="Publish a new trip"
         // backgroundId={newPlace?.city ? newPlace.city : "spiral"}
       />
 
@@ -103,12 +101,12 @@ export default function PublishHangout({ place }: Props) {
         className="mx-auto my-10 flex w-[40%] flex-col space-y-4 rounded-md border p-3 shadow-lg"
         method="post"
       >
-        <h1 className="mb-4 text-2xl font-medium">Add Travel</h1>
+        <h1 className="mb-4 text-2xl font-medium">Publish an Itinerary</h1>
 
         <div className="flex flex-col space-y-4 rounded-md border p-3 ">
           <div className="flex justify-between">
             <h2 className="text-xl font-medium">
-              Tell others about your upcoming travel
+              Itinerary ({currentIndex + 1}): add some details
             </h2>
             <div>
               {itineraries.length > 1 && (

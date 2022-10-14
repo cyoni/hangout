@@ -10,7 +10,7 @@ interface Props {
   isUser?: boolean
   userIds?: string[]
 }
-function useItinerary({ isCity, placeIds: placeIds, isUser, userIds }: Props) {
+function useItinerary({ isCity, placeIds, isUser, userIds }: Props) {
   const cityItineraryQuery = useInfiniteQuery(
     ["cityItineraryQuery", placeIds],
     async ({ pageParam = 1 }) => {
@@ -21,7 +21,7 @@ function useItinerary({ isCity, placeIds: placeIds, isUser, userIds }: Props) {
       })
     },
     {
-      enabled: !!isCity && !!placeIds,
+      enabled: isCity && !!placeIds,
       getNextPageParam: (lastPage, allPages) => lastPage.nextPage,
       refetchOnWindowFocus: false,
       keepPreviousData: true,
@@ -35,7 +35,7 @@ function useItinerary({ isCity, placeIds: placeIds, isUser, userIds }: Props) {
       return await newGet(TRAVEL_API, { method: GET_USER_ITINERARIES, userIds })
     },
     {
-      enabled: !!isUser && !!userIds,
+      enabled: isUser && !!userIds,
     }
   )
 

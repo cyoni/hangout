@@ -34,16 +34,16 @@ function Travels({ place }) {
         <div className="text-2xl">Travelers</div>
         <button
           className="btn"
-          onClick={() => router.push(`/publish-hangout/city/${place.placeId}`)}
+          onClick={() => router.push(`/publish-hangout/city/${place.cityId}`)}
         >
           Add travel
         </button>
       </div>
-      <div className=" mt-4 min-h-[700px] rounded-md bg-gray-50 py-5 px-10 shadow-md">
+      <div className="mt-4 min-h-[700px] rounded-md bg-gray-50 py-5 px-10 shadow-md flex flex-col justify-between">
         {!travelers && <Spinner className="top-0 left-1/2 mt-10" />}
         {hasData && travelers.pages.length > 0 && (
           <>
-            <div className="grid grid-cols-[300px_300px] gap-10 justify-center items-center">
+            <div className="grid grid-cols-[300px_300px] items-center justify-center gap-10">
               {travelers.pages.map((page) =>
                 page.travelers.map((item, i) => (
                   <TravelItem
@@ -55,7 +55,7 @@ function Travels({ place }) {
               )}
             </div>
             <ButtonIntegration
-              externalClass={`btn block mx-auto mt-10 w-fit ${
+              externalClass={`btn block mx-auto mb-2 w-fit ${
                 !cityItineraryQuery.hasNextPage ? "disabled" : ""
               }`}
               disabled={!cityItineraryQuery.hasNextPage}
@@ -67,20 +67,8 @@ function Travels({ place }) {
         )}
 
         {!isLoading && !hasData && (
-          <div className=" my-20 text-center text-3xl ">
-            No travelers yet
-            <p>
-              <button className="btn mt-7">Invite a friend</button>
-            </p>
-          </div>
+          <div className=" my-20 text-center text-3xl ">No itineraries yet</div>
         )}
-      </div>
-      <div className="link w-fit">
-        {/* <Link
-                href={`/more-travels?country=${location?.country}&state=${location?.state}&city=${location?.city}`}
-              >
-                More
-              </Link> */}
       </div>
     </div>
   )

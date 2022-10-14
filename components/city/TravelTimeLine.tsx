@@ -14,7 +14,7 @@ export default function TravelTimeLine({ itineraries, getPlaceFromObject }) {
     <div className="p-2 pr-3 basis-[400px]">
       {itineraries &&
         itineraries.map((itinerary, index) => {
-          const place = getPlaceFromObject(itinerary?.place?.placeId)
+          const place = getPlaceFromObject(itinerary.placeId)
           return (
             <React.Fragment key={generateRandomString(5)}>
               <div className="flex items-center w-full">

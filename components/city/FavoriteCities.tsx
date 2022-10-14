@@ -9,7 +9,7 @@ function FavoriteCities({ places, placeIds, getPlaceFromObject }) {
         placeIds.map((city) => {
           const place = getPlaceFromObject(city)
           return (
-            <a key={generateRandomString(3)} href={`/city/${place?.placeId}`}>
+            <a key={generateRandomString(3)} href={`/city/${place?.cityId}`}>
               <div className="p-2 rounded-md cursor-pointer hover:bg-gray-100 hover:border-gray-300 hover:text-blue-500">
                 {place?.city}
               </div>

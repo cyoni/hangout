@@ -6,8 +6,8 @@ import Itinerary from "../City/Itinerary"
 import { isAuthor } from "../../lib/session"
 import ButtonIntegration from "../Buttons/ButtonIntegration"
 import useFollow from "../Hooks/useFollow"
-import { FOLLOW, REMOVE_IMAGE, UPLOAD_IMAGE } from "../../lib/consts"
-import { Avatar, AvatarGroup, Box, Fab, Tab, Tabs } from "@mui/material"
+import { FOLLOW, UPLOAD_IMAGE } from "../../lib/consts"
+import { AvatarGroup, Box, Fab, Tab, Tabs } from "@mui/material"
 import ChatModal from "../Modal/ChatModal"
 import EditIcon from "@mui/icons-material/Edit"
 import CustomAvatar from "../Avatar/CustomAvatar"
@@ -19,12 +19,12 @@ import useManageImages from "../Hooks/useManageImages"
 import Loader from "../Loaders/Loader"
 import { Following, Member, Place, Profile } from "../../pages/typings/typings"
 import Head from "next/head"
-
 import SpeedDial from "@mui/material/SpeedDial"
 import SpeedDialIcon from "@mui/material/SpeedDialIcon"
 import SpeedDialAction from "@mui/material/SpeedDialAction"
 import CameraAlt from "@mui/icons-material/CameraAlt"
 import Delete from "@mui/icons-material/Delete"
+import { useRouter } from "next/router"
 
 interface Props {
   profile: Profile
@@ -40,7 +40,7 @@ const ProfileContent = ({
   setOpenEditProfile,
 }: Props) => {
   const [isModalMessageOpen, setIsModalMessageOpen] = useState<boolean>(false)
-  const [placeIds, setplaceIds] = useState<number[]>([])
+  const [placeIds, setPlaceIds] = useState<string[]>([])
   const session = useSession()
   const { follow, unFollow, isFollowing } = useFollow()
   const { triggerImage, imageMutation } = useManageImages()
@@ -48,6 +48,8 @@ const ProfileContent = ({
     imageMutation
   const { getPlaceFromObject, placeQuery } = usePlace(placeIds)
   const inputFile = useRef(null)
+  const router = useRouter()
+  const { query } = router
   const actions = [
     {
       icon: <CameraAlt />,
@@ -71,12 +73,12 @@ const ProfileContent = ({
       const newData = []
       userItineraryQuery.data?.activeTravels?.forEach((travel) => {
         travel.itineraries.forEach((itin) => {
-          newData.push(itin?.place?.placeId)
+          newData.push(itin?.placeId)
         })
       })
       userItineraryQuery.data?.inactiveTravels?.forEach((travel) => {
         travel.itineraries.forEach((itin) => {
-          newData.push(itin?.place?.placeId)
+          newData.push(itin?.placeId)
         })
       })
 
@@ -84,7 +86,8 @@ const ProfileContent = ({
         newData.push(member.profile[0].placeId)
       })
 
-      setplaceIds(unique(newData))
+      setPlaceIds(unique(newData))
+      console.log("GOT NEW DATA", newData)
     }
   }, [userItineraryQuery.data])
 
@@ -104,10 +107,40 @@ const ProfileContent = ({
     setIsModalMessageOpen(true)
   }
 
-  const [value, setValue] = React.useState(0)
+  const initializeTab = () => {
+    const { view } = query
+    switch (view) {
+      case "intro":
+        return 0
+      case "trips":
+        return 1
+      case "following":
+        return 2
+      default:
+        return 0
+    }
+
+    return 0
+  }
+  const [currentTab, setCurrentTab] = React.useState(initializeTab())
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue)
+    setCurrentTab(newValue)
+    console.log("newValue", newValue)
+    const getView = () => {
+      switch (newValue) {
+        case 0:
+          return "intro"
+        case 1:
+          return "trips"
+        case 2:
+          return "following"
+      }
+    }
+    const view = getView()
+    router.push(`/profile/${query.profile_user_id}?view=${view}`, undefined, {
+      shallow: true,
+    })
   }
 
   function TabPanel(props: TabPanelProps) {
@@ -127,6 +160,7 @@ const ProfileContent = ({
   }
 
   const renderTravelsCard = (data) => {
+    console.log("placeQuery.data", placeQuery.data)
     if (data && placeQuery.data) {
       return (
         <>
@@ -282,7 +316,7 @@ const ProfileContent = ({
           }}
         >
           <Tabs
-            value={value}
+            value={currentTab}
             onChange={handleChange}
             variant="scrollable"
             scrollButtons={false}
@@ -294,7 +328,7 @@ const ProfileContent = ({
           </Tabs>
         </Box>
 
-        <TabPanel value={value} index={0}>
+        <TabPanel value={currentTab} index={0}>
           <>
             <div className="pl-2 text-3xl ">About</div>
             <div
@@ -340,7 +374,7 @@ const ProfileContent = ({
           </>
         </TabPanel>
 
-        <TabPanel value={value} index={1}>
+        <TabPanel value={currentTab} index={1}>
           {console.log("placeQuery.data ", placeQuery.data)}
 
           <div className="pl-2">
@@ -348,28 +382,25 @@ const ProfileContent = ({
             {userItineraryQuery.data?.activeTravels ? (
               <>{renderTravelsCard(userItineraryQuery.data.activeTravels)}</>
             ) : (
-              <div>
-                <p>No upcoming trips yet.</p>
-              </div>
+              <p>No upcoming trips yet.</p>
             )}
 
             <div className="mb-5 mt-6 text-3xl">Past trips</div>
-            {userItineraryQuery.data?.inactiveTravels ? (
+            {userItineraryQuery.data?.inactiveTravels &&
+            userItineraryQuery.data?.inactiveTravels.length > 0 ? (
               <>{renderTravelsCard(userItineraryQuery.data.inactiveTravels)}</>
             ) : (
-              <div>
-                <p>No past trips yet.</p>
-              </div>
+              <p>No past trips yet.</p>
             )}
           </div>
         </TabPanel>
-        <TabPanel value={value} index={2}>
+        <TabPanel value={currentTab} index={2}>
           <div className="pl-2">
             <div className="text-3xl">Following</div>
             <div className="mt-10 flex flex-wrap">
               {following?.members?.length === 0 && (
                 <div className="text-xl">
-                  {name} is not following anyone yet
+                  {name} is not following anyone yet.
                 </div>
               )}
               {following?.members?.map((member: Member) => {

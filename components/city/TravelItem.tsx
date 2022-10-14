@@ -1,5 +1,4 @@
 import { ChatBubbleLeftEllipsisIcon } from "@heroicons/react/24/outline"
-import { IconButton } from "@mui/material"
 import React, { useState } from "react"
 import { formatDate } from "../../lib/dates"
 import { getFullPlaceName } from "../../lib/consts/place"
