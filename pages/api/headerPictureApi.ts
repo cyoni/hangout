@@ -1,4 +1,4 @@
-import { defaultBackground } from '../../lib/consts';
+import { defaultBackground } from '../../lib/consts/consts';
 import type { NextApiRequest, NextApiResponse } from "next"
 import data from "../../lib/cityImages.json"
 import { getUnsplashImageByText } from "../../lib/unsplash"

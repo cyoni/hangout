@@ -7,7 +7,7 @@ import CityPosts from "./CityPosts"
 import useItinerary from "../Hooks/useItinerary"
 import Travels from "./Travels"
 import { useRouter } from "next/router"
-import { POST, TRAVEL } from "../../lib/consts"
+import { POST, TRAVEL } from "../../lib/consts/consts"
 
 interface TabPanelProps {
   children?: React.ReactNode

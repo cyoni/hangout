@@ -1,7 +1,7 @@
 import { signOut } from "next-auth/react"
 import React, { useState } from "react"
 import toast from "react-hot-toast"
-import { UPDATE_PROFILE_METHOD } from "../../../lib/consts"
+import { UPDATE_PROFILE_METHOD } from "../../../lib/consts/consts"
 import { post } from "../../../lib/postman"
 import { sleep } from "../../../lib/scripts/general"
 import { getFullPlaceName } from "../../../lib/consts/place"

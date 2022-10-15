@@ -6,17 +6,17 @@ import {
   USERS_COLLECTION,
   XY_FOLLOW_EACH_OTHER,
   X_FOLLOWS_Y,
-} from "./../../lib/consts"
+} from "../../lib/consts/consts"
 import { getToken } from "next-auth/jwt"
 import { NextApiRequest, NextApiResponse } from "next"
-import { GET_FOLLOWING, START_FOLLOW } from "../../lib/consts"
+import { GET_FOLLOWING, START_FOLLOW } from "../../lib/consts/consts"
 import {
   dbAggregate,
   dbDeleteOne,
   dbFind,
   dbUpdateOne,
   findTwoUsers as getFindTwoUsersFilter,
-} from "../../lib/mongoUtils"
+} from "../../lib/mongoApiUtils"
 import { FOLLOW_TABLE } from "../../lib/consts/collections"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import { queryPlace } from "./placesAcApi"

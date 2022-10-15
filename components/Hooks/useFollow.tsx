@@ -1,10 +1,13 @@
 import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query"
-import  { useState } from "react"
+import { useState } from "react"
 import toast from "react-hot-toast"
-import { START_FOLLOW, STOP_FOLLOW } from "../../lib/consts"
+import {
+  GET_FOLLOWING,
+  START_FOLLOW,
+  STOP_FOLLOW,
+} from "../../lib/consts/consts"
 import { my_following_list } from "../../lib/consts/query"
-import { post } from "../../lib/postman"
-import { FollowingQuery } from "../../lib/queries"
+import { get, post } from "../../lib/postman"
 
 interface followReq {
   userId?: string
@@ -12,6 +15,14 @@ interface followReq {
   method: string
   type: "FOLLOW" | "CITY"
 }
+const FollowingQuery = async (userId: string) => {
+  console.log("FollowingQuery1111111")
+  return await get("http://localhost:3000/api/followApi", {
+    method: GET_FOLLOWING,
+    userId,
+  })
+}
+
 function useFollow(initialData = null) {
   const followers = []
   const [tmpFollowing, setTmpFollowing] = useState([])
@@ -84,9 +95,7 @@ function useFollow(initialData = null) {
       followQuery.data?.members?.some(
         (member) => member.userId == String(id)
       ) ||
-      followQuery.data?.cities?.[0]?.placeIds?.some(
-        (placeId) => placeId === id
-      )
+      followQuery.data?.cities?.[0]?.placeIds?.some((placeId) => placeId === id)
     )
   }
 

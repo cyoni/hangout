@@ -1,4 +1,4 @@
-import { SEND_SIGN_UP_EMAIL } from "./../../lib/consts"
+import { SEND_SIGN_UP_EMAIL } from "../../lib/consts/consts"
 import { NextApiRequest, NextApiResponse } from "next"
 
 import { isNullOrEmpty } from "../../lib/scripts/strings"

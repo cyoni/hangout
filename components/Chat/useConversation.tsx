@@ -1,13 +1,12 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import {
   GET_ALL_MESSAGES_BY_USER_METHOD,
   SEND_MESSAGE_API,
   SEND_MESSAGE_METHOD,
-} from "../../lib/consts"
+} from "../../lib/consts/consts"
 import { post } from "../../lib/postman"
-import randomString from "../../lib/randomString"
-import { isNullOrEmpty } from "../../lib/scripts/strings"
+import generateRandomString, { isNullOrEmpty } from "../../lib/scripts/strings"
 
 function useConversation({
   theirId,
@@ -74,7 +73,7 @@ function useConversation({
 
     if (isNullOrEmpty(message)) return
 
-    const msgId = randomString(5)
+    const msgId = generateRandomString(5)
     const newMessage = { message, id: msgId, status: "SENDING" }
 
     setMessages([...messages, newMessage])

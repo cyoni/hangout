@@ -1,6 +1,5 @@
-import { FOLLOW_TABLE } from "./consts/collections"
-import { ProfileParams, USERS_COLLECTION } from "./consts"
-import { dbAggregate, dbUpdateOne } from "./mongoUtils"
+import { ProfileParams, USERS_COLLECTION } from "./consts/consts"
+import { dbAggregate, dbUpdateOne } from "./mongoApiUtils"
 import { getFollowing } from "../pages/api/followApi"
 import { Following } from "../pages/typings/typings"
 import { isNullOrEmpty } from "./scripts/strings"

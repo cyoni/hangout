@@ -5,7 +5,7 @@ import {
   createUser,
   getUserByEmail,
   registerUserFlow,
-} from "../../../lib/loginUtils"
+} from "../../../lib/ApiUtils/loginApiUtils"
 import { updateUserPictureInDb } from "../../../lib/profileUtils"
 
 export const authOptions = (req) => ({

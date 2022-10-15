@@ -1,10 +1,5 @@
-import { ProfileParams, USERS_COLLECTION } from "./consts"
+import { ProfileParams, USERS_COLLECTION } from "./consts/consts"
 
-interface Props {
-  foreignField?: string
-  localField?: string
-  as?: string
-}
 export function JoinProfiles({
   foreignField = "userId",
   localField = "userId",

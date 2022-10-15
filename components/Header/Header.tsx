@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { useRouter } from "next/router"
 import React, { useState } from "react"
-import { GET_NOTIFICATION_METHOD } from "../../lib/consts"
+import { GET_NOTIFICATION_METHOD } from "../../lib/consts/consts"
 import { get } from "../../lib/postman"
 import Menubar from "./Menubar"
 import { getCitiesAutoComplete } from "../../lib/AutoCompleteUtils"

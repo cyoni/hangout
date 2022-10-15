@@ -5,7 +5,7 @@ import { TRAVEL_API } from "../../lib/consts/apis"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { post } from "../../lib/postman"
 import { getFullPlaceName } from "../../lib/consts/place"
-import { POST_NEW_ITINERARY } from "../../lib/consts"
+import { POST_NEW_ITINERARY } from "../../lib/consts/consts"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 
 interface Itinerary {

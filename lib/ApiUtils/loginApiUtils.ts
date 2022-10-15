@@ -1,7 +1,7 @@
-import { followCity } from "../pages/api/followApi"
-import { USERS_COLLECTION } from "./consts"
-import { dbFind, dbInsertOne } from "./mongoUtils"
-import generateRandomString, { isNullOrEmpty } from "./scripts/strings"
+import { followCity } from "../../pages/api/followApi"
+import { USERS_COLLECTION } from "../consts/consts"
+import { dbFind, dbInsertOne } from "../mongoApiUtils"
+import generateRandomString, { isNullOrEmpty } from "../scripts/strings"
 
 export async function getUserByEmail(email: string) {
   const user = (await dbFind(USERS_COLLECTION, { email }))[0]

@@ -1,4 +1,4 @@
-import { dbFind } from "../../lib/mongoUtils"
+import { dbFind } from "../../lib/mongoApiUtils"
 import { queryPlaces } from "./placesAcApi"
 
 export async function initializeduplicateCities() {

@@ -1,7 +1,7 @@
 import { Avatar, AvatarGroup } from "@mui/material"
 import { useRouter } from "next/router"
 import React from "react"
-import { POST, TRAVEL } from "../../lib/consts"
+import { POST, TRAVEL } from "../../lib/consts/consts"
 import { getFullPlaceName, getPartsOfPlace } from "../../lib/consts/place"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import { Profile } from "../../pages/typings/typings"

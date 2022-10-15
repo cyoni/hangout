@@ -1,5 +1,5 @@
 import { sha256 } from "js-sha256"
-import { getUserByEmailAndPassword } from "../../lib/loginUtils"
+import { getUserByEmailAndPassword } from "../../lib/ApiUtils/loginApiUtils"
 import { queryPlace } from "./placesAcApi"
 
 async function login({ email, password }) {

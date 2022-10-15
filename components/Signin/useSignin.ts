@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query"
 import { post } from "../../lib/postman"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import { signIn } from "next-auth/react"
-import { ACCOUNT_EXISTS_CODE } from "../../lib/consts"
+import { ACCOUNT_EXISTS_CODE } from "../../lib/consts/consts"
 
 function useSignIn() {
   const router = useRouter()

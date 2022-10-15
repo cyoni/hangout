@@ -9,16 +9,16 @@ import {
   POST_MESSAGE,
   ProfileParams,
   USERS_COLLECTION,
-} from "./../../lib/consts"
+} from "../../lib/consts/consts"
 import { getToken } from "next-auth/jwt"
 import { NextApiResponse } from "next"
 import { NextApiRequest } from "next"
-import { dbAggregate, dbFind, dbInsertOne } from "../../lib/mongoUtils"
+import { dbAggregate, dbFind, dbInsertOne } from "../../lib/mongoApiUtils"
 import { getObjectKeys } from "../../lib/scripts/objects"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import { MESSAGE_EMPTY, POST_WAS_NOT_FOUND } from "../../lib/consts/error"
 import { ObjectId } from "mongodb"
-import { JoinProfiles } from "../../lib/queryUtils"
+import { JoinProfiles } from "../../lib/queryApiUtils"
 import { queryPlaces } from "./placesAcApi"
 
 async function getValidCities(placeIds) {

@@ -2,28 +2,26 @@ import {
   MESSAGES_COLLECTION,
   SEND_MESSAGE_METHOD,
   USERS_COLLECTION,
-} from "./../../lib/consts"
+} from "../../lib/consts/consts"
 import {
   GET_ALL_MESSAGES_BY_USER_METHOD,
   GET_NOTIFICATION_METHOD,
-} from "../../lib/consts"
+} from "../../lib/consts/consts"
 import { NextApiRequest, NextApiResponse } from "next"
 import { getToken } from "next-auth/jwt"
-import { GET_PREVIEW_MESSAGES_METHOD } from "../../lib/consts"
+import { GET_PREVIEW_MESSAGES_METHOD } from "../../lib/consts/consts"
 import {
   dbAggregate,
   dbFind,
   dbInsertMany,
   dbUpdateOne,
-} from "../../lib/mongoUtils"
-import { getSharedToken } from "../../lib/chat"
+} from "../../lib/mongoApiUtils"
 import {
   getPreviewMsgs,
   getUnreadMsgsIds,
   resetUnreadMessages,
-} from "../../lib/inboxUtils"
-import randomString from "../../lib/randomString"
-import { isNullOrEmpty } from "../../lib/scripts/strings"
+} from "../../lib/ApiUtils/inboxApiUtils"
+import generateRandomString, { isNullOrEmpty } from "../../lib/scripts/strings"
 
 async function receiverCheck(userId: string) {
   const result = await dbAggregate({
@@ -33,7 +31,7 @@ async function receiverCheck(userId: string) {
   return result.length === 1 && result[0].userId === userId
 }
 async function createSharedToken(user1: string, user2: string) {
-  const sharedToken = randomString(32)
+  const sharedToken = generateRandomString(32)
   const result = await dbInsertMany("messages_token", [
     {
       sharedToken,
@@ -92,6 +90,16 @@ async function getUnreadMsgsCount(userId) {
   } catch (e) {
     throw Error(e.message)
   }
+}
+
+async function getSharedToken(senderId, receiverId) {
+  const result = await dbFind("messages_token", {
+    $or: [
+      { $and: [{ user1: senderId }, { user2: receiverId }] },
+      { $and: [{ user1: receiverId }, { user2: senderId }] },
+    ],
+  })
+  return result.length > 0 ? result[0].sharedToken : null
 }
 
 async function getAllSharedTokens(userId: string): Promise<string[]> {

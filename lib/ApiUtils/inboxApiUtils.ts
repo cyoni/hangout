@@ -1,6 +1,6 @@
-import { MESSAGES_COLLECTION } from "./consts"
-import { dbAggregate, dbFind, dbUpdateMany, dbUpdateOne } from "./mongoUtils"
-import { JoinProfiles } from "./queryUtils"
+import { MESSAGES_COLLECTION } from "../consts/consts"
+import { dbAggregate, dbFind, dbUpdateMany, dbUpdateOne } from "../mongoApiUtils"
+import { JoinProfiles } from "../queryApiUtils"
 
 export async function resetUnreadMessages(userId: string) {
   await dbUpdateMany(

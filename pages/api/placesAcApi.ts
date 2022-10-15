@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { PLACES_COLLECTION } from "../../lib/consts/collections"
-import { dbFind, dbInsertMany } from "../../lib/mongoUtils"
+import { dbFind, dbInsertMany } from "../../lib/mongoApiUtils"
 import {
   convertPlaceToQuery,
   convertRawPlaceToObject,

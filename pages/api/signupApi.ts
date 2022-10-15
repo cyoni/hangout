@@ -1,18 +1,12 @@
-import { ACCOUNT_EXISTS_CODE } from "./../../lib/consts"
+import { ACCOUNT_EXISTS_CODE } from "../../lib/consts/consts"
 import { sha256 } from "js-sha256"
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import clientPromise from "../../lib/mongodb"
-import randomString from "../../lib/randomString"
-import { createUser, getUserByEmail, registerUserFlow } from "../../lib/loginUtils"
+import {
+  createUser,
+  getUserByEmail,
+  registerUserFlow,
+} from "../../lib/ApiUtils/loginApiUtils"
 import { queryPlace } from "./placesAcApi"
-
-const getValueFromAddress = (addressComponents, type) => {
-  for (let i = 0; i < addressComponents.length; i++) {
-    if (addressComponents[i].types.includes(type)) {
-      return addressComponents[i].long_name
-    }
-  }
-}
 
 interface Props {
   name: string

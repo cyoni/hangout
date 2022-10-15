@@ -1,4 +1,4 @@
-import { GET_CITY_DATA, GET_PROFILES_METHOD } from "./consts"
+import { GET_CITY_DATA, GET_PROFILES_METHOD } from "./consts/consts"
 import { CITY_API, PROFILE_API } from "./consts/apis"
 import { getValue, setValue } from "./localStorage"
 import { get, post } from "./postman"
