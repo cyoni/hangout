@@ -15,11 +15,11 @@ type State = {
 }
 
 type Place = {
+  _id: string
   placeId: string
   resultType: "city" | "country" 
   lon: number
   lat: number
-  queryKey: string
   formatted: string
 } & City &
   State &

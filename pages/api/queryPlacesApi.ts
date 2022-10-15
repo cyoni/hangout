@@ -1,4 +1,9 @@
+import { dbFind } from "../../lib/mongoUtils"
 import { queryPlaces } from "./placesAcApi"
+
+export async function initializeduplicateCities() {
+  global.duplicateCities = await dbFind("duplicateCities", {})
+}
 
 export default async function handler(req, res) {
   try {
@@ -7,7 +12,7 @@ export default async function handler(req, res) {
     // const senderId = token.userId
     console.log("###")
     const { codes } = req.body
-    console.log("codescodes",codes)
+    console.log("codescodes", codes)
 
     if (Array.isArray(codes) && codes.length > 0) {
       const result = await queryPlaces(codes)

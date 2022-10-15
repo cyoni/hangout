@@ -39,7 +39,6 @@ function redirect(ctx, uri) {
   ctx.res.end()
 }
 MyApp.getInitialProps = async (context) => {
-  console.log("HELLOOOOOOO")
   const appProps = await App.getInitialProps(context)
   const { ctx, router } = context
   const session = await getSession(context)

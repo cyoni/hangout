@@ -119,8 +119,6 @@ const ProfileContent = ({
       default:
         return 0
     }
-
-    return 0
   }
   const [currentTab, setCurrentTab] = React.useState(initializeTab())
 

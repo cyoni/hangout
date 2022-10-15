@@ -1,9 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
-import React, { useState } from "react"
+import  { useState } from "react"
 import toast from "react-hot-toast"
 import { GET_MESSAGES, POST_MESSAGE } from "../../lib/consts"
 import { CITY_API } from "../../lib/consts/apis"
-import { get, newGet, post } from "../../lib/postman"
+import {  get, post } from "../../lib/postman"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 
 interface Props {
@@ -47,7 +47,7 @@ function usePosts({ placeId, followingPosts, take }: Props) {
   )
 
   const fetchPosts = (pageParam: number) =>
-    newGet(CITY_API, {
+    get(CITY_API, {
       method: GET_MESSAGES,
       placeId,
       followingPosts,

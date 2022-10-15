@@ -10,7 +10,7 @@ function Travels({ place }) {
 
   const { cityItineraryQuery } = useItinerary({
     isCity: true,
-    placeIds: [place.placeId],
+    placeIds: [place?.placeId],
   })
 
   const travelers = cityItineraryQuery.data

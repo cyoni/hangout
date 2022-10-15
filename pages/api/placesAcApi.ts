@@ -1,9 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { PLACES_COLLECTION } from "../../lib/consts/collections"
 import { dbFind, dbInsertMany } from "../../lib/mongoUtils"
-import { convertPlaceToQuery } from "../../lib/Places/placeUtils"
-import { newGet } from "../../lib/postman"
+import {
+  convertPlaceToQuery,
+  convertRawPlaceToObject,
+} from "../../lib/Places/placeUtils"
+import { get } from "../../lib/postman"
 import { unique } from "../../lib/scripts/arrays"
+import { initializeduplicateCities } from "./queryPlacesApi"
 
 type Response = {
   places: Place[]
@@ -86,56 +90,40 @@ async function fetchAcData(input: string) {
   const serviceUrl = process.env.PLACES_AUTO_COMPLETE_SERVICE_URL
   const secret = process.env.PLACES_AUTO_COMPLETE_SECRET_KEY
 
-  const result = await newGet(serviceUrl, { text: input, apiKey: secret })
+  const result = await get(serviceUrl, { text: input, apiKey: secret })
   return result
+}
+
+function getValidPlaceAndId(place) {
+  const { placeId } = place
+  const cityId = convertPlaceToQuery(place)
+  // check if this place ID exists. If so return its parent
+  const keys = global.duplicateCities
+  const result = keys.filter((key) => key.cities.includes(placeId))[0]
+  if (result) return { ...place, _id: result.cityId, placeId: result.placeId }
+  return { ...place, _id: cityId, placeId }
 }
 
 async function queryAutoCompletePlace(input: string) {
   const data: IAutoCompleteResult = await fetchAcData(input)
   console.log("auto complete response", JSON.stringify(data))
 
-  const placesArr: Place[] = []
   const filteredData = data.features.filter(
     (place) => place.properties.result_type === "city"
   )
-  const placesToDb = filteredData.map((feature) => {
-    const mapper = ({
-      result_type,
-      city,
-      state,
-      country,
-      country_code,
-      place_id,
-      lon,
-      lat,
-      formatted,
-    }) => ({
-      resultType: result_type,
-      city,
-      state,
-      country,
-      countryCode: country_code,
-      _id: "",
-      placeId: place_id,
-      lon,
-      lat,
-      formatted,
-    })
-    const dbPlaceObj = mapper(feature.properties)
-    const place: Place = { ...dbPlaceObj, queryKey: dbPlaceObj._id }
-
-    dbPlaceObj._id = convertPlaceToQuery(place)
-    placesArr.push(place)
-    return dbPlaceObj
+  const places: Place[] = filteredData.map((feature) => {
+    const convertedPlace = convertRawPlaceToObject(feature.properties)
+    const place = { ...getValidPlaceAndId({ ...convertedPlace }) }
+    console.log("new result", place)
+    return place
   })
 
-  console.log("placesToDb", placesToDb)
+  console.log("placesToDb", places)
 
   // insert new results in db
-  await dbInsertMany(PLACES_COLLECTION, placesToDb, false)
+  await dbInsertMany(PLACES_COLLECTION, places, false)
 
-  console.log("auto complete places ", placesArr)
-  return placesArr
+  return places
 }
 
 export default async function handler(
@@ -143,6 +131,7 @@ export default async function handler(
   res: NextApiResponse<Response>
 ) {
   const input = String(req.query.input)
+  if (!global.duplicateCities) await initializeduplicateCities()
   const places = await queryAutoCompletePlace(input)
   if (Array.isArray(places)) res.status(200).json({ places })
   else res.status(400).json(places)

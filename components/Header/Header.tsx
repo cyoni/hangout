@@ -2,7 +2,7 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import React, { useState } from "react"
 import { GET_NOTIFICATION_METHOD } from "../../lib/consts"
-import { newGet } from "../../lib/postman"
+import { get } from "../../lib/postman"
 import Menubar from "./Menubar"
 import { getCitiesAutoComplete } from "../../lib/AutoCompleteUtils"
 import { useQuery } from "@tanstack/react-query"
@@ -18,7 +18,7 @@ function Header({ session }) {
   useQuery(
     ["unRead-messages-counter"],
     async () => {
-      return await newGet("/api/messagesApi", {
+      return await get("/api/messagesApi", {
         method: GET_NOTIFICATION_METHOD,
       })
     },
@@ -32,7 +32,7 @@ function Header({ session }) {
 
   const handleSelect = (place: Place) => {
     if (place) {
-      router.push(`/city/${convertPlaceToQuery(place)}`)
+      router.push(`/city/${place._id}`)
     }
   }
 

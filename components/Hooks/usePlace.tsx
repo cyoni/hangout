@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { getPlace } from "../../lib/dbClient"
 
-// @TODO: first check if city was already fetched.
 function usePlace(placeIds: string[]) {
   console.log("USE PLACES CITY IDS", placeIds)
 

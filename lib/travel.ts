@@ -42,56 +42,6 @@ const addEmptyProfileImageIfNeeded = (results) => {
       results[i].profile.picture = EMPTY_PROFILE_PICTURE
   }
 }
-// @deprecate
-// export async function getRecentTravelersByCity(placeId: number) {
-//   console.log("getRecentTravelersByCity", placeId)
-//   if (isNullOrEmpty(placeId)) return null
-//   const now = Date.now()
-//   const result = await dbAggregate({
-//     collection: ITINERARIES_TABLE,
-//     params: [
-//       {
-//         $match: {
-//           $and: [
-//             { "itineraries.place.city_id": Number(placeId) },
-//             { "itineraries.place.city_id": { $eq: Number(placeId) } },
-//             { "itineraries.startDate": { $gt: new Date() } },
-//           ],
-//         },
-//       },
-//       JoinProfiles({}),
-//       {
-//         $project: {
-//           userId: 1,
-//           profile: 1,
-//           description: 1,
-//           itinerary: {
-//             $filter: {
-//               input: "$itineraries",
-//               as: "travel",
-//               cond: {
-//                 $and: [
-//                   { $eq: ["$$travel.place.city_id", Number(placeId)] },
-//                   { $gt: ["$$travel.startDate", new Date()] },
-//                 ],
-//               },
-//             },
-//           },
-//         },
-//       },
-//       {
-//         $sort: {
-//           "itinerary.startDate": 1,
-//         },
-//       },
-//       {
-//         $limit: 1,
-//       },
-//     ],
-//   })
-//   console.log("getRecentTravelersByCity result: ", JSON.stringify(result))
-//   return result
-// }
 
 export async function getTravelContent(userId) {
   if (!userId || userId === undefined) {

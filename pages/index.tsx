@@ -13,12 +13,15 @@ export default function Home({ session, followData, recentTravelers }) {
   console.log("My session", session)
   const { followQuery } = useFollow(followData)
 
-  const myplaceId = session.place.placeId
+  const connectedUserPlaceId = session.place.placeId
   const placeIds = followQuery.data?.cities?.[0]?.placeIds || []
 
   console.log("recentTravelers", recentTravelers)
 
-  const { places, getPlaceFromObject } = usePlace([...placeIds, myplaceId])
+  const { places, getPlaceFromObject } = usePlace([
+    ...placeIds,
+    connectedUserPlaceId,
+  ])
   console.log("places index", places)
   return (
     <div>

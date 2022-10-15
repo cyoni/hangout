@@ -1,14 +1,8 @@
-import { useQuery } from "@tanstack/react-query"
 import { GET_CITY_DATA, GET_PROFILES_METHOD } from "./consts"
 import { CITY_API, PROFILE_API } from "./consts/apis"
 import { getValue, setValue } from "./localStorage"
 import { get, post } from "./postman"
-import {
-  convertStringArrToNumber,
-  getDifference,
-  unique,
-} from "./scripts/arrays"
-import { getObjectKeys } from "./scripts/objects"
+import { getDifference, unique } from "./scripts/arrays"
 
 export async function queryPlacesFromClient(cityCodes: string[]) {
   const uniqueCityCodes = unique(cityCodes)
@@ -36,9 +30,6 @@ export async function getPlace(placeIds: string[]) {
   const cleanedArray = placeIds.filter((x) => x)
   console.log("cleaned array:", cleanedArray)
 
-  // const convertedplaceIds: number[] = convertStringArrToNumber(placeIds)
-  // console.log("convertedplaceIds",convertedplaceIds)
-
   let convertedCitiesFromStorage = {}
   let citiesFromStorage: string[] = []
 
@@ -47,8 +38,7 @@ export async function getPlace(placeIds: string[]) {
   try {
     convertedCitiesFromStorage = await JSON.parse(citiesFromStorageRaw)
 
-    console.log("json", convertedCitiesFromStorage)
-
+    console.log("convertedCitiesFromStoragejson", convertedCitiesFromStorage)
   } catch (e) {
     citiesFromStorage = []
   }

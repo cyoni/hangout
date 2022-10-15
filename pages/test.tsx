@@ -1,5 +1,3 @@
-import { useEffect } from "react"
-import { get } from "../lib/postman"
 
 const x = require("/autoComplete.json")
 

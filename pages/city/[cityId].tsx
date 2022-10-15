@@ -8,6 +8,7 @@ import ButtonIntegration from "../../components/Buttons/ButtonIntegration"
 import useFollow from "../../components/Hooks/useFollow"
 import { CITY } from "../../lib/consts"
 import { queryPlace } from "../api/placesAcApi"
+import Link from "next/link"
 
 interface Props {
   travels
@@ -18,12 +19,12 @@ export default function Home({ place, myFollowing, user }: Props) {
   console.log("user44", user)
   console.log("myFollowing", myFollowing)
   console.log("placeId, place", place)
+
   const { follow, unFollow, isFollowing, getMyFollowingList } =
     useFollow(myFollowing)
 
-  const isFollowingCity = isFollowing(place.placeId)
-  const showFollowCityBtn =
-    !user || (user && user.place.placeId !== place.placeId)
+  const isFollowingCity = isFollowing(place?.placeId)
+  const showFollowCityBtn = user && user.place.placeId !== place?.placeId
 
   return (
     <div>
@@ -31,12 +32,12 @@ export default function Home({ place, myFollowing, user }: Props) {
         <title>{place?.city} - Hangouts</title>
       </Head>
 
-      <main>
+      <main className="min-h-[600px]">
         <HeaderImage
           backgroundId={place?.city}
           title={place ? `${place.city}, ${place.state}, ${place.country}` : ""}
         >
-          {showFollowCityBtn && (
+          {place && showFollowCityBtn && (
             <ButtonIntegration
               externalClass="absolute right-10 top-[40%]"
               buttonClassName="btn text-white w-[200px]
@@ -64,7 +65,16 @@ export default function Home({ place, myFollowing, user }: Props) {
           )}
         </HeaderImage>
 
-        <CityPageTabs place={place} />
+        {!place ? (
+          <div className="text-center">
+            <div className="mt-28 text-2xl">City was not found</div>
+            <Link href="/">
+              <a className="btn mx-auto mt-5">Home</a>
+            </Link>
+          </div>
+        ) : (
+          <CityPageTabs place={place} />
+        )}
       </main>
     </div>
   )

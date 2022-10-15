@@ -18,7 +18,7 @@ export async function post(req: PostRequest): Promise<any> {
   return Promise.reject(response)
 }
 
-export async function newGet(url, params: {} = null): Promise<any> {
+export async function get(url, params: {} = null): Promise<any> {
   let ans = ""
   const paramsDictionary = params ? convertObjectToDictionary(params) : []
 
@@ -41,39 +41,6 @@ export async function newGet(url, params: {} = null): Promise<any> {
   }
 
   throw Error(
-    `(newGet) - error, statue: ${data.status}, message: ${response?.error?.message}`
+    `get - error, status: ${data.status}, message: ${response?.error?.message}`
   )
-}
-
-export async function get(url, params = null): Promise<ResponseObject> {
-  const serviceUrl = `${url}${params ? "?" + params : ""}`
-  const data = await fetch(serviceUrl, {
-    method: "GET",
-  })
-
-  console.log("service url: " + serviceUrl)
-
-  const response = await data.json()
-
-  if (data.status == 200) {
-    console.log("JSON", response)
-    return { data: response }
-  }
-
-  throw Error("(get) - error: " + response?.error?.message)
-}
-
-export async function firePost(url: string, body: {}): Promise<any> {
-  //try {
-  return await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  })
-  // } catch (e) {
-  //   const res: ResponseObject = { isSuccess: false, message: e.message }
-  //   return res
-  // }
 }
