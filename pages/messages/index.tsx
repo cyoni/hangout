@@ -9,7 +9,7 @@ import { GET_PREVIEW_MESSAGES_METHOD } from "../../lib/consts/consts"
 import { MESSAGES_API } from "../../lib/consts/apis"
 import { queryPlacesFromClient } from "../../lib/dbClient"
 import { post } from "../../lib/postman"
-import { isAuthenticated } from "../../lib/session"
+import { isAuthenticated } from "../../lib/scripts/session"
 
 interface PreviewMessage {
   _id: string

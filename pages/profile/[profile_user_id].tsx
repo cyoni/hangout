@@ -1,7 +1,7 @@
 import { getToken } from "next-auth/jwt"
 import React, { useEffect, useRef } from "react"
 import HeaderImage from "../../components/Header/HeaderImage"
-import { getProfile } from "../../lib/profileUtils"
+import { getProfile } from "../../lib/ApiUtils/profileApiUtils"
 import useEditProfile from "../../components/Profile/EditProfile/useEditProfile"
 import EditProfile from "../../components/Profile/EditProfile/EditProfile"
 import ProfileContent from "../../components/Profile/ProfileContent"

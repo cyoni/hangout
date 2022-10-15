@@ -1,8 +1,8 @@
-import { ProfileParams, USERS_COLLECTION } from "./consts/consts"
-import { dbAggregate, dbUpdateOne } from "./mongoApiUtils"
-import { getFollowing } from "../pages/api/followApi"
-import { Following } from "../pages/typings/typings"
-import { isNullOrEmpty } from "./scripts/strings"
+import { ProfileParams, USERS_COLLECTION } from "../consts/consts"
+import { dbAggregate, dbUpdateOne } from "../mongoApiUtils"
+import { getFollowing } from "../../pages/api/followApi"
+import { Following } from "../../pages/typings/typings"
+import { isNullOrEmpty } from "../scripts/strings"
 
 export async function getProfile(userId, includeFollowing = false) {
   const req: AggregateReq = {

@@ -8,7 +8,7 @@ import {
   ITINERARIES_TABLE,
 } from "../../lib/consts/consts"
 import { dbAggregate, dbInsertMany } from "../../lib/mongoApiUtils"
-import { JoinProfiles } from "../../lib/queryApiUtils"
+import { JoinProfiles } from "../../lib/ApiUtils/queryApiUtils"
 import { convertStringToTypeArray } from "../../lib/scripts/arrays"
 
 function convertItineraries(itineraries) {

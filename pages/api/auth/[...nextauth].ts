@@ -6,7 +6,7 @@ import {
   getUserByEmail,
   registerUserFlow,
 } from "../../../lib/ApiUtils/loginApiUtils"
-import { updateUserPictureInDb } from "../../../lib/profileUtils"
+import { updateUserPictureInDb } from "../../../lib/ApiUtils/profileApiUtils"
 
 export const authOptions = (req) => ({
   providers: [

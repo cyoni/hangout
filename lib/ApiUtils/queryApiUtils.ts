@@ -1,4 +1,4 @@
-import { ProfileParams, USERS_COLLECTION } from "./consts/consts"
+import { ProfileParams, USERS_COLLECTION } from "../consts/consts"
 
 export function JoinProfiles({
   foreignField = "userId",

@@ -10,7 +10,7 @@ import { getCitiesAutoComplete } from "../../lib/AutoCompleteUtils"
 import { get } from "../../lib/postman"
 import { getFullPlaceName } from "../../lib/consts/place"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
-import { updateSessionData } from "../../lib/session"
+import { updateSessionData } from "../../lib/scripts/session"
 
 function SetUpAccount() {
   const router = useRouter()

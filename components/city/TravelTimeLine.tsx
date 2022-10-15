@@ -1,5 +1,5 @@
 import * as React from "react"
-import { formatDate } from "../../lib/dates"
+import { formatDate } from "../../lib/scripts/dates"
 import { getFullPlaceName } from "../../lib/consts/place"
 import generateRandomString from "../../lib/scripts/strings"
 

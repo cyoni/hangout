@@ -1,6 +1,6 @@
 import { GET_CITY_DATA, GET_PROFILES_METHOD } from "./consts/consts"
 import { CITY_API, PROFILE_API } from "./consts/apis"
-import { getValue, setValue } from "./localStorage"
+import { getValue, setValue } from "./scripts/localStorage"
 import { get, post } from "./postman"
 import { getDifference, unique } from "./scripts/arrays"
 
@@ -10,15 +10,6 @@ export async function queryPlacesFromClient(cityCodes: string[]) {
     url: "api/queryPlacesApi",
     body: { codes: uniqueCityCodes },
   })
-}
-
-export async function getProfile(userIds: string[]) {
-  const data = await post({
-    url: PROFILE_API,
-    body: { method: GET_PROFILES_METHOD, userIds },
-  })
-  const profiles: Profile[] = data?.result
-  return profiles
 }
 
 export async function getPlace(placeIds: string[]) {

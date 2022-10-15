@@ -6,9 +6,9 @@ import { NextApiRequest } from "next"
 import { dbFind, dbUpdateOne } from "../../lib/mongoApiUtils"
 import { IUser, UploadImageRes } from "../typings/typings"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
-import { getImageKit } from "../../lib/ImageKitUtils"
+import { getImageKit } from "../../lib/ImageKit"
 import sharp from "sharp"
-import { updateUserPictureInDb } from "../../lib/profileUtils"
+import { updateUserPictureInDb } from "../../lib/ApiUtils/profileApiUtils"
 
 type Response = {
   error?: string

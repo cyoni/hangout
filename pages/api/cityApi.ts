@@ -18,7 +18,7 @@ import { getObjectKeys } from "../../lib/scripts/objects"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import { MESSAGE_EMPTY, POST_WAS_NOT_FOUND } from "../../lib/consts/error"
 import { ObjectId } from "mongodb"
-import { JoinProfiles } from "../../lib/queryApiUtils"
+import { JoinProfiles } from "../../lib/ApiUtils/queryApiUtils"
 import { queryPlaces } from "./placesAcApi"
 
 async function getValidCities(placeIds) {

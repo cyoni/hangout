@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query"
 import React, { useEffect, useState } from "react"
 import { IMAGE_MANAGER_API } from "../../lib/consts/apis"
 import { post } from "../../lib/postman"
-import { updateSessionData } from "../../lib/session"
+import { updateSessionData } from "../../lib/scripts/session"
 
 interface ImageMetaData {
   method:

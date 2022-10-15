@@ -6,7 +6,7 @@ import CustomAvatar from "../../../components/Avatar/CustomAvatar"
 import HeaderImage from "../../../components/Header/HeaderImage"
 import Refresh from "../../../components/Buttons/Refresh"
 import { getProfiles } from "../../api/profileApi"
-import useConversation from "../../../components/Chat/useConversation"
+import useConversation from "../../../components/Hooks/useConversation"
 import Spinner from "../../../components/Loaders/Spinner"
 import Message from "../../../components/Chat/Message"
 

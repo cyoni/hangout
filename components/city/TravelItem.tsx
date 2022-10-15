@@ -1,6 +1,6 @@
 import { ChatBubbleLeftEllipsisIcon } from "@heroicons/react/24/outline"
 import React, { useState } from "react"
-import { formatDate } from "../../lib/dates"
+import { formatDate } from "../../lib/scripts/dates"
 import { getFullPlaceName } from "../../lib/consts/place"
 import ChatModal from "../Modal/ChatModal"
 import CustomAvatar from "../Avatar/CustomAvatar"
