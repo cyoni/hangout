@@ -1,6 +1,6 @@
 import * as React from "react"
 import { formatDate } from "../../lib/dates"
-import { getFullPlaceName } from "../../lib/scripts/place"
+import { getFullPlaceName } from "../../lib/consts/place"
 import generateRandomString from "../../lib/scripts/strings"
 
 export default function TravelTimeLine({ itineraries, getPlaceFromObject }) {
@@ -14,7 +14,7 @@ export default function TravelTimeLine({ itineraries, getPlaceFromObject }) {
     <div className="p-2 pr-3 basis-[400px]">
       {itineraries &&
         itineraries.map((itinerary, index) => {
-          const place = getPlaceFromObject(itinerary?.place?.city_id)
+          const place = getPlaceFromObject(itinerary.placeId)
           return (
             <React.Fragment key={generateRandomString(5)}>
               <div className="flex items-center w-full">

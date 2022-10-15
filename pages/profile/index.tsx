@@ -1,6 +1,5 @@
 import { getToken } from "next-auth/jwt"
-import { useRouter } from "next/router"
-import React, { useEffect } from "react"
+import React from "react"
 import ProfileError from "../../components/Profile/ProfileError"
 
 function index() {

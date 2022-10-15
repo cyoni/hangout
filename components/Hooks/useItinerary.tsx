@@ -2,26 +2,26 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import React from "react"
 import { GET_CITY_ITINERARIES, GET_USER_ITINERARIES } from "../../lib/consts"
 import { TRAVEL_API } from "../../lib/consts/apis"
-import { newGet } from "../../lib/postman"
+import { get } from "../../lib/postman"
 
 interface Props {
   isCity?: boolean
-  cityIds?: number[]
+  placeIds?: number[]
   isUser?: boolean
   userIds?: string[]
 }
-function useItinerary({ isCity, cityIds, isUser, userIds }: Props) {
+function useItinerary({ isCity, placeIds, isUser, userIds }: Props) {
   const cityItineraryQuery = useInfiniteQuery(
-    ["cityItineraryQuery", cityIds],
+    ["cityItineraryQuery", placeIds],
     async ({ pageParam = 1 }) => {
-      return await newGet(TRAVEL_API, {
+      return await get(TRAVEL_API, {
         method: GET_CITY_ITINERARIES,
         page: pageParam,
-        cityIds,
+        placeIds,
       })
     },
     {
-      enabled: !!isCity && !!cityIds,
+      enabled: isCity && !!placeIds,
       getNextPageParam: (lastPage, allPages) => lastPage.nextPage,
       refetchOnWindowFocus: false,
       keepPreviousData: true,
@@ -32,10 +32,10 @@ function useItinerary({ isCity, cityIds, isUser, userIds }: Props) {
   const userItineraryQuery = useQuery(
     ["userItineraryQuery", userIds],
     async () => {
-      return await newGet(TRAVEL_API, { method: GET_USER_ITINERARIES, userIds })
+      return await get(TRAVEL_API, { method: GET_USER_ITINERARIES, userIds })
     },
     {
-      enabled: !!isUser && !!userIds,
+      enabled: isUser && !!userIds,
     }
   )
 

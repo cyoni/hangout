@@ -1,22 +1,22 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
-import React, { useState } from "react"
+import  { useState } from "react"
 import toast from "react-hot-toast"
 import { GET_MESSAGES, POST_MESSAGE } from "../../lib/consts"
 import { CITY_API } from "../../lib/consts/apis"
-import { get, newGet, post } from "../../lib/postman"
+import {  get, post } from "../../lib/postman"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 
 interface Props {
-  cityId?: number
+  placeId?: number
   followingPosts?: boolean
   take?: number
 }
-function usePosts({ cityId, followingPosts, take }: Props) {
+function usePosts({ placeId, followingPosts, take }: Props) {
   const [messageInput, setMessageInput] = useState<string>("")
   const [page, setPage] = useState<number>(1)
 
   const postsQuery = useQuery(
-    ["city-fetch-posts", cityId, followingPosts, page],
+    ["city-fetch-posts", placeId, followingPosts, page],
     () => fetchPosts(page),
     {
       staleTime: Infinity,
@@ -27,7 +27,7 @@ function usePosts({ cityId, followingPosts, take }: Props) {
       onSuccess: (data) => {
         setTotalPages(data.totalPages)
       },
-      enabled: !isNaN(cityId) || !!followingPosts,
+      enabled: !!placeId || !!followingPosts,
     }
   )
 
@@ -41,15 +41,15 @@ function usePosts({ cityId, followingPosts, take }: Props) {
       body: {
         method: POST_MESSAGE,
         message: messageInput,
-        cityId,
+        placeId,
       },
     })
   )
 
   const fetchPosts = (pageParam: number) =>
-    newGet(CITY_API, {
+    get(CITY_API, {
       method: GET_MESSAGES,
-      cityId,
+      placeId,
       followingPosts,
       page: pageParam,
       take,
@@ -74,10 +74,8 @@ function usePosts({ cityId, followingPosts, take }: Props) {
   console.log("pages", pages)
 
   const noContent =
-    !postsQuery.isFetching &&
-    Array.isArray(pages) &&
-    pages.length > 0 &&
-    pages[0].posts?.length === 0
+    (!postsQuery.isFetching && Array.isArray(pages) && pages.length == 0) ||
+    !pages
 
   return {
     sendPost,

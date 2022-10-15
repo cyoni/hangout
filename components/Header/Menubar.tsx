@@ -54,10 +54,10 @@ function Menubar({ newMessages }) {
           notifications={newMessages}
         />
         <MenubarRow
-          title="Publish hangout"
+          title="Publish trip"
           Icon={GlobeEuropeAfricaIcon}
           link={`/publish-hangout/${
-            router.query.city_id ? `city/${router.query.city_id}` : ""
+            router.query.placeId ? `city/${router.query.placeId}` : ""
           }`}
         />
         {isAuthenticated(session) && renderMyAvatar()}

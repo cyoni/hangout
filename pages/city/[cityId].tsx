@@ -1,14 +1,14 @@
 import Head from "next/head"
 import HeaderImage from "../../components/Header/HeaderImage"
 import { formatDate } from "../../lib/dates"
-import { queryPlace } from "../../lib/place"
-import Cities from "../../components/Cities"
 import CityPageTabs from "../../components/City/CityPageTabs"
 import { getFollowing } from "../api/followApi"
 import { getToken } from "next-auth/jwt"
 import ButtonIntegration from "../../components/Buttons/ButtonIntegration"
 import useFollow from "../../components/Hooks/useFollow"
 import { CITY } from "../../lib/consts"
+import { queryPlace } from "../api/placesAcApi"
+import Link from "next/link"
 
 interface Props {
   travels
@@ -18,13 +18,13 @@ interface Props {
 export default function Home({ place, myFollowing, user }: Props) {
   console.log("user44", user)
   console.log("myFollowing", myFollowing)
-  console.log("city_id, place", place)
+  console.log("placeId, place", place)
+
   const { follow, unFollow, isFollowing, getMyFollowingList } =
     useFollow(myFollowing)
 
-  const isFollowingCity = isFollowing(place.city_id)
-  const showFollowCityBtn =
-    !user || (user && user.place.city_id !== place.city_id)
+  const isFollowingCity = isFollowing(place?.placeId)
+  const showFollowCityBtn = user && user.place.placeId !== place?.placeId
 
   return (
     <div>
@@ -32,16 +32,12 @@ export default function Home({ place, myFollowing, user }: Props) {
         <title>{place?.city} - Hangouts</title>
       </Head>
 
-      <main>
+      <main className="min-h-[600px]">
         <HeaderImage
           backgroundId={place?.city}
-          title={
-            place
-              ? `${place.city}, ${place.province_short}, ${place.country}`
-              : ""
-          }
+          title={place ? `${place.city}, ${place.state}, ${place.country}` : ""}
         >
-          {showFollowCityBtn && (
+          {place && showFollowCityBtn && (
             <ButtonIntegration
               externalClass="absolute right-10 top-[40%]"
               buttonClassName="btn text-white w-[200px]
@@ -50,12 +46,12 @@ export default function Home({ place, myFollowing, user }: Props) {
               onClick={() =>
                 isFollowingCity
                   ? unFollow({
-                      cityId: place.city_id,
+                      placeId: place.placeId,
                       name: place.city,
                       type: CITY,
                     })
                   : follow({
-                      cityId: place.city_id,
+                      placeId: place.placeId,
                       name: place.city,
                       type: CITY,
                     })
@@ -69,7 +65,16 @@ export default function Home({ place, myFollowing, user }: Props) {
           )}
         </HeaderImage>
 
-        <CityPageTabs place={place} />
+        {!place ? (
+          <div className="text-center">
+            <div className="mt-28 text-2xl">City was not found</div>
+            <Link href="/">
+              <a className="btn mx-auto mt-5">Home</a>
+            </Link>
+          </div>
+        ) : (
+          <CityPageTabs place={place} />
+        )}
       </main>
     </div>
   )
@@ -78,9 +83,10 @@ export default function Home({ place, myFollowing, user }: Props) {
 export async function getServerSideProps(context) {
   try {
     const user = await getToken(context)
-    const city_id = Number(context.query.city_id)
-    console.log("cityQueryCode", city_id)
-    const place = await queryPlace(city_id)
+    const cityId = context.query.cityId
+    console.log("cityQueryCode", cityId)
+    const place = await queryPlace(cityId)
+    console.log("drjngvewsiowoeoi", place)
     const myFollowing = await getFollowing(user.userId)
     console.log("myFollowing", myFollowing)
     return {

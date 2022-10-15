@@ -1,5 +1,5 @@
 import { getToken } from "next-auth/jwt"
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef } from "react"
 import HeaderImage from "../../components/Header/HeaderImage"
 import { getProfile } from "../../lib/profileUtils"
 import useEditProfile from "../../components/Profile/EditProfile/useEditProfile"
@@ -11,7 +11,7 @@ import { convertToBase64 } from "../../lib/scripts/images"
 import { UPLOAD_WRAPPER_IMAGE } from "../../lib/consts"
 import ProfileError from "../../components/Profile/ProfileError"
 import Loader from "../../components/Loaders/Loader"
-import { Button, Menu, MenuItem } from "@mui/material"
+import { Menu, MenuItem } from "@mui/material"
 import toast from "react-hot-toast"
 
 interface Props {
@@ -26,8 +26,8 @@ export default function Profile({ profile, following }: Props) {
     toast.success("Updated successfully!")
   }
   const editProfileParams = useEditProfile({ profile, toggleOnFinishCallback })
-  const { getPlaceFromObject } = usePlace([profile?.cityId])
-  const place = getPlaceFromObject(profile?.cityId)
+  const { getPlaceFromObject } = usePlace([profile?.placeId])
+  const place = getPlaceFromObject(profile?.placeId)
   const pickImage = () => inputFile.current.click()
   const { triggerImage, imageMutation } = useManageImages()
   const inputFile = useRef(null)
@@ -92,9 +92,7 @@ export default function Profile({ profile, following }: Props) {
 
         <button
           className="
-          btn-outline absolute right-10 border 
-        border-white bg-sky-200 bg-opacity-20 px-4 py-1 font-bold
-        text-gray-50 shadow-2xl hover:border-sky-600 "
+          btn-outline absolute right-10 border border-white bg-sky-200 bg-opacity-20 px-4 py-1 font-bold text-gray-50 shadow-2xl hover:border-sky-600 "
           onClick={handleClick}
         >
           Change Cover
@@ -135,7 +133,6 @@ export async function getServerSideProps(context) {
 
   if (userId && token) {
     const data = await getProfile(userId)
-    console.log("XXXXXXX", data)
     if (!data.error) {
       return {
         props: {

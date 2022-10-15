@@ -74,7 +74,7 @@ export default function Login({ callbackUrl, session }) {
             <label htmlFor="email">Email</label>
             <input
               type="text"
-              className="text-default mt-2 rounded-full border px-4 text-gray-400"
+              className="text-default mt-2 rounded-full border px-4"
               name="email"
               id="email"
             />
@@ -84,7 +84,7 @@ export default function Login({ callbackUrl, session }) {
             </label>
             <input
               type="password"
-              className="text-default mt-2 rounded-full border text-gray-400"
+              className="text-default mt-2 rounded-full border"
               name="password"
               id="password"
             />

@@ -1,6 +1,6 @@
 import {
   EMPTY_PROFILE_PICTURE,
-  TRAVELLING_TABLE,
+  ITINERARIES_TABLE,
   USERS_COLLECTION,
 } from "./consts"
 import { dbAggregate, dbFind } from "./mongoUtils"
@@ -17,7 +17,7 @@ const formatDate = (date) => {
 }
 
 export async function getAllTravelling() {
-  const travelling = await dbFind("future_travelling", {})
+  const travelling = await dbFind(ITINERARIES_TABLE, {})
   const userIds = travelling.map((x, i) => {
     return x.userId
   })
@@ -42,56 +42,6 @@ const addEmptyProfileImageIfNeeded = (results) => {
       results[i].profile.picture = EMPTY_PROFILE_PICTURE
   }
 }
-// @deprecate
-// export async function getRecentTravelersByCity(cityId: number) {
-//   console.log("getRecentTravelersByCity", cityId)
-//   if (isNullOrEmpty(cityId)) return null
-//   const now = Date.now()
-//   const result = await dbAggregate({
-//     collection: TRAVELLING_TABLE,
-//     params: [
-//       {
-//         $match: {
-//           $and: [
-//             { "itineraries.place.city_id": Number(cityId) },
-//             { "itineraries.place.city_id": { $eq: Number(cityId) } },
-//             { "itineraries.startDate": { $gt: new Date() } },
-//           ],
-//         },
-//       },
-//       JoinProfiles({}),
-//       {
-//         $project: {
-//           userId: 1,
-//           profile: 1,
-//           description: 1,
-//           itinerary: {
-//             $filter: {
-//               input: "$itineraries",
-//               as: "travel",
-//               cond: {
-//                 $and: [
-//                   { $eq: ["$$travel.place.city_id", Number(cityId)] },
-//                   { $gt: ["$$travel.startDate", new Date()] },
-//                 ],
-//               },
-//             },
-//           },
-//         },
-//       },
-//       {
-//         $sort: {
-//           "itinerary.startDate": 1,
-//         },
-//       },
-//       {
-//         $limit: 1,
-//       },
-//     ],
-//   })
-//   console.log("getRecentTravelersByCity result: ", JSON.stringify(result))
-//   return result
-// }
 
 export async function getTravelContent(userId) {
   if (!userId || userId === undefined) {
@@ -99,7 +49,7 @@ export async function getTravelContent(userId) {
   }
   console.log("getTravelContent", userId)
   const profileRaw = (await dbFind(USERS_COLLECTION, { userId }))[0]
-  const travelsRaw = await dbFind("future_travelling", { userId })
+  const travelsRaw = await dbFind(ITINERARIES_TABLE, { userId })
 
   const travels = travelsRaw.map((travel) => {
     return {

@@ -8,7 +8,7 @@ import { FollowingQuery } from "../../lib/queries"
 
 interface followReq {
   userId?: string
-  cityId?: number
+  placeId?: number
   method: string
   type: "FOLLOW" | "CITY"
 }
@@ -41,11 +41,11 @@ function useFollow(initialData = null) {
   const followMutation = useMutation(triggerFollowMutation)
 
   const follow = async (req) => {
-    const { name, userId, cityId, type } = req
+    const { name, userId, placeId, type } = req
     await followMutation.mutateAsync(
       {
         userId: userId,
-        cityId: cityId,
+        placeId: placeId,
         method: START_FOLLOW,
         type: type,
       },
@@ -59,11 +59,11 @@ function useFollow(initialData = null) {
   }
 
   const unFollow = async (req) => {
-    const { name, userId, cityId, type } = req
+    const { name, userId, placeId, type } = req
     await followMutation.mutateAsync(
       {
         userId: userId,
-        cityId: cityId,
+        placeId: placeId,
         method: STOP_FOLLOW,
         type: type,
       },
@@ -76,7 +76,7 @@ function useFollow(initialData = null) {
     )
   }
 
-  const isFollowing = (id: string | number) => {
+  const isFollowing = (id: string) => {
     console.log("followQuery.data", followQuery.data)
     console.log("isFollowing", tmpFollowing)
     return (
@@ -84,8 +84,8 @@ function useFollow(initialData = null) {
       followQuery.data?.members?.some(
         (member) => member.userId == String(id)
       ) ||
-      followQuery.data?.cities?.[0]?.cityIds?.some(
-        (cityId) => cityId === Number(id)
+      followQuery.data?.cities?.[0]?.placeIds?.some(
+        (placeId) => placeId === id
       )
     )
   }

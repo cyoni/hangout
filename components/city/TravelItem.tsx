@@ -1,8 +1,7 @@
 import { ChatBubbleLeftEllipsisIcon } from "@heroicons/react/24/outline"
-import { IconButton } from "@mui/material"
 import React, { useState } from "react"
 import { formatDate } from "../../lib/dates"
-import { getFullPlaceName } from "../../lib/scripts/place"
+import { getFullPlaceName } from "../../lib/consts/place"
 import ChatModal from "../Modal/ChatModal"
 import CustomAvatar from "../Avatar/CustomAvatar"
 import IconButtonCustom from "../Buttons/IconButtonCustom"
@@ -38,7 +37,7 @@ function TravelItem({ item, getPlaceFromObject }) {
               {formatDate(item.itineraries[0].endDate)}
               {/* country */}
               <div className="">
-                {getFullPlaceName(getPlaceFromObject(item.profile[0].cityId))}
+                {getFullPlaceName(getPlaceFromObject(item.profile[0].placeId))}
               </div>
               <div className="line-clamp-5">{item.description}</div>
             </div>

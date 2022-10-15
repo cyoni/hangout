@@ -5,10 +5,10 @@ import Back from "../../../components/Buttons/Back"
 import CustomAvatar from "../../../components/Avatar/CustomAvatar"
 import HeaderImage from "../../../components/Header/HeaderImage"
 import Refresh from "../../../components/Buttons/Refresh"
-import Spinner from "../../../components/Spinner"
 import { getProfiles } from "../../api/profileApi"
-import Message from "./Message"
 import useConversation from "../../../components/Chat/useConversation"
+import Spinner from "../../../components/Loaders/Spinner"
+import Message from "../../../components/Chat/Message"
 
 function Messages({ theirId, profile, session }) {
   console.log("msgs session", session)

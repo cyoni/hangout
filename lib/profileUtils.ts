@@ -1,4 +1,4 @@
-import { FOLLOW_TABLE } from "./consts/tables"
+import { FOLLOW_TABLE } from "./consts/collections"
 import { ProfileParams, USERS_COLLECTION } from "./consts"
 import { dbAggregate, dbUpdateOne } from "./mongoUtils"
 import { getFollowing } from "../pages/api/followApi"

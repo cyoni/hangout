@@ -17,20 +17,20 @@ function PreviewMessage({
   isRead,
   places,
 }: Props) {
-  const { picture, name, cityId } = profile[0]
+  const { picture, name, placeId } = profile[0]
 
   const renderPlace = () => {
-    console.log("renderPlace cityId", cityId)
+    console.log("renderPlace placeId", placeId)
     console.log("places", places)
     const place = places["57564"]
     console.log("place", place)
     if (place) {
-      return `${place.city}, ${place.province_short}, ${place.country}`
+      return `${place.city}, ${place.state}, ${place.country}`
     }
   }
 
   const time = getPastTime(timestamp)
-  console.log("place", cityId)
+  console.log("place", placeId)
   console.log("got places:", places)
 
   return (

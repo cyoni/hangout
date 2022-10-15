@@ -2,7 +2,7 @@ import { Avatar, AvatarGroup } from "@mui/material"
 import { useRouter } from "next/router"
 import React from "react"
 import { POST, TRAVEL } from "../../lib/consts"
-import { getFullPlaceName, getPartsOfPlace } from "../../lib/scripts/place"
+import { getFullPlaceName, getPartsOfPlace } from "../../lib/consts/place"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import { Profile } from "../../pages/typings/typings"
 import ButtonIntegration from "../Buttons/ButtonIntegration"
@@ -12,17 +12,17 @@ import FeedPost from "../FeedPost/FeedPost"
 import Spinner from "../Loaders/Spinner"
 
 function MiddleBlock({ session, recentTravelers, getPlaceFromObject }) {
-  const userCityId = session?.place?.cityId
-  const cityName = getPartsOfPlace(getPlaceFromObject(userCityId), true)
+  const userplaceId = session?.place?.placeId
+  const cityName = getPartsOfPlace(getPlaceFromObject(userplaceId), true)
   const router = useRouter()
   const user = session?.user
   const { sendPost, postsQuery, messageInput, setMessageInput } = usePosts({
-    cityId: userCityId,
+    placeId: userplaceId,
     take: 5,
   })
 
   const { postsQuery: followingPostsQuery } = usePosts({
-    cityId: userCityId,
+    placeId: userplaceId,
     take: 5,
   })
 
@@ -63,7 +63,7 @@ function MiddleBlock({ session, recentTravelers, getPlaceFromObject }) {
           </div>
           <button
             className=" btn-outline ml-auto mt-4 w-fit py-1 px-4 text-right"
-            onClick={() => router.push(`city/${userCityId}?view=${TRAVEL}`)}
+            onClick={() => router.push(`city/${userplaceId}?view=${TRAVEL}`)}
           >
             Show all
           </button>
@@ -114,7 +114,7 @@ function MiddleBlock({ session, recentTravelers, getPlaceFromObject }) {
           })}
         <button
           className="btn-outline mt-2 ml-auto block"
-          onClick={() => router.push(`city/${userCityId}?view=${POST}`)}
+          onClick={() => router.push(`city/${userplaceId}?view=${POST}`)}
         >
           More
         </button>
@@ -136,7 +136,7 @@ function MiddleBlock({ session, recentTravelers, getPlaceFromObject }) {
           })}
         <button
           className="btn-outline mt-2 ml-auto block"
-          onClick={() => router.push(`city/${userCityId}?view=${POST}`)}
+          onClick={() => router.push(`city/${userplaceId}?view=${POST}`)}
         >
           More
         </button>

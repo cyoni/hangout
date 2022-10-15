@@ -5,7 +5,7 @@ import React, { Fragment, useEffect, useMemo, useState } from "react"
 import toast from "react-hot-toast"
 import { unique } from "../../lib/scripts/arrays"
 import { getPastTime } from "../../lib/scripts/general"
-import { getFullPlaceName } from "../../lib/scripts/place"
+import { getFullPlaceName } from "../../lib/consts/place"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import ButtonIntegration from "../Buttons/ButtonIntegration"
 import CircularButton from "../Buttons/CircularButton"
@@ -37,18 +37,18 @@ function PostModal({ renderOptions, post, place }) {
   console.log("COMMENT SESSION", session)
   const { data } = commentQuery
 
-  const getCityIds = useMemo(() => {
+  const getplaceIds = useMemo(() => {
     if (data) {
       console.log("DATA IS: ", data)
       return unique(
         data.pages[data.pages.length - 1].comments.map(
-          (comment) => comment.profile[0].cityId
+          (comment) => comment.profile[0].placeId
         )
       )
     }
   }, [data])
 
-  const { places, getPlaceFromObject } = usePlace(getCityIds)
+  const { places, getPlaceFromObject } = usePlace(getplaceIds)
 
   React.useEffect(() => {
     if (commentMutation.isSuccess) {
@@ -134,7 +134,7 @@ function PostModal({ renderOptions, post, place }) {
                 <textarea
                   id="outlined-multiline-flexible"
                   placeholder="Join the conversation"
-                  className="w-full rounded-md bg-white p-2 outline-none hover:ring-2"
+                  className="text-default w-full rounded-md bg-white p-2 outline-none"
                   value={message}
                   rows={4}
                   onChange={(e) => setMessage(e.target.value)}
@@ -159,12 +159,12 @@ function PostModal({ renderOptions, post, place }) {
                   return (
                     <Fragment key={i}>
                       {group.comments?.map((comment: IComment) => {
-                        const cityId = comment.profile[0]?.cityId
+                        const placeId = comment.profile[0]?.placeId
                         return (
                           <div key={comment._id}>
                             <Comment
                               {...comment}
-                              place={getPlaceFromObject(cityId)}
+                              place={getPlaceFromObject(placeId)}
                             />
                           </div>
                         )

@@ -17,9 +17,9 @@ import {
   dbUpdateOne,
   findTwoUsers as getFindTwoUsersFilter,
 } from "../../lib/mongoUtils"
-import { FOLLOW_TABLE } from "../../lib/consts/tables"
-import { queryPlace } from "../../lib/place"
+import { FOLLOW_TABLE } from "../../lib/consts/collections"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
+import { queryPlace } from "./placesAcApi"
 
 
 type Response = {
@@ -27,7 +27,7 @@ type Response = {
 }
 
 async function follow(body, me: string) {
-  const { userId, cityId, type } = body
+  const { userId, placeId, type } = body
 
   let result = null
   switch (type) {
@@ -35,7 +35,7 @@ async function follow(body, me: string) {
       result = await followMember(userId, me)
       break
     case CITY:
-      result = await followCity(cityId, me)
+      result = await followCity(placeId, me)
       break
     default:
       result = { error: "INVALID TYPE" }
@@ -62,13 +62,13 @@ async function unFollow(body, me: string) {
 
   return result
 }
-async function unfollowCity({ cityId }, userId: string) {
-  if (isNullOrEmpty(cityId) || isNullOrEmpty(userId))
-    return { error: "bad request. userId or cityId is required" }
+async function unfollowCity({ placeId }, userId: string) {
+  if (isNullOrEmpty(placeId) || isNullOrEmpty(userId))
+    return { error: "bad request. userId or placeId is required" }
 
   const result: MongoUpdateRes = await dbUpdateOne(
     FOLLOW_TABLE,
-    { cityId, type: CITY },
+    { placeId, type: CITY },
     { $pull: { userIds: { $in: [userId] } } },
     {}
   )
@@ -176,13 +176,13 @@ export async function getFollowing(userId) {
               {
                 $group: {
                   _id: null,
-                  cityIds: { $push: "$cityId" },
+                  placeIds: { $push: "$placeId" },
                 },
               },
               {
                 $project: {
                   _id: 0,
-                  cityIds: 1,
+                  placeIds: 1,
                 },
               },
             ],
@@ -229,18 +229,18 @@ async function followMember(userId: any, me: string) {
   console.log("r", r)
   return { result: "OK" }
 }
-export async function followCity(cityId: number, me: string) {
-  if (isNullOrEmpty(cityId)) return { error: "city id id empty" }
+export async function followCity(placeId: string, me: string) {
+  if (isNullOrEmpty(placeId)) return { error: "city id id empty" }
   const type = CITY
 
   // city check
-  const place: Place = await queryPlace(cityId)
+  const place: Place = await queryPlace(placeId)
   if (place == null) return { error: "city is invalid" }
 
   const result: MongoUpdateRes = await dbUpdateOne(
     FOLLOW_TABLE,
-    { cityId, type },
-    { $addToSet: { userIds: me }, $set: { cityId, type } },
+    { placeId, type },
+    { $addToSet: { userIds: me }, $set: { placeId, type } },
     { upsert: true }
   )
 

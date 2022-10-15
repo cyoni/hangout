@@ -4,7 +4,7 @@ import toast from "react-hot-toast"
 import { UPDATE_PROFILE_METHOD } from "../../../lib/consts"
 import { post } from "../../../lib/postman"
 import { sleep } from "../../../lib/scripts/general"
-import { getFullPlaceName } from "../../../lib/scripts/place"
+import { getFullPlaceName } from "../../../lib/consts/place"
 
 interface Props {
   profile: Profile
@@ -12,7 +12,7 @@ interface Props {
 }
 function useEditProfile({ profile, toggleOnFinishCallback }: Props) {
   const [name, setName] = useState<string>(profile?.name)
-  const [cityId, setCityId] = useState<number>(profile?.cityId)
+  const [placeId, setPlaceId] = useState<number>(profile?.placeId)
   const [aboutMe, setAboutMe] = useState<string>(profile?.aboutMe)
   const [openEditProfile, setOpenEditProfile] = useState<boolean>(false)
   const [showDeleteAccountDialog, setShowDeleteAccountDialog] =
@@ -21,7 +21,7 @@ function useEditProfile({ profile, toggleOnFinishCallback }: Props) {
   const submitForm = async () => {
     const result = await post({
       url: "/api/profileApi",
-      body: { method: UPDATE_PROFILE_METHOD, name, cityId, aboutMe },
+      body: { method: UPDATE_PROFILE_METHOD, name, placeId, aboutMe },
     })
     if (!result.error) {
       setOpenEditProfile(false)
@@ -30,8 +30,8 @@ function useEditProfile({ profile, toggleOnFinishCallback }: Props) {
   }
 
   const handleSelect = (place: Place) => {
-    if (place && place.city_id) {
-      setCityId(place.city_id)
+    if (place && place.placeId) {
+      setPlaceId(place.placeId)
     }
   }
 
@@ -55,8 +55,8 @@ function useEditProfile({ profile, toggleOnFinishCallback }: Props) {
   return {
     name,
     setName,
-    cityId,
-    setCityId,
+    placeId,
+    setPlaceId,
     aboutMe,
     setAboutMe,
     showDeleteAccountDialog,

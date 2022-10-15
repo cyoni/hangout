@@ -26,7 +26,7 @@ function FeedPost({ post }: Props) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [isModalMessageOpen, setIsModalMessageOpen] = useState<boolean>(false)
 
-  const { getFirstPlace } = usePlace([post.profile[0].cityId])
+  const { getFirstPlace } = usePlace([post.profile[0].placeId])
   const place = getFirstPlace()
 
   const [input, setInput] = useState<string>("")
@@ -110,7 +110,8 @@ function FeedPost({ post }: Props) {
         {post.message}
       </div>
       <ModalWrapper
-        height={"h-[80%]"}
+        height={"h-[100vh] md:h-[80vh]"}
+        width={"w-[100vw] md:w-[60vw]"}
         isOpen={isOpen}
         onRequestClose={() => setIsOpen(false)}
       >

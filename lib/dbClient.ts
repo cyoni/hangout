@@ -1,14 +1,8 @@
-import { useQuery } from "@tanstack/react-query"
 import { GET_CITY_DATA, GET_PROFILES_METHOD } from "./consts"
 import { CITY_API, PROFILE_API } from "./consts/apis"
 import { getValue, setValue } from "./localStorage"
 import { get, post } from "./postman"
-import {
-  convertStringArrToNumber,
-  getDifference,
-  unique,
-} from "./scripts/arrays"
-import { getObjectKeys } from "./scripts/objects"
+import { getDifference, unique } from "./scripts/arrays"
 
 export async function queryPlacesFromClient(cityCodes: string[]) {
   const uniqueCityCodes = unique(cityCodes)
@@ -27,31 +21,24 @@ export async function getProfile(userIds: string[]) {
   return profiles
 }
 
-export async function getPlace(cityIds: number[]) {
-  console.log("get place start. input:", cityIds)
+export async function getPlace(placeIds: string[]) {
+  console.log("get place start. input:", placeIds)
 
-  if (!Array.isArray(cityIds))
-    return { error: "bad request: expects to get an array of cityIds" }
+  if (!Array.isArray(placeIds))
+    return { error: "bad request: expects to get an array of placeIds" }
 
-  const cleanedArray = cityIds.filter((x) => !isNaN(x))
+  const cleanedArray = placeIds.filter((x) => x)
   console.log("cleaned array:", cleanedArray)
 
-  // const convertedCityIds: number[] = convertStringArrToNumber(cityIds)
-  // console.log("convertedCityIds",convertedCityIds)
-
   let convertedCitiesFromStorage = {}
-  let citiesFromStorage: number[] = []
+  let citiesFromStorage: string[] = []
 
   const citiesFromStorageRaw = getValue("places")
   console.log("citiesFromStorageRaw", citiesFromStorageRaw)
   try {
     convertedCitiesFromStorage = await JSON.parse(citiesFromStorageRaw)
 
-    console.log("json", convertedCitiesFromStorage)
-
-    citiesFromStorage = convertStringArrToNumber(
-      getObjectKeys(convertedCitiesFromStorage)
-    )
+    console.log("convertedCitiesFromStoragejson", convertedCitiesFromStorage)
   } catch (e) {
     citiesFromStorage = []
   }
@@ -67,7 +54,7 @@ export async function getPlace(cityIds: number[]) {
   // bring the missing data we don't have
   const result = await get(
     CITY_API,
-    `method=${GET_CITY_DATA}&cityIds=${missingCities.toString()}`
+    `method=${GET_CITY_DATA}&placeIds=${missingCities.toString()}`
   )
   console.log("get city result", result)
 

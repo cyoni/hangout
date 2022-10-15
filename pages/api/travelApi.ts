@@ -4,8 +4,8 @@ import {
   GET_USER_ITINERARIES,
   MAX_POSTS_PER_PAGE,
   POST_NEW_ITINERARY,
-  TRAVELLING_TABLE as TRAVELING_TABLE,
-  TRAVELLING_TABLE,
+  ITINERARIES_TABLE as TRAVELING_TABLE,
+  ITINERARIES_TABLE,
 } from "../../lib/consts"
 import { dbAggregate, dbInsertMany } from "../../lib/mongoUtils"
 import { JoinProfiles } from "../../lib/queryUtils"
@@ -17,9 +17,7 @@ function convertItineraries(itineraries) {
     convertedItineraries.push({
       startDate: new Date(itinerary.startDate),
       endDate: new Date(itinerary.endDate),
-      place: {
-        city_id: Number(itinerary.place.city_id),
-      },
+      placeId: itinerary.place.placeId,
     })
   })
   return convertedItineraries
@@ -46,10 +44,17 @@ export async function postNewItinerary({ itineraries, description }, userId) {
 }
 
 export async function getUserItineraries({ userIds }) {
-  const userIdsArray = convertStringToTypeArray(userIds, String)
+  console.log("getUserItineraries", userIds)
+  if (!userIds) return { error: "User_ids is null" }
+  userIds = convertStringToTypeArray(userIds, String)
   const request: AggregateReq = {
-    collection: TRAVELLING_TABLE,
+    collection: ITINERARIES_TABLE,
     params: [
+      {
+        $match: {
+          userId: { $in: userIds },
+        },
+      },
       {
         $sort: { "itineraries.startDate": 1 },
       },
@@ -86,27 +91,6 @@ export async function getUserItineraries({ userIds }) {
           },
         },
       },
-
-      // $facet: {
-      //   activeTravels: [
-      //     {
-      //       $match: {
-      //         userId: { $in: userIdsArray },
-      //         $expr: {
-      //           $gt: [
-      //             { $arrayElemAt: ["$itineraries.endDate", -1] },
-      //             new Date(),
-      //           ],
-      //         },
-      //       },
-      //     },
-      //     {
-      //       $sort: { "itineraries.0.startDate": 1 },
-      //     },
-      //     JoinProfiles({}),
-      //   ],
-      //   pastTravels: [],
-      // },
     ],
   }
 
@@ -120,15 +104,15 @@ export async function getUserItineraries({ userIds }) {
 }
 
 export async function getCityItineraries({
-  cityIds,
+  placeIds,
   showAll = false,
   page = 1,
 }) {
-  console.log("convertedCityArray", cityIds)
+  console.log("convertedCityArray", placeIds)
 
-  const convertedCityArray = Array.isArray(cityIds)
-    ? cityIds
-    : convertStringToTypeArray(cityIds, Number)
+  const convertedCityArray = Array.isArray(placeIds)
+    ? placeIds
+    : convertStringToTypeArray(placeIds, String)
 
   const pageNumber = Number(page)
 
@@ -138,7 +122,7 @@ export async function getCityItineraries({
   const matchFilter = {
     $match: {
       $and: [
-        { "itineraries.place.city_id": { $in: convertedCityArray } },
+        { "itineraries.placeId": { $in: convertedCityArray } },
         { "itineraries.startDate": { $gt: new Date() } },
         { "itineraries.endDate": { $gt: new Date() } },
       ],
@@ -146,7 +130,7 @@ export async function getCityItineraries({
   }
 
   const request: AggregateReq = {
-    collection: TRAVELLING_TABLE,
+    collection: ITINERARIES_TABLE,
     params: [
       {
         $facet: {
@@ -168,7 +152,7 @@ export async function getCityItineraries({
                     input: "$itineraries",
                     as: "itinerary",
                     cond: {
-                      $in: ["$$itinerary.place.city_id", convertedCityArray],
+                      $in: ["$$itinerary.placeId", convertedCityArray],
                     },
                   },
                 },
@@ -186,7 +170,7 @@ export async function getCityItineraries({
     (pageNumber - 1) * MAX_POSTS_PER_PAGE + data.travelers.length !==
       data.metadata[0].count
       ? pageNumber + 1
-      :null// undefined
+      : null // undefined
 
   const result = {
     nextPage,

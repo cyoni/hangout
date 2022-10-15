@@ -3,9 +3,8 @@ import { sha256 } from "js-sha256"
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import clientPromise from "../../lib/mongodb"
 import randomString from "../../lib/randomString"
-import { queryPlace } from "../../lib/place"
 import { createUser, getUserByEmail, registerUserFlow } from "../../lib/loginUtils"
-import { followCity } from "./followApi"
+import { queryPlace } from "./placesAcApi"
 
 const getValueFromAddress = (addressComponents, type) => {
   for (let i = 0; i < addressComponents.length; i++) {
@@ -19,7 +18,7 @@ interface Props {
   name: string
   email: string
   password: string
-  cityId: number
+  placeId: string
 }
 
 async function signup(req) {
@@ -29,14 +28,14 @@ async function signup(req) {
 
     console.log("req.body", req.body)
 
-    const { name, email, password, cityId }: Props = req.body
+    const { name, email, password, placeId }: Props = req.body
 
-    if (isNaN(cityId)) {
+    if (!placeId) {
       throw new Error("Invalid place IDs")
     }
 
     // check if place id is valid
-    const place = await queryPlace(cityId)
+    const place = await queryPlace(placeId)
     console.log("place", place)
 
     if (!place) {
@@ -59,7 +58,7 @@ async function signup(req) {
       password: hash.toString(),
       email,
       name,
-      cityId: place.city_id,
+      placeId: place.placeId,
     })
 
     if (!newUser) {

@@ -24,14 +24,14 @@ interface ICreateUser {
   email: string
   name: string
   password?: string // optional in favor of social networks
-  cityId?: number // optional in favor of social networks
+  placeId?: string // optional in favor of social networks
   image?: string
 }
 export async function createUser({
   email,
   name,
   password,
-  cityId,
+  placeId,
   image,
 }: ICreateUser) {
   if (isNullOrEmpty(email) || isNullOrEmpty(name)) return null
@@ -40,7 +40,7 @@ export async function createUser({
     password,
     email,
     name,
-    cityId,
+    placeId,
     picture: image,
   }
   const result = await dbInsertOne(USERS_COLLECTION, {
@@ -52,6 +52,6 @@ export async function createUser({
 
 export async function registerUserFlow(user: ICreateUser) {
   const newUser = await createUser(user)
-  await followCity(newUser.cityId, newUser.userId)
+  await followCity(newUser.placeId, newUser.userId)
   return newUser
 }

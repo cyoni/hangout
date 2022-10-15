@@ -2,21 +2,23 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import React, { useState } from "react"
 import { GET_NOTIFICATION_METHOD } from "../../lib/consts"
-import { newGet } from "../../lib/postman"
+import { get } from "../../lib/postman"
 import Menubar from "./Menubar"
 import { getCitiesAutoComplete } from "../../lib/AutoCompleteUtils"
 import { useQuery } from "@tanstack/react-query"
 import { AutoComplete } from "../AutoComplete"
+import { getFullPlaceName } from "../../lib/consts/place"
+import { Place } from "../../pages/typings/typings"
+import { convertPlaceToQuery } from "../../lib/Places/placeUtils"
 
 function Header({ session }) {
   const router = useRouter()
   const [newMessages, setNewMessages] = useState<number>(0)
-  const [cityId, setCityId] = useState<number>(null)
 
   useQuery(
     ["unRead-messages-counter"],
     async () => {
-      return await newGet("/api/messagesApi", {
+      return await get("/api/messagesApi", {
         method: GET_NOTIFICATION_METHOD,
       })
     },
@@ -29,17 +31,13 @@ function Header({ session }) {
   )
 
   const handleSelect = (place: Place) => {
-    if (place && place.city_id) {
-      setCityId(place.city_id)
-      router.push(`/city/${place.city_id}`)
+    if (place) {
+      router.push(`/city/${place._id}`)
     }
-  }
-  const getFullName = (place: Place) => {
-    return `${place.city}, ${place.province}, ${place.country}`
   }
 
   const getOptionLabel = (option: Place) => {
-    return getFullName(option)
+    return getFullPlaceName(option)
   }
 
   const isOptionEqualToValue = (option: Place, value: Place) => {
@@ -48,11 +46,11 @@ function Header({ session }) {
 
   return (
     <header className="border-b border-gray-100 p-2 pb-3 ">
-      <div className="mx-auto flex items-center justify-between  text-gray-700 ">
+      <div className="mx-auto flex flex-wrap items-center justify-between text-gray-700 ">
         <div className="flex items-center space-x-4">
           <div className="px-7 ">
             <Link href="/" shallow={false}>
-              <a className="text-3xl font-medium">Hangouts</a>
+              <a className="text-3xl font-medium">TEST</a>
             </Link>
           </div>
           <div

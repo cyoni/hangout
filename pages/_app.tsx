@@ -39,7 +39,6 @@ function redirect(ctx, uri) {
   ctx.res.end()
 }
 MyApp.getInitialProps = async (context) => {
-  console.log("HELLOOOOOOO")
   const appProps = await App.getInitialProps(context)
   const { ctx, router } = context
   const session = await getSession(context)
@@ -52,7 +51,7 @@ MyApp.getInitialProps = async (context) => {
       redirect(ctx, "/login")
     }
   } else if (
-    isNullOrEmpty(session.place?.cityId) &&
+    isNullOrEmpty(session.place?.placeId) &&
     !router.route.startsWith("/account/setupaccount")
   ) {
     // user should configure their place

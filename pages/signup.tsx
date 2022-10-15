@@ -1,7 +1,7 @@
 import { useState } from "react"
 import HeaderImage from "../components/Header/HeaderImage"
 import { AutoComplete, CustomAutoComplete } from "../components/AutoComplete"
-import { getFullPlaceName } from "../lib/scripts/place"
+import { getFullPlaceName } from "../lib/consts/place"
 import { getCitiesAutoComplete } from "../lib/AutoCompleteUtils"
 import GoogleSignInButton from "../components/Buttons/GoogleSignInButton"
 import Head from "next/head"
@@ -25,7 +25,7 @@ export default function Signup() {
       name: e.target.name.value,
       email: e.target.email.value,
       password: e.target.password.value,
-      cityId: place?.city_id,
+      placeId: place?.placeId,
     }
     SignInUser(data)
   }

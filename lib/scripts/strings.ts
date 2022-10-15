@@ -15,3 +15,12 @@ export default function generateRandomString(length: number) {
   }
   return result
 }
+
+export const getSafeString = (input: string): string => {
+  input = input.trim()
+  if (input && input.length > 20) return null
+  const onlyLettersPattern = /[^a-zA-Z\s]+/g
+  input = input.replace(onlyLettersPattern, "")
+  console.log("input", input)
+  return input
+}

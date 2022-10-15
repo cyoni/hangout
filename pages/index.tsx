@@ -13,12 +13,15 @@ export default function Home({ session, followData, recentTravelers }) {
   console.log("My session", session)
   const { followQuery } = useFollow(followData)
 
-  const myCityId = session.place.cityId
-  const cityIds = followQuery.data?.cities?.[0]?.cityIds || []
+  const connectedUserPlaceId = session.place.placeId
+  const placeIds = followQuery.data?.cities?.[0]?.placeIds || []
 
   console.log("recentTravelers", recentTravelers)
 
-  const { places, getPlaceFromObject } = usePlace([...cityIds, myCityId])
+  const { places, getPlaceFromObject } = usePlace([
+    ...placeIds,
+    connectedUserPlaceId,
+  ])
   console.log("places index", places)
   return (
     <div>
@@ -29,7 +32,7 @@ export default function Home({ session, followData, recentTravelers }) {
       <main className="">
         <HeaderImage title="Home" />
 
-        <div className="mx-auto mt-10 grid grid-cols-4 xl:max-w-[1300px]">
+        <div className="mx-auto mt-10 grid-cols-4 px-5 sm:px-16 md:grid md:px-0 xl:max-w-[1300px]">
           {/* Left block */}
           <LeftBlock />
 
@@ -43,7 +46,7 @@ export default function Home({ session, followData, recentTravelers }) {
           {/* Right block - Favorite cities */}
           <RightBlock
             places={places}
-            cityIds={cityIds}
+            placeIds={placeIds}
             getPlaceFromObject={getPlaceFromObject}
           />
         </div>
@@ -63,11 +66,11 @@ export async function getServerSideProps(context) {
     }
   }
 
-  const cityId = user.place?.cityId
+  const placeId = user.place?.placeId
 
   const followData = await getFollowing(user.userId)
   const recentTravelers = await getCityItineraries({
-    cityIds: [cityId],
+    placeIds: [placeId],
     showAll: true,
   })
   console.log("$$$$$$$$$$$$$$$$$$$", recentTravelers)

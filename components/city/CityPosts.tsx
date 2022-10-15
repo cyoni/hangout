@@ -3,10 +3,11 @@ import React, { Fragment, useState } from "react"
 import CircularButton from "../Buttons/CircularButton"
 import FeedPost from "../FeedPost/FeedPost"
 import Spinner from "../Loaders/Spinner"
-import usePosts from "./usePosts"
 import SendRoundedIcon from "@mui/icons-material/SendRounded"
 import Loader from "../Loaders/Loader"
+import usePosts from "./usePosts"
 function CityPosts({ place }) {
+  console.log("nvweuvnoweuvn", place)
   const {
     sendPost,
     postsQuery,
@@ -17,7 +18,7 @@ function CityPosts({ place }) {
     page,
     setPage,
     totalPages,
-  } = usePosts({ cityId: place?.city_id })
+  } = usePosts({ placeId: place?.placeId })
 
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
@@ -27,11 +28,10 @@ function CityPosts({ place }) {
   }
 
   return (
-    <div className="w-[60%] mx-auto">
-      <div className="flex justify-between">
-        <div className="text-2xl">Discussion</div>
-      </div>
-      <div className="mx-auto bg-gray-50 p-5 rounded-md shadow-md mt-4 px-36">
+    <div className="mx-auto w-[60%]">
+      <div className="text-2xl">Discussion</div>
+
+      <div className="mt-4 flex min-h-[700px] flex-col rounded-md bg-gray-50 p-5 px-36 shadow-md">
         <TextField
           id="outlined-multiline-flexible"
           label="Write your post here"
@@ -42,28 +42,31 @@ function CityPosts({ place }) {
           value={messageInput}
           onChange={(e) => setMessageInput(e.target.value)}
         />
-        <div className="flex mt-2 justify-end">
+        <div className="mt-2 ml-auto block">
           <CircularButton onClick={() => sendPost()}>
             <SendRoundedIcon className="h-6" />
           </CircularButton>
         </div>
 
         {postsQuery.isLoading && (
-          <div className="flex my-10">
+          <div className="my-10 flex">
             <Spinner className="mx-auto" />
           </div>
         )}
 
         {noContent ? (
-          <div className="text-center text-3xl my-16 ">
+          <div className="my-16 text-center text-3xl ">
             No discussions found
           </div>
         ) : (
           pages && (
             <>
               <div className="relative">
-                {postsQuery.isFetching && <Loader />}
-                <div className="border-t mt-5 mb-10"></div>
+                {postsQuery.isFetching ? (
+                  <Loader />
+                ) : (
+                  <div className="mt-5 mb-10 border-t"></div>
+                )}
                 {pages.map((post, index) => {
                   return (
                     <Fragment key={index}>
@@ -74,9 +77,8 @@ function CityPosts({ place }) {
                   )
                 })}
               </div>
-                  {console.log("totalPag@estotalPages",totalPages)}
               <Pagination
-                className="w-fit mx-auto my-5"
+                className="mx-auto my-5 mt-auto w-fit"
                 count={totalPages}
                 page={page}
                 onChange={handlePageChange}

@@ -5,7 +5,7 @@ import React from "react"
 function GoogleSignInButton({ triggerBeforeSignInAction }) {
   return (
     <button
-      className="mx-auto mt-10 block rounded-md border py-1 pl-2 pr-3 hover:bg-gray-50 active:bg-gray-100 "
+      className="mx-auto mt-10 block rounded-md border py-1 pl-2 pr-3 hover:bg-gray-50 focus-within:outline "
       onClick={() => {
         triggerBeforeSignInAction?.()
         signIn("google")

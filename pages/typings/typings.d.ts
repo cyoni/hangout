@@ -1,22 +1,29 @@
 import { ObjectId } from "mongodb"
 
 type City = {
-  city_id: number
   city: string
 }
 
 type Country = {
-  country_id: number
+  countryCode: string
   country: string
 }
 
-type Province = {
-  province_id: number
-  province: string
-  province_short: string
+type State = {
+  state: string
+  //state_code: string
 }
 
-type Place = {} & City & Province & Country
+type Place = {
+  _id: string
+  placeId: string
+  resultType: "city" | "country" 
+  lon: number
+  lat: number
+  formatted: string
+} & City &
+  State &
+  Country
 
 type ResponseObject = {
   data?: any
@@ -24,7 +31,7 @@ type ResponseObject = {
 }
 
 interface TravelingObject {
-  cityId: number
+  placeId: number
   startDate: string
   endDate: string
   description: string
@@ -111,7 +118,7 @@ type Profile = {
   userId: string
   name: string
   picture: string
-  cityId: number
+  placeId: number
   aboutMe: string
   timeline: any
 }
@@ -126,7 +133,7 @@ type Post = {
 
 type MyFollowing = {
   members: { _id: string; profile: Profile; userId: string }[]
-  cities: { cityIds: number[] }
+  cities: { placeIds: number[] }
 }
 
 type IComment = {
@@ -159,5 +166,5 @@ type Member = {
 
 type Following = {
   members: Member[]
-  cities: { cityIds: number[] }
+  cities: { placeIds: number[] }
 }

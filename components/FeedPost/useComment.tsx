@@ -1,8 +1,8 @@
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query"
-import React, { useState } from "react"
+import { useState } from "react"
 import { GET_POST_COMMENTS, POST_COMMENT } from "../../lib/consts"
 import { CITY_API } from "../../lib/consts/apis"
-import { get, newGet, post } from "../../lib/postman"
+import { get, post } from "../../lib/postman"
 import { POST_COMMENTS_KEY } from "../../lib/queries"
 
 function useComment(postId) {
@@ -11,7 +11,7 @@ function useComment(postId) {
   const commentQuery = useInfiniteQuery(
     [POST_COMMENTS_KEY, postId],
     async ({ pageParam = 1 }) => {
-      return newGet(CITY_API, {
+      return get(CITY_API, {
         method: GET_POST_COMMENTS,
         page: pageParam,
         postId,

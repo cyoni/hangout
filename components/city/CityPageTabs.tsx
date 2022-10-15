@@ -17,7 +17,6 @@ interface TabPanelProps {
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props
-  const router = useRouter()
   return (
     <div
       role="tabpanel"
@@ -36,26 +35,15 @@ interface Props {
 }
 export default function CityPageTabs({ place }: Props) {
   const router = useRouter()
+  const { query } = router
   const POSTS_CODE = 0
   const TRAVEL_CODE = 1
   const getView = () => {
-    if (router.query.view === POST) {
-      return POSTS_CODE
-    } else if (router.query.view === TRAVEL) {
-      return TRAVEL_CODE
-    } else {
-      return TRAVEL_CODE
-    }
+    if (router.query.view === "posts") return POSTS_CODE
+    else return TRAVEL_CODE
   }
 
   const [value, setValue] = React.useState(getView())
-
-  const changeTab = (index: number) => {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    }
-  }
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
@@ -76,8 +64,22 @@ export default function CityPageTabs({ place }: Props) {
         }}
       >
         <Tabs value={value} onChange={handleChange}>
-          <Tab label="Posts" {...changeTab(0)} />
-          <Tab label="Travelers" {...changeTab(1)} />
+          <Tab
+            label="Posts"
+            onClick={() =>
+              router.push(`/city/${query.cityId}?view=posts`, undefined, {
+                shallow: true,
+              })
+            }
+          />
+          <Tab
+            label="Travelers"
+            onClick={() =>
+              router.push(`/city/${query.cityId}?view=travelers`, undefined, {
+                shallow: true,
+              })
+            }
+          />
         </Tabs>
       </Box>
 

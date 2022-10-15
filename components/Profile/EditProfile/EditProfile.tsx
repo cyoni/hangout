@@ -1,7 +1,7 @@
 import { TextField } from "@mui/material"
 import React from "react"
 import { getCitiesAutoComplete } from "../../../lib/AutoCompleteUtils"
-import { getFullPlaceName } from "../../../lib/scripts/place"
+import { getFullPlaceName } from "../../../lib/consts/place"
 import AlertDialog from "../../Dialog/AlertDialog"
 import { AutoComplete } from "../../AutoComplete"
 import ButtonIntegration from "../../Buttons/ButtonIntegration"
@@ -11,8 +11,8 @@ function EditProfile({ editProfileParams, place }) {
   const {
     name,
     setName,
-    cityId,
-    setCityId,
+    placeId,
+    setplaceId,
     aboutMe,
     setAboutMe,
     showDeleteAccountDialog,
