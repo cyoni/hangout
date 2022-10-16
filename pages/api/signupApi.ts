@@ -6,7 +6,7 @@ import {
   getUserByEmail,
   registerUserFlow,
 } from "../../lib/ApiUtils/loginApiUtils"
-import { queryPlace } from "./placesAcApi"
+import { queryPlaces } from "./queryPlacesApi"
 
 interface Props {
   name: string
@@ -29,7 +29,7 @@ async function signup(req) {
     }
 
     // check if place id is valid
-    const place = await queryPlace(placeId)
+    const place = await queryPlaces(placeId)
     console.log("place", place)
 
     if (!place) {

@@ -7,8 +7,8 @@ import { getToken } from "next-auth/jwt"
 import ButtonIntegration from "../../components/Buttons/ButtonIntegration"
 import useFollow from "../../components/Hooks/useFollow"
 import { CITY } from "../../lib/consts/consts"
-import { queryPlace } from "../api/placesAcApi"
 import Link from "next/link"
+import { queryPlace } from "../api/queryPlacesApi"
 
 interface Props {
   travels

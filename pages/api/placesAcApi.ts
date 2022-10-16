@@ -7,67 +7,11 @@ import {
 } from "../../lib/Places/placeUtils"
 import { get } from "../../lib/postman"
 import { unique } from "../../lib/scripts/arrays"
-import { initializeduplicateCities } from "./queryPlacesApi"
+import { initializeDuplicateCities } from "./queryPlacesApi"
 
 type Response = {
   places: Place[]
 }
-
-export async function queryPlace(placeId: string) {
-  const rawPlace = (
-    await dbFind(PLACES_COLLECTION, {
-      $or: [{ placeId }, { _id: placeId }],
-    })
-  )[0]
-
-  console.log("queryPlace", rawPlace)
-
-  const place: Place = rawPlace
-    ? {
-        cityId: rawPlace._id,
-        placeId: rawPlace.placeId,
-        countryCode: rawPlace.countryCode,
-        province_id: "NA1",
-        province_short: "NA2",
-        city: rawPlace.city,
-        state: rawPlace.state,
-        country: rawPlace.country,
-      }
-    : null
-  return place
-}
-
-export async function queryPlaces(
-  placeIds: string[]
-): Promise<{ [id: number]: Place; error?: string }> {
-  if (!Array.isArray(placeIds)) return { error: "bad input" }
-
-  const idsToQuery = unique(placeIds)
-
-  const rawPlaces = await dbFind(PLACES_COLLECTION, {
-    $or: [{ _id: { $in: idsToQuery } }, { placeId: { $in: idsToQuery } }],
-  })
-
-  const results: { [id: number]: Place } = rawPlaces.reduce(
-    (acc, curr) => ({
-      ...acc,
-      [curr.placeId]: {
-        cityId: curr._id,
-        placeId: curr.placeId,
-        countryCode: curr.countryCode,
-        province_id: "NA3",
-        province_short: "NA4",
-        city: curr.city,
-        state: curr.state,
-        country: curr.country,
-      },
-    }),
-    {}
-  )
-
-  return results
-}
-
 interface IAutoCompleteResult {
   features: [
     {
@@ -131,7 +75,7 @@ export default async function handler(
   res: NextApiResponse<Response>
 ) {
   const input = String(req.query.input)
-  if (!global.duplicateCities) await initializeduplicateCities()
+  if (!global.duplicateCities) await initializeDuplicateCities()
   const places = await queryAutoCompletePlace(input)
   if (Array.isArray(places)) res.status(200).json({ places })
   else res.status(400).json(places)

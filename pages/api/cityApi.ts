@@ -19,7 +19,7 @@ import { isNullOrEmpty } from "../../lib/scripts/strings"
 import { MESSAGE_EMPTY, POST_WAS_NOT_FOUND } from "../../lib/consts/error"
 import { ObjectId } from "mongodb"
 import { JoinProfiles } from "../../lib/ApiUtils/queryApiUtils"
-import { queryPlaces } from "./placesAcApi"
+import { queryPlaces } from "./queryPlacesApi"
 
 async function getValidCities(placeIds) {
   const validCities = await queryPlaces(placeIds)

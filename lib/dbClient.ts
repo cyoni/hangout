@@ -43,24 +43,25 @@ export async function getPlace(placeIds: string[]) {
   if (missingCities.length === 0) return convertedCitiesFromStorage
 
   // bring the missing data we don't have
-  const result = await get(
-    CITY_API,
-    `method=${GET_CITY_DATA}&placeIds=${missingCities.toString()}`
-  )
+  const params = {
+    method: GET_CITY_DATA,
+    placeIds: missingCities.toString(),
+  }
+  const result = await get(CITY_API, params)
   console.log("get city result", result)
 
-  console.log("a", { ...result.data })
+  console.log("a", { ...result })
   console.log("b", { ...convertedCitiesFromStorage })
 
   if (result.data) {
     setValue(
       "places",
       JSON.stringify({
-        ...result.data,
+        ...result,
         ...convertedCitiesFromStorage,
       })
     )
   }
-
-  return result.data
+  console.log("result.data",result)
+  return result
 }

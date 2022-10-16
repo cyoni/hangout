@@ -19,7 +19,7 @@ import {
 } from "../../lib/mongoApiUtils"
 import { FOLLOW_TABLE } from "../../lib/consts/collections"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
-import { queryPlace } from "./placesAcApi"
+import { queryPlaces } from "./queryPlacesApi"
 
 
 type Response = {
@@ -234,7 +234,7 @@ export async function followCity(placeId: string, me: string) {
   const type = CITY
 
   // city check
-  const place: Place = await queryPlace(placeId)
+  const place: Place = await queryPlaces(placeId)
   if (place == null) return { error: "city is invalid" }
 
   const result: MongoUpdateRes = await dbUpdateOne(

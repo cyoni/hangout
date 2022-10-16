@@ -1,8 +1,8 @@
-import { Avatar, AvatarGroup } from "@mui/material"
+import { AvatarGroup } from "@mui/material"
 import { useRouter } from "next/router"
 import React from "react"
 import { POST, TRAVEL } from "../../lib/consts/consts"
-import { getFullPlaceName, getPartsOfPlace } from "../../lib/consts/place"
+import { getPartsOfPlace } from "../../lib/consts/place"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import { Profile } from "../../pages/typings/typings"
 import ButtonIntegration from "../Buttons/ButtonIntegration"
@@ -12,19 +12,21 @@ import FeedPost from "../FeedPost/FeedPost"
 import Spinner from "../Loaders/Spinner"
 
 function MiddleBlock({ session, recentTravelers, getPlaceFromObject }) {
-  const userplaceId = session?.place?.placeId
-  const cityName = getPartsOfPlace(getPlaceFromObject(userplaceId), true)
+  const userPlaceId = session?.place?.placeId
+  const userPlace = getPlaceFromObject(userPlaceId)
+  const userCityId = userPlace?.cityId
+  const cityName = getPartsOfPlace(userPlace, true)
   const router = useRouter()
   const user = session?.user
   const { sendPost, postsQuery, messageInput, setMessageInput } = usePosts({
-    placeId: userplaceId,
+    placeId: userPlaceId,
     take: 5,
   })
 
-  const { postsQuery: followingPostsQuery } = usePosts({
-    placeId: userplaceId,
-    take: 5,
-  })
+  // const { postsQuery: followingPostsQuery } = usePosts({
+  //   placeId: userPlaceId,
+  //   take: 5,
+  // })
 
   const renderRecentTravelers = () => {
     return (
@@ -45,29 +47,27 @@ function MiddleBlock({ session, recentTravelers, getPlaceFromObject }) {
 
   return (
     <div className="col-span-2 min-h-[400px] ">
-      <div>
-        <div className="text-xl ">Recent Travelers to {cityName}</div>
-        <div className="mt-3 flex flex-col rounded-sm  p-3 pb-2">
-          <div className="mt-2 flex justify-center space-x-3">
-            <AvatarGroup
-              total={recentTravelers?.length}
-              sx={{
-                "& .MuiAvatar-root": {
-                  width: 80,
-                  height: 80,
-                },
-              }}
-            >
-              {renderRecentTravelers()}
-            </AvatarGroup>
-          </div>
-          <button
-            className=" btn-outline ml-auto mt-4 w-fit py-1 px-4 text-right"
-            onClick={() => router.push(`city/${userplaceId}?view=${TRAVEL}`)}
+      <div className="text-xl ">Recent Travelers to {cityName}</div>
+      <div className="mt-3 flex flex-col rounded-sm  p-3 pb-2">
+        <div className="mt-2 flex justify-center space-x-3">
+          <AvatarGroup
+            total={recentTravelers?.length}
+            sx={{
+              "& .MuiAvatar-root": {
+                width: 80,
+                height: 80,
+              },
+            }}
           >
-            Show all
-          </button>
+            {renderRecentTravelers()}
+          </AvatarGroup>
         </div>
+        <button
+          className=" btn-outline ml-auto mt-4 w-fit py-1 px-4 text-right"
+          onClick={() => router.push(`city/${userCityId}?view=${TRAVEL}`)}
+        >
+          Show all
+        </button>
       </div>
 
       <div className="">
@@ -85,7 +85,7 @@ function MiddleBlock({ session, recentTravelers, getPlaceFromObject }) {
               id="outlined-multiline-flexible"
               placeholder="Start a discussion"
               rows={3}
-              className=" text-default rounded-md pl-2 mt-1 w-full"
+              className=" text-default mt-1 w-full rounded-md pl-2"
               value={messageInput}
               onChange={(e) => setMessageInput(e.target.value)}
             />
@@ -105,22 +105,26 @@ function MiddleBlock({ session, recentTravelers, getPlaceFromObject }) {
 
         {postsQuery.isFetching && <Spinner />}
         {Array.isArray(postsQuery.data?.posts) &&
-          postsQuery.data?.posts.map((post) => {
-            return (
-              <div key={post._id}>
-                <FeedPost post={post} />
-              </div>
-            )
-          })}
-        <button
-          className="btn-outline mt-2 ml-auto block"
-          onClick={() => router.push(`city/${userplaceId}?view=${POST}`)}
-        >
-          More
-        </button>
+          postsQuery.data.posts.length > 0 && (
+            <>
+              {postsQuery.data.posts.map((post) => {
+                return (
+                  <div key={post._id}>
+                    <FeedPost post={post} />
+                  </div>
+                )
+              })}
+              <button
+                className="btn-outline mt-2 ml-auto block"
+                onClick={() => router.push(`city/${userCityId}?view=${POST}`)}
+              >
+                More
+              </button>
+            </>
+          )}
       </div>
 
-      <div className="">
+      {/* <div>
         <div className="mt-5 text-xl">
           Recent discussion of members you follow
         </div>
@@ -140,7 +144,7 @@ function MiddleBlock({ session, recentTravelers, getPlaceFromObject }) {
         >
           More
         </button>
-      </div>
+      </div> */}
     </div>
   )
 }

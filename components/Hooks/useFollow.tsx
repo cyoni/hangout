@@ -16,8 +16,8 @@ interface followReq {
   type: "FOLLOW" | "CITY"
 }
 const FollowingQuery = async (userId: string) => {
-  console.log("FollowingQuery1111111")
-  return await get("http://localhost:3000/api/followApi", {
+  console.log("FollowingQuery")
+  return await get("/api/followApi", {
     method: GET_FOLLOWING,
     userId,
   })
@@ -38,7 +38,7 @@ function useFollow(initialData = null) {
   }
 
   const followQuery: UseQueryResult<MyFollowing, {}> = useQuery(
-    [my_following_list, null],
+    [my_following_list],
     async () => await FollowingQuery(null),
     getOptions()
   )

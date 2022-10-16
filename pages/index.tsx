@@ -13,7 +13,7 @@ export default function Home({ session, followData, recentTravelers }) {
   console.log("My session", session)
   const { followQuery } = useFollow(followData)
 
-  const connectedUserPlaceId = session.place.placeId
+  const connectedUserPlaceId = session?.place?.placeId
   const placeIds = followQuery.data?.cities?.[0]?.placeIds || []
 
   console.log("recentTravelers", recentTravelers)
@@ -73,7 +73,6 @@ export async function getServerSideProps(context) {
     placeIds: [placeId],
     showAll: true,
   })
-  console.log("$$$$$$$$$$$$$$$$$$$", recentTravelers)
 
   return {
     props: { followData, recentTravelers },

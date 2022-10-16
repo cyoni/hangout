@@ -1,6 +1,6 @@
 import { useRouter } from "next/router"
 import PublishHangout from "../../components/PublishHangout/PublishHangout"
-import { queryPlace } from "../api/placesAcApi"
+import { queryPlace } from "../api/queryPlacesApi"
 
 interface Props {
   place: Place
