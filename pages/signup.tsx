@@ -69,7 +69,6 @@ export default function Signup() {
 
           <label>City</label>
           <AutoComplete
-            defaultValue={place}
             fetchFunction={getCitiesAutoComplete}
             handleSelect={handleSelect}
             getOptionLabel={getFullPlaceName}

@@ -83,7 +83,7 @@ export const authOptions = (req) => {
         console.log("AUTH ACCOUNT", account)
         console.log("AUTH TOKEN", token)
 
-        let userInstance = { ...user }
+        let userInstance: Partial<IUser> = { ...user }
 
         if (user) {
           // gets here only during login / sign in via social network
@@ -98,7 +98,7 @@ export const authOptions = (req) => {
             console.log("user.name", user.name)
             user.name = (user.name?.split(" "))[0]
             console.log("new use is", user)
-            const newUser = await registerUserFlow(user)
+            const newUser: any = await registerUserFlow(user)
             userInstance = { ...newUser }
             if (!newUser) {
               console.log("CREATING NEW USER FAILED")

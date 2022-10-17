@@ -16,13 +16,12 @@ export default function Travelling({ place }: Props) {
 export async function getServerSideProps(context) {
   try {
     const placeId = context.query.placeId[1] || null
-    if (isNaN(placeId)) {
+    if (!placeId) {
       return {
         props: { place: null },
       }
     }
-    const convertedplaceId: number = Number(placeId)
-    const place: Place = await queryPlace(convertedplaceId)
+    const place: Place = await queryPlace(placeId)
     return {
       props: { place: place },
     }

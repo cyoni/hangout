@@ -51,7 +51,7 @@ export async function createUser({
   return null
 }
 
-export async function registerUserFlow(user: ICreateUser | User) {
+export async function registerUserFlow(user) {
   const newUser = await createUser(user)
   await followCity(newUser.placeId, newUser.userId)
   return newUser

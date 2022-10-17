@@ -60,29 +60,31 @@ function Inbox() {
       </Head>
       <HeaderImage title="Messages" />
       <div className="mx-auto mt-6 min-h-[500px] xl:max-w-[1300px]">
-        {messages && (
-          <Refresh
-            className="mt-5 ml-5 mb-10 h-10 w-10 cursor-pointer rounded-full p-2
+        <>
+          {messages && (
+            <Refresh
+              className="mt-5 ml-5 mb-10 h-10 w-10 cursor-pointer rounded-full p-2
           text-gray-400 transition duration-150 hover:rotate-180
            hover:bg-gray-100"
-            onClick={handleRefresh}
-          />
-        )}
-        {console.log("messages", messages)}
-        {!messages && <Spinner className="mt-20 flex justify-center" />}
+              onClick={handleRefresh}
+            />
+          )}
+          {console.log("messages", messages)}
+          {!messages && <Spinner className="mt-20 flex justify-center" />}
 
-        {Array.isArray(messages) && (
-          <>
-            {messages.map((msg) => (
-              <div key={msg._id}>
-                <PreviewMessage {...msg} places={places} />
-              </div>
-            ))}
-          </>
-        )}
-        {messages?.length === 0 && (
-          <div className="text-center text-3xl">No messages</div>
-        )}
+          {Array.isArray(messages) && (
+            <>
+              {messages.map((msg) => (
+                <div key={msg._id}>
+                  <PreviewMessage {...msg} places={places} />
+                </div>
+              ))}
+            </>
+          )}
+          {messages?.length === 0 && (
+            <div className="text-center text-3xl">No messages</div>
+          )}
+        </>
       </div>
     </>
   )

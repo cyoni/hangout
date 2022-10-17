@@ -15,7 +15,7 @@ function PreviewMessage({
   message,
   timestamp,
   profile,
-  isRead,
+  isRead ,
   places,
 }: Props) {
   const { picture, name, placeId } = profile[0]

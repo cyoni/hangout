@@ -18,13 +18,7 @@ export async function queryPlace(placeId: string) {
   const place: Place = rawPlace
     ? {
         cityId: rawPlace._id,
-        placeId: rawPlace.placeId,
-        countryCode: rawPlace.countryCode,
-        province_id: "NA1",
-        province_short: "NA2",
-        city: rawPlace.city,
-        state: rawPlace.state,
-        country: rawPlace.country,
+        ...rawPlace,
       }
     : null
   return place

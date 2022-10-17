@@ -6,7 +6,7 @@ import {
   getUserByEmail,
   registerUserFlow,
 } from "../../lib/ApiUtils/loginApiUtils"
-import { queryPlaces } from "./queryPlacesApi"
+import { queryPlace } from "./queryPlacesApi"
 
 interface Props {
   name: string
@@ -17,9 +17,6 @@ interface Props {
 
 async function signup(req) {
   try {
-    const mongoClient = await clientPromise
-    const db = mongoClient.db()
-
     console.log("req.body", req.body)
 
     const { name, email, password, placeId }: Props = req.body
@@ -29,7 +26,7 @@ async function signup(req) {
     }
 
     // check if place id is valid
-    const place = await queryPlaces(placeId)
+    const place = await queryPlace(placeId)
     console.log("place", place)
 
     if (!place) {

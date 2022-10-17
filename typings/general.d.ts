@@ -15,6 +15,7 @@ type State = {
 type Place = {
   _id: string
   placeId: string
+  cityId?: string
   resultType: "city" | "country"
   lon: number
   lat: number
@@ -79,6 +80,7 @@ interface MessageObj {
   sharedToken: string
   theirId: string
   timestamp: number
+  isRead: boolean
 }
 
 interface MongoInsertRes {
@@ -110,6 +112,7 @@ type IUser = {
   userId: string
   name: string
   picture: string
+  placeId: string
 }
 
 type Profile = {

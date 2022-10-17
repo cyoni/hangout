@@ -14,6 +14,7 @@ interface Props {
   travels
   place: Place
   myFollowing: any
+  user: any
 }
 export default function Home({ place, myFollowing, user }: Props) {
   console.log("user44", user)
