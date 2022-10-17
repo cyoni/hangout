@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react"
-import { getHeaderPicture } from "../../lib/headerImage"
 
 interface Props {
   headerExternalClass?: string
@@ -7,7 +6,12 @@ interface Props {
   titleExternalClass?: string
   backgroundId?: string
   customImageId?: string
-  children
+  children?
+}
+async function getHeaderPicture(input: string) {
+  const response = await fetch(`/api/headerPictureApi?input=${input}`)
+  const data = await response.json()
+  return data.picture
 }
 
 function HeaderImage({
@@ -44,14 +48,16 @@ function HeaderImage({
     <div
       style={{
         backgroundImage: `url('${
-          backgroundplaceId || customImageId ? backgroundUrl : "/static/default-header.jpg"
+          backgroundplaceId || customImageId
+            ? backgroundUrl
+            : "/static/default-header.jpg"
         }')`,
         backgroundColor: !hasPicture ? "#1e81b0" : "",
         filter: backgroundplaceId && isLoading ? "blur(8px)" : "",
       }}
       className={`relative h-56 
-       border border-transparent bg-cover	
-       bg-center object-fill shadow-xl border-b-red-500 border-b-2 ${
+       border border-b-2 border-transparent	
+       border-b-red-500 bg-cover bg-center object-fill shadow-xl ${
          headerExternalClass ? headerExternalClass : ""
        }`}
     >

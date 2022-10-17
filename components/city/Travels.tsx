@@ -18,11 +18,11 @@ function Travels({ place }) {
     Array.isArray(travelers?.pages) && travelers.pages[0]?.travelers?.length > 0
 
   console.log("travelers", travelers)
-  const placeIds: number[] = travelers?.pages.map((page) =>
+  const placeIds: string[] = travelers?.pages.map((page) =>
     page?.travelers?.map((travel) => travel.profile[0].placeId)
   )
 
-  const { places, getPlaceFromObject, placeQuery } = usePlace([placeIds])
+  const { places, getPlaceFromObject, placeQuery } = usePlace(placeIds)
 
   const isLoading = cityItineraryQuery.isFetching
 

@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import React from "react"
-import { GET_CITY_ITINERARIES, GET_USER_ITINERARIES } from "../../lib/consts"
+import { GET_CITY_ITINERARIES, GET_USER_ITINERARIES } from "../../lib/consts/consts"
 import { TRAVEL_API } from "../../lib/consts/apis"
 import { get } from "../../lib/postman"
 

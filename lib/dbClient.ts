@@ -1,6 +1,6 @@
-import { GET_CITY_DATA, GET_PROFILES_METHOD } from "./consts"
+import { GET_CITY_DATA, GET_PROFILES_METHOD } from "./consts/consts"
 import { CITY_API, PROFILE_API } from "./consts/apis"
-import { getValue, setValue } from "./localStorage"
+import { getValue, setValue } from "./scripts/localStorage"
 import { get, post } from "./postman"
 import { getDifference, unique } from "./scripts/arrays"
 
@@ -10,15 +10,6 @@ export async function queryPlacesFromClient(cityCodes: string[]) {
     url: "api/queryPlacesApi",
     body: { codes: uniqueCityCodes },
   })
-}
-
-export async function getProfile(userIds: string[]) {
-  const data = await post({
-    url: PROFILE_API,
-    body: { method: GET_PROFILES_METHOD, userIds },
-  })
-  const profiles: Profile[] = data?.result
-  return profiles
 }
 
 export async function getPlace(placeIds: string[]) {
@@ -52,24 +43,25 @@ export async function getPlace(placeIds: string[]) {
   if (missingCities.length === 0) return convertedCitiesFromStorage
 
   // bring the missing data we don't have
-  const result = await get(
-    CITY_API,
-    `method=${GET_CITY_DATA}&placeIds=${missingCities.toString()}`
-  )
+  const params = {
+    method: GET_CITY_DATA,
+    placeIds: missingCities.toString(),
+  }
+  const result = await get(CITY_API, params)
   console.log("get city result", result)
 
-  console.log("a", { ...result.data })
+  console.log("a", { ...result })
   console.log("b", { ...convertedCitiesFromStorage })
 
   if (result.data) {
     setValue(
       "places",
       JSON.stringify({
-        ...result.data,
+        ...result,
         ...convertedCitiesFromStorage,
       })
     )
   }
-
-  return result.data
+  console.log("result.data", result)
+  return result
 }

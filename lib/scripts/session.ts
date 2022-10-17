@@ -1,4 +1,4 @@
-import { get } from "./postman"
+import { get } from "../postman"
 
 export const isAuthenticated = (session) => {
   return isSessionReady(session) && session.status === "authenticated"

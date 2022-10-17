@@ -1,7 +1,6 @@
-
 async function getBase64(file): Promise<string> {
   return new Promise((resolve) => {
-    let baseURL = ""
+    let baseURL: string = ""
     // Make new FileReader
     let reader = new FileReader()
 
@@ -11,15 +10,13 @@ async function getBase64(file): Promise<string> {
     // on reader load somthing...
     reader.onload = () => {
       // Make a fileInfo Object
-      baseURL = reader.result
+      baseURL = String(reader.result)
       resolve(baseURL)
     }
   })
 }
 
-export async function resizeBase64Img(base64, width, height) {
- 
-}
+export async function resizeBase64Img(base64, width, height) {}
 
 export async function convertToBase64(e): Promise<string> {
   let file = e.target.files[0]

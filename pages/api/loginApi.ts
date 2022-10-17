@@ -1,6 +1,6 @@
 import { sha256 } from "js-sha256"
-import { getUserByEmailAndPassword } from "../../lib/loginUtils"
-import { queryPlace } from "./placesAcApi"
+import { getUserByEmailAndPassword } from "../../lib/ApiUtils/loginApiUtils"
+import { queryPlace } from "./queryPlacesApi"
 
 async function login({ email, password }) {
   console.log("req.body", email, password)

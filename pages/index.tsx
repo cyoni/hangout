@@ -13,7 +13,7 @@ export default function Home({ session, followData, recentTravelers }) {
   console.log("My session", session)
   const { followQuery } = useFollow(followData)
 
-  const connectedUserPlaceId = session.place.placeId
+  const connectedUserPlaceId = session?.place?.placeId
   const placeIds = followQuery.data?.cities?.[0]?.placeIds || []
 
   console.log("recentTravelers", recentTravelers)
@@ -30,7 +30,7 @@ export default function Home({ session, followData, recentTravelers }) {
       </Head>
 
       <main className="">
-        <HeaderImage title="Home" />
+        <HeaderImage title="" />
 
         <div className="mx-auto mt-10 grid-cols-4 px-5 sm:px-16 md:grid md:px-0 xl:max-w-[1300px]">
           {/* Left block */}
@@ -73,7 +73,6 @@ export async function getServerSideProps(context) {
     placeIds: [placeId],
     showAll: true,
   })
-  console.log("$$$$$$$$$$$$$$$$$$$", recentTravelers)
 
   return {
     props: { followData, recentTravelers },

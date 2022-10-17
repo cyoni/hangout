@@ -10,7 +10,7 @@ import { getCitiesAutoComplete } from "../../lib/AutoCompleteUtils"
 import { get } from "../../lib/postman"
 import { getFullPlaceName } from "../../lib/consts/place"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
-import { updateSessionData } from "../../lib/session"
+import { updateSessionData } from "../../lib/scripts/session"
 
 function SetUpAccount() {
   const router = useRouter()
@@ -70,7 +70,7 @@ export default SetUpAccount
 
 export async function getServerSideProps(context) {
   const user = await getToken(context)
-  if (user.place.placeId > 0) {
+  if (user.place.placeId) {
     return {
       redirect: {
         permanent: false,

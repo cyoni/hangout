@@ -6,9 +6,9 @@ import {
   POST_NEW_ITINERARY,
   ITINERARIES_TABLE as TRAVELING_TABLE,
   ITINERARIES_TABLE,
-} from "../../lib/consts"
-import { dbAggregate, dbInsertMany } from "../../lib/mongoUtils"
-import { JoinProfiles } from "../../lib/queryUtils"
+} from "../../lib/consts/consts"
+import { dbAggregate, dbInsertMany } from "../../lib/mongoApiUtils"
+import { JoinProfiles } from "../../lib/ApiUtils/queryApiUtils"
 import { convertStringToTypeArray } from "../../lib/scripts/arrays"
 
 function convertItineraries(itineraries) {

@@ -1,5 +1,4 @@
-import React, { useState } from "react"
-import { Profile } from "../../pages/typings/typings"
+import React from "react"
 import ModalWrapper from "./ModalWrapper"
 import SendMessage from "../Chat/SendMessage"
 

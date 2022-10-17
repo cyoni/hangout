@@ -1,9 +1,12 @@
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query"
 import { useState } from "react"
-import { GET_POST_COMMENTS, POST_COMMENT } from "../../lib/consts"
+import {
+  GET_POST_COMMENTS,
+  POST_COMMENT,
+  POST_COMMENTS_KEY,
+} from "../../lib/consts/consts"
 import { CITY_API } from "../../lib/consts/apis"
 import { get, post } from "../../lib/postman"
-import { POST_COMMENTS_KEY } from "../../lib/queries"
 
 function useComment(postId) {
   const [message, setMessage] = useState<string>("")

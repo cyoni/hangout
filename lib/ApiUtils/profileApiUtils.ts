@@ -1,11 +1,12 @@
-import { FOLLOW_TABLE } from "./consts/collections"
-import { ProfileParams, USERS_COLLECTION } from "./consts"
-import { dbAggregate, dbUpdateOne } from "./mongoUtils"
-import { getFollowing } from "../pages/api/followApi"
-import { Following } from "../pages/typings/typings"
-import { isNullOrEmpty } from "./scripts/strings"
+import { ProfileParams, USERS_COLLECTION } from "../consts/consts"
+import { dbAggregate, dbUpdateOne } from "../mongoApiUtils"
+import { getFollowing } from "../../pages/api/followApi"
+import { isNullOrEmpty } from "../scripts/strings"
 
-export async function getProfile(userId, includeFollowing = false) {
+export async function getProfile(
+  userId,
+  includeFollowing = false
+): Promise<ResultHandler> {
   const req: AggregateReq = {
     collection: USERS_COLLECTION,
     params: [
@@ -19,7 +20,7 @@ export async function getProfile(userId, includeFollowing = false) {
     let following: Following[] = []
     if (!includeFollowing) following = (await getFollowing(userId)) || null
     const result = { profile, following }
-    return result
+    return { value: result }
   } else {
     return { error: "User not found" }
   }
@@ -39,7 +40,7 @@ export async function updateUserPictureInDb({
   pictureIdKey,
   fileId,
   name,
-}: IUpdateUserPicture) {
+}: IUpdateUserPicture): Promise<ResultHandler> {
   if (isNullOrEmpty(userId)) return { error: "user can't be null" }
 
   const obj = {
@@ -61,5 +62,5 @@ export async function updateUserPictureInDb({
   if (!dbUploadImageResponse.modifiedCount) {
     return { error: "Picture could not be updated in db." }
   }
-  return true
+  return { isSuccess: true }
 }

@@ -6,7 +6,7 @@ import {
 } from "@heroicons/react/24/outline"
 import AvatarMenu from "./AvatarMenu"
 import { signIn, signOut, useSession } from "next-auth/react"
-import { isAuthenticated, isNotAuthenticated } from "../../lib/session"
+import { isAuthenticated, isNotAuthenticated } from "../../lib/scripts/session"
 import { useRouter } from "next/router"
 import { ListItemIcon, MenuItem } from "@mui/material"
 import Logout from "@mui/icons-material/Logout"
@@ -54,7 +54,7 @@ function Menubar({ newMessages }) {
           notifications={newMessages}
         />
         <MenubarRow
-          title="Publish trip"
+          title="Publish Trip"
           Icon={GlobeEuropeAfricaIcon}
           link={`/publish-hangout/${
             router.query.placeId ? `city/${router.query.placeId}` : ""

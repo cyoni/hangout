@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query"
 import { post } from "../../lib/postman"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import { signIn } from "next-auth/react"
-import { ACCOUNT_EXISTS_CODE } from "../../lib/consts"
+import { ACCOUNT_EXISTS_CODE } from "../../lib/consts/consts"
 
 function useSignIn() {
   const router = useRouter()
@@ -58,13 +58,11 @@ function useSignIn() {
               logIn()
             }
           },
-          onError: (response) => {
-            console.log("ddddddddddresponse",response)
+          onError: (response: SignupRes) => {
             if (response.codeId === ACCOUNT_EXISTS_CODE) {
               toast.error("There is already an account with this email.")
             } else toast.error("There was an error. Please try again later.")
           },
-          
         }
       )
     }

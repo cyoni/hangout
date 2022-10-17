@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import  { useState } from "react"
 import toast from "react-hot-toast"
-import { GET_MESSAGES, POST_MESSAGE } from "../../lib/consts"
+import { GET_MESSAGES, POST_MESSAGE } from "../../lib/consts/consts"
 import { CITY_API } from "../../lib/consts/apis"
 import {  get, post } from "../../lib/postman"
 import { isNullOrEmpty } from "../../lib/scripts/strings"

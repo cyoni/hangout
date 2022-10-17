@@ -3,10 +3,10 @@ import React, { useEffect, useMemo, useRef, useState } from "react"
 import { getFullPlaceName } from "../../lib/consts/place"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import Itinerary from "../City/Itinerary"
-import { isAuthor } from "../../lib/session"
+import { isAuthor } from "../../lib/scripts/session"
 import ButtonIntegration from "../Buttons/ButtonIntegration"
 import useFollow from "../Hooks/useFollow"
-import { FOLLOW, UPLOAD_IMAGE } from "../../lib/consts"
+import { FOLLOW, UPLOAD_IMAGE } from "../../lib/consts/consts"
 import { AvatarGroup, Box, Fab, Tab, Tabs } from "@mui/material"
 import ChatModal from "../Modal/ChatModal"
 import EditIcon from "@mui/icons-material/Edit"
@@ -17,7 +17,6 @@ import { unique } from "../../lib/scripts/arrays"
 import { convertToBase64 } from "../../lib/scripts/images"
 import useManageImages from "../Hooks/useManageImages"
 import Loader from "../Loaders/Loader"
-import { Following, Member, Place, Profile } from "../../pages/typings/typings"
 import Head from "next/head"
 import SpeedDial from "@mui/material/SpeedDial"
 import SpeedDialIcon from "@mui/material/SpeedDialIcon"
@@ -25,12 +24,14 @@ import SpeedDialAction from "@mui/material/SpeedDialAction"
 import CameraAlt from "@mui/icons-material/CameraAlt"
 import Delete from "@mui/icons-material/Delete"
 import { useRouter } from "next/router"
+import { Session } from "next-auth"
 
 interface Props {
   profile: Profile
   place: Place
   setOpenEditProfile: Function
   following: Following
+  session: Session
 }
 
 const ProfileContent = ({
@@ -50,6 +51,7 @@ const ProfileContent = ({
   const inputFile = useRef(null)
   const router = useRouter()
   const { query } = router
+  const connectedUserId = session?.data?.userId
   const actions = [
     {
       icon: <CameraAlt />,
@@ -89,7 +91,7 @@ const ProfileContent = ({
       setPlaceIds(unique(newData))
       console.log("GOT NEW DATA", newData)
     }
-  }, [userItineraryQuery.data])
+  }, [userItineraryQuery.data]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (isUploadingCompleted) {
@@ -141,7 +143,7 @@ const ProfileContent = ({
     })
   }
 
-  function TabPanel(props: TabPanelProps) {
+  function TabPanel(props) {
     const { children, value, index, ...other } = props
 
     return (
@@ -278,31 +280,35 @@ const ProfileContent = ({
           </button>
         )}
 
-        <button
-          className={`self-start px-4 ${menuButtonStyle}`}
-          onClick={(e) => handleSendMessage(e)}
-        >
-          Send Message
-        </button>
-        <ButtonIntegration
-          buttonClassName={menuButtonStyle}
-          circularProgressColor="#80b3ff"
-          onClick={() =>
-            isFollowing(userId)
-              ? unFollow({
-                  userId: profile.userId,
-                  type: FOLLOW,
-                  name: profile.name,
-                })
-              : follow({
-                  userId: profile.userId,
-                  type: FOLLOW,
-                  name: profile.name,
-                })
-          }
-        >
-          {isFollowing(userId) ? "Following" : "Follow"}
-        </ButtonIntegration>
+        {userId !== connectedUserId && (
+          <>
+            <button
+              className={`self-start px-4 ${menuButtonStyle}`}
+              onClick={(e) => handleSendMessage(e)}
+            >
+              Send Message
+            </button>
+            <ButtonIntegration
+              buttonClassName={menuButtonStyle}
+              circularProgressColor="#80b3ff"
+              onClick={() =>
+                isFollowing(userId)
+                  ? unFollow({
+                      userId: profile.userId,
+                      type: FOLLOW,
+                      name: profile.name,
+                    })
+                  : follow({
+                      userId: profile.userId,
+                      type: FOLLOW,
+                      name: profile.name,
+                    })
+              }
+            >
+              {isFollowing(userId) ? "Following" : "Follow"}
+            </ButtonIntegration>
+          </>
+        )}
       </div>
       <div className="min-h-[500px]">
         <Box
@@ -344,9 +350,9 @@ const ProfileContent = ({
             </div>
             {following?.members.length > 0 && (
               <div className="pl-2">
-                <div className="mt-4  text-3xl">Following</div>
+                <div className="mt-4 text-3xl">Following</div>
 
-                <div className="mt-3 h-[150px] rounded-md border">
+                <div className="mt-3 h-[150px] rounded-md border p-5">
                   <div className="flex justify-start">
                     <AvatarGroup
                       total={Math.min(following?.members.length, 5)}

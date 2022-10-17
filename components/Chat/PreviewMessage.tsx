@@ -5,6 +5,7 @@ import CustomAvatar from "../Avatar/CustomAvatar"
 
 interface Props extends MessageObj {
   places: Place[]
+  isRead: boolean
 }
 
 function PreviewMessage({
@@ -14,7 +15,7 @@ function PreviewMessage({
   message,
   timestamp,
   profile,
-  isRead,
+  isRead ,
   places,
 }: Props) {
   const { picture, name, placeId } = profile[0]
@@ -47,14 +48,9 @@ function PreviewMessage({
         </div>
       </div>
       <div className="flex flex-1 flex-col rounded-md  p-3">
-        <a href={`/messages/conversation/${theirId}`}>
-          <div
-            className={`h-14 cursor-pointer truncate rounded-md p-2  `}
-          >
-            {message}
-          </div>
-        </a>
-        <div className="ml-auto text-sm">{time}</div>
+        <div className={`h-14 cursor-pointer truncate rounded-md p-2  `}>
+          {message}
+        </div>
       </div>
     </div>
   )

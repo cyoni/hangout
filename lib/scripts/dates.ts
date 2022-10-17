@@ -1,4 +1,4 @@
-import { isNullOrEmpty } from "./scripts/strings"
+import { isNullOrEmpty } from "./strings"
 
 export const formatDate = (date) => {
   if (isNullOrEmpty(date)) return undefined

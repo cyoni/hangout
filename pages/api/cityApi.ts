@@ -9,17 +9,17 @@ import {
   POST_MESSAGE,
   ProfileParams,
   USERS_COLLECTION,
-} from "./../../lib/consts"
+} from "../../lib/consts/consts"
 import { getToken } from "next-auth/jwt"
 import { NextApiResponse } from "next"
 import { NextApiRequest } from "next"
-import { dbAggregate, dbFind, dbInsertOne } from "../../lib/mongoUtils"
+import { dbAggregate, dbFind, dbInsertOne } from "../../lib/mongoApiUtils"
 import { getObjectKeys } from "../../lib/scripts/objects"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import { MESSAGE_EMPTY, POST_WAS_NOT_FOUND } from "../../lib/consts/error"
 import { ObjectId } from "mongodb"
-import { JoinProfiles } from "../../lib/queryUtils"
-import { queryPlaces } from "./placesAcApi"
+import { JoinProfiles } from "../../lib/ApiUtils/queryApiUtils"
+import { queryPlaces } from "./queryPlacesApi"
 
 async function getValidCities(placeIds) {
   const validCities = await queryPlaces(placeIds)
@@ -243,12 +243,15 @@ export default async function handler(
       case GET_MESSAGES:
         result = await GetPosts({
           placeId: req.query.placeId,
-          page: req.query.page,
+          page: Number(req.query.page),
           take: req.query.take || null,
         })
         break
       case GET_POST_COMMENTS:
-        result = await GetPostComments(req.query)
+        result = await GetPostComments({
+          postId: String(req.query.postId),
+          page: Number(req.query.page),
+        })
         break
       case GET_CITY_DATA:
         result = await getCityData(req.query.placeIds)

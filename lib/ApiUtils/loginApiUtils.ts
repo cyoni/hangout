@@ -1,7 +1,8 @@
-import { followCity } from "../pages/api/followApi"
-import { USERS_COLLECTION } from "./consts"
-import { dbFind, dbInsertOne } from "./mongoUtils"
-import generateRandomString, { isNullOrEmpty } from "./scripts/strings"
+import { User } from "next-auth"
+import { followCity } from "../../pages/api/followApi"
+import { USERS_COLLECTION } from "../consts/consts"
+import { dbFind, dbInsertOne } from "../mongoApiUtils"
+import generateRandomString, { isNullOrEmpty } from "../scripts/strings"
 
 export async function getUserByEmail(email: string) {
   const user = (await dbFind(USERS_COLLECTION, { email }))[0]
@@ -21,8 +22,8 @@ export async function getUserByEmailAndPassword(
 }
 
 interface ICreateUser {
-  email: string
-  name: string
+  email?: string
+  name?: string
   password?: string // optional in favor of social networks
   placeId?: string // optional in favor of social networks
   image?: string
@@ -50,7 +51,7 @@ export async function createUser({
   return null
 }
 
-export async function registerUserFlow(user: ICreateUser) {
+export async function registerUserFlow(user) {
   const newUser = await createUser(user)
   await followCity(newUser.placeId, newUser.userId)
   return newUser

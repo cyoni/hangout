@@ -2,10 +2,10 @@ import {
   GET_PROFILES_METHOD,
   UPDATE_PROFILE_METHOD,
   USERS_COLLECTION,
-} from "./../../lib/consts"
+} from "../../lib/consts/consts"
 import { getToken } from "next-auth/jwt"
 import type { NextApiRequest, NextApiResponse } from "next"
-import { dbAggregate, dbUpdateOne } from "../../lib/mongoUtils"
+import { dbAggregate, dbUpdateOne } from "../../lib/mongoApiUtils"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 
 type Response = {

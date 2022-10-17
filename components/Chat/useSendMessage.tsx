@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
-import React, { useState } from "react"
+import  { useState } from "react"
 import toast from "react-hot-toast"
-import { SEND_MESSAGE_METHOD } from "../../lib/consts"
+import { SEND_MESSAGE_METHOD } from "../../lib/consts/consts"
 import { MESSAGES_API } from "../../lib/consts/apis"
 import { post } from "../../lib/postman"
 

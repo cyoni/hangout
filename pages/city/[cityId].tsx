@@ -1,19 +1,20 @@
 import Head from "next/head"
 import HeaderImage from "../../components/Header/HeaderImage"
-import { formatDate } from "../../lib/dates"
+import { formatDate } from "../../lib/scripts/dates"
 import CityPageTabs from "../../components/City/CityPageTabs"
 import { getFollowing } from "../api/followApi"
 import { getToken } from "next-auth/jwt"
 import ButtonIntegration from "../../components/Buttons/ButtonIntegration"
 import useFollow from "../../components/Hooks/useFollow"
-import { CITY } from "../../lib/consts"
-import { queryPlace } from "../api/placesAcApi"
+import { CITY } from "../../lib/consts/consts"
 import Link from "next/link"
+import { queryPlace } from "../api/queryPlacesApi"
 
 interface Props {
   travels
   place: Place
   myFollowing: any
+  user: any
 }
 export default function Home({ place, myFollowing, user }: Props) {
   console.log("user44", user)

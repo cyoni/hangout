@@ -1,25 +1,27 @@
 import { getToken } from "next-auth/jwt"
 import React, { useEffect, useRef } from "react"
 import HeaderImage from "../../components/Header/HeaderImage"
-import { getProfile } from "../../lib/profileUtils"
+import { getProfile } from "../../lib/ApiUtils/profileApiUtils"
 import useEditProfile from "../../components/Profile/EditProfile/useEditProfile"
 import EditProfile from "../../components/Profile/EditProfile/EditProfile"
 import ProfileContent from "../../components/Profile/ProfileContent"
 import usePlace from "../../components/Hooks/usePlace"
 import useManageImages from "../../components/Hooks/useManageImages"
 import { convertToBase64 } from "../../lib/scripts/images"
-import { UPLOAD_WRAPPER_IMAGE } from "../../lib/consts"
+import { UPLOAD_WRAPPER_IMAGE } from "../../lib/consts/consts"
 import ProfileError from "../../components/Profile/ProfileError"
 import Loader from "../../components/Loaders/Loader"
 import { Menu, MenuItem } from "@mui/material"
 import toast from "react-hot-toast"
+import { Session } from "next-auth"
 
 interface Props {
   profile: Profile
-  following: Following[]
+  following: Following
+  session: Session
   followServiceProps: any
 }
-export default function Profile({ profile, following }: Props) {
+export default function Profile({ profile, following, session }: Props) {
   console.log("Profile", profile)
   const toggleOnFinishCallback = () => {
     window.location.reload()
@@ -116,6 +118,7 @@ export default function Profile({ profile, following }: Props) {
             profile={profile}
             following={following}
             place={place}
+            session={session}
             setOpenEditProfile={editProfileParams.setOpenEditProfile}
           />
         ) : (
@@ -136,8 +139,8 @@ export async function getServerSideProps(context) {
     if (!data.error) {
       return {
         props: {
-          profile: data.profile,
-          following: data.following,
+          profile: data.value.profile,
+          following: data.value.following,
         },
       }
     }
