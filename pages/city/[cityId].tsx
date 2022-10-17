@@ -1,7 +1,7 @@
 import Head from "next/head"
 import HeaderImage from "../../components/Header/HeaderImage"
 import { formatDate } from "../../lib/scripts/dates"
-import CityPageTabs from "../../components/City/CityPageTabs"
+import CityPageTabs from "../../components/city/CityPageTabs"
 import { getFollowing } from "../api/followApi"
 import { getToken } from "next-auth/jwt"
 import ButtonIntegration from "../../components/Buttons/ButtonIntegration"
