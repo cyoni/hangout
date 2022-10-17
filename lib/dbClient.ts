@@ -62,6 +62,6 @@ export async function getPlace(placeIds: string[]) {
       })
     )
   }
-  console.log("result.data",result)
+  console.log("result.data", result)
   return result
 }

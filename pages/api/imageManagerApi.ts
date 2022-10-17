@@ -1,10 +1,16 @@
-import { REMOVE_WRAPPER_IMAGE, UPLOAD_WRAPPER_IMAGE } from "../../lib/consts/consts"
-import { UPLOAD_IMAGE, REMOVE_IMAGE, USERS_COLLECTION } from "../../lib/consts/consts"
+import {
+  REMOVE_WRAPPER_IMAGE,
+  UPLOAD_WRAPPER_IMAGE,
+} from "../../lib/consts/consts"
+import {
+  UPLOAD_IMAGE,
+  REMOVE_IMAGE,
+  USERS_COLLECTION,
+} from "../../lib/consts/consts"
 import { getToken } from "next-auth/jwt"
 import { NextApiResponse } from "next"
 import { NextApiRequest } from "next"
 import { dbFind, dbUpdateOne } from "../../lib/mongoApiUtils"
-import { IUser, UploadImageRes } from "../typings/typings"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 import { getImageKit } from "../../lib/ImageKit"
 import sharp from "sharp"
@@ -17,7 +23,7 @@ const DEFAULT_APP_FOLDER = "hangouts"
 
 var imageKit = getImageKit()
 
-async function getCompressedImage(imageSource) {
+async function getCompressedImage(imageSource): Promise<ResultHandler> {
   try {
     let parts = imageSource.split(";")
     let mimType = parts[0].split(":")[1]
@@ -26,22 +32,22 @@ async function getCompressedImage(imageSource) {
     const resizedImageBuffer = await sharp(img).jpeg({ quality: 60 }).toBuffer()
     const resizedImageData = resizedImageBuffer.toString("base64")
     const resizedBase64 = `data:${mimType};base64,${resizedImageData}`
-    return resizedBase64
+    return { isSuccess: true, value: resizedBase64 }
   } catch (e) {
-    return { error: e.message }
+    return { isSuccess: false, error: e.message }
   }
 }
 
-async function imageKitDelete(pictureId) {
+async function imageKitDelete(pictureId): Promise<ResultHandler> {
   try {
     if (isNullOrEmpty(pictureId)) return
     const result = await imageKit.deleteFile(pictureId)
-    return result
+    return { value: result }
   } catch (e) {
-    return { error: `error in imageKitDelete: ${e.message}` }
+    return { isSuccess: false, error: `error in imageKitDelete: ${e.message}` }
   }
 }
-async function imageKitUpload(userId, imageSource): Promise<UploadImageRes> {
+async function imageKitUpload(userId, imageSource): Promise<ResultHandler> {
   try {
     if (isNullOrEmpty(userId) || isNullOrEmpty(imageSource))
       throw new Error("userId or imageSource is null")
@@ -50,7 +56,7 @@ async function imageKitUpload(userId, imageSource): Promise<UploadImageRes> {
     if (compressedImage.error) throw new Error(compressedImage.error)
 
     const result = await imageKit.upload({
-      file: compressedImage,
+      file: compressedImage.value,
       fileName: `${userId}.jpg`,
       folder: DEFAULT_APP_FOLDER,
       useUniqueFileName: true,
@@ -63,10 +69,10 @@ async function imageKitUpload(userId, imageSource): Promise<UploadImageRes> {
       ],
     })
 
-    return result
+    return { isSuccess: true, value: result }
   } catch (e) {
     console.log("error in imageKitUpload:", e.message)
-    return { error: e.message }
+    return { error: e.message, isSuccess: false }
   }
 }
 async function uploadImage(params, userId, isProfilePicture) {
@@ -91,19 +97,19 @@ async function uploadImage(params, userId, isProfilePicture) {
     // update picture id and picture url in user profile
     const dbUploadImageResponse = await updateUserPictureInDb({
       userId,
-      name: uploadImageResponse.name,
-      fileId: uploadImageResponse.fileId,
+      name: uploadImageResponse.value.name,
+      fileId: uploadImageResponse.value.fileId,
       pictureIdKey,
       pictureKey,
     })
 
     // check if picture was updated in db
     if (dbUploadImageResponse.error) {
-      await imageKitDelete(uploadImageResponse.fileId)
+      await imageKitDelete(uploadImageResponse.value.fileId)
       throw new Error("Picture could not be updated in db.")
     }
 
-    return { status: "success", picture: uploadImageResponse.name }
+    return { status: "success", picture: uploadImageResponse.value.name }
   } catch (e) {
     console.log(`error in uploadImage: ${e.message}`)
     return { error: `error in uploadImage: ${e.message}` }

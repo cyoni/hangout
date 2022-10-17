@@ -30,7 +30,7 @@ export default function Home({ session, followData, recentTravelers }) {
       </Head>
 
       <main className="">
-        <HeaderImage title="Home" />
+        <HeaderImage title="" />
 
         <div className="mx-auto mt-10 grid-cols-4 px-5 sm:px-16 md:grid md:px-0 xl:max-w-[1300px]">
           {/* Left block */}

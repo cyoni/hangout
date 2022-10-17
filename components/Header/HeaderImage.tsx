@@ -6,7 +6,7 @@ interface Props {
   titleExternalClass?: string
   backgroundId?: string
   customImageId?: string
-  children
+  children?
 }
 async function getHeaderPicture(input: string) {
   const response = await fetch(`/api/headerPictureApi?input=${input}`)

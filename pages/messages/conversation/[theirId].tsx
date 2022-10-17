@@ -1,10 +1,8 @@
 import { Button, Menu, MenuItem } from "@mui/material"
 import Head from "next/head"
 import React, { useEffect, useRef, useState } from "react"
-import Back from "../../../components/Buttons/Back"
 import CustomAvatar from "../../../components/Avatar/CustomAvatar"
 import HeaderImage from "../../../components/Header/HeaderImage"
-import Refresh from "../../../components/Buttons/Refresh"
 import { getProfiles } from "../../api/profileApi"
 import useConversation from "../../../components/Hooks/useConversation"
 import Spinner from "../../../components/Loaders/Spinner"
@@ -29,7 +27,7 @@ function Messages({ theirId, profile, session }) {
     })
   useEffect(() => {
     scrollToBottom()
-  }, [messages])
+  }, [messages]) // eslint-disable-line react-hooks/exhaustive-deps
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -81,7 +79,6 @@ function Messages({ theirId, profile, session }) {
             <MenuItem onClick={handleClose}>Delete Chat</MenuItem>
             <MenuItem onClick={handleClose}>Report</MenuItem>
           </Menu>
-
         </div>
         <div className="h-[500px] overflow-y-auto">
           <div className="mt-2 flex min-h-[500px] flex-col justify-end rounded-md  p-3">

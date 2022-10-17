@@ -60,7 +60,7 @@ export const CustomAutoComplete = (
       }
       setLoading(false)
     })()
-  }, [input])
+  }, [input])  // eslint-disable-line react-hooks/exhaustive-deps
 
   React.useEffect(() => {
     if (!open) {

@@ -1,5 +1,3 @@
-import { ObjectId } from "mongodb"
-
 type City = {
   city: string
 }
@@ -17,7 +15,7 @@ type State = {
 type Place = {
   _id: string
   placeId: string
-  resultType: "city" | "country" 
+  resultType: "city" | "country"
   lon: number
   lat: number
   formatted: string
@@ -118,7 +116,8 @@ type Profile = {
   userId: string
   name: string
   picture: string
-  placeId: number
+  wrapPicture: string
+  placeId: string
   aboutMe: string
   timeline: any
 }
@@ -129,6 +128,7 @@ type Post = {
   userId: string
   timestamp: number
   message: string
+  profile: Profile[]
 }
 
 type MyFollowing = {
@@ -136,11 +136,11 @@ type MyFollowing = {
   cities: { placeIds: number[] }
 }
 
-type IComment = {
+declare type IComment = {
   _id: string
   name: string
   message: string
-  profile: []
+  profile: Profile[]
   timestamp: number
 }
 
@@ -167,4 +167,14 @@ type Member = {
 type Following = {
   members: Member[]
   cities: { placeIds: number[] }
+}
+
+interface ResultHandler {
+  isSuccess?: boolean
+  value?: any
+  error?: string
+}
+
+interface SignupRes {
+  codeId: string
 }

@@ -24,7 +24,7 @@ function usePlace(placeIds: string[]) {
     return getPlaceFromObject(placeIds[0])
   }
 
-  const getPlaceFromObject = (placeId): string => {
+  const getPlaceFromObject = (placeId:string): Place => {
     // receives a placeId and returns a place, including a cityID
     console.log("getPlaceFromObject", places)
     console.log("get places. id:", placeId)

@@ -243,12 +243,15 @@ export default async function handler(
       case GET_MESSAGES:
         result = await GetPosts({
           placeId: req.query.placeId,
-          page: req.query.page,
+          page: Number(req.query.page),
           take: req.query.take || null,
         })
         break
       case GET_POST_COMMENTS:
-        result = await GetPostComments(req.query)
+        result = await GetPostComments({
+          postId: String(req.query.postId),
+          page: Number(req.query.page),
+        })
         break
       case GET_CITY_DATA:
         result = await getCityData(req.query.placeIds)

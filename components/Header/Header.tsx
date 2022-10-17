@@ -8,8 +8,6 @@ import { getCitiesAutoComplete } from "../../lib/AutoCompleteUtils"
 import { useQuery } from "@tanstack/react-query"
 import { AutoComplete } from "../AutoComplete"
 import { getFullPlaceName } from "../../lib/consts/place"
-import { Place } from "../../pages/typings/typings"
-import { convertPlaceToQuery } from "../../lib/Places/placeUtils"
 
 function Header({ session }) {
   const router = useRouter()
@@ -50,7 +48,7 @@ function Header({ session }) {
         <div className="flex items-center space-x-4">
           <div className="px-7 ">
             <Link href="/" shallow={false}>
-              <a className="text-3xl font-medium">TEST</a>
+              <a className="text-3xl font-medium">Hangouts</a>
             </Link>
           </div>
           <div

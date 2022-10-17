@@ -13,13 +13,15 @@ import ProfileError from "../../components/Profile/ProfileError"
 import Loader from "../../components/Loaders/Loader"
 import { Menu, MenuItem } from "@mui/material"
 import toast from "react-hot-toast"
+import { Session } from "next-auth"
 
 interface Props {
   profile: Profile
-  following: Following[]
+  following: Following
+  session: Session
   followServiceProps: any
 }
-export default function Profile({ profile, following }: Props) {
+export default function Profile({ profile, following, session }: Props) {
   console.log("Profile", profile)
   const toggleOnFinishCallback = () => {
     window.location.reload()
@@ -116,6 +118,7 @@ export default function Profile({ profile, following }: Props) {
             profile={profile}
             following={following}
             place={place}
+            session={session}
             setOpenEditProfile={editProfileParams.setOpenEditProfile}
           />
         ) : (
@@ -136,8 +139,8 @@ export async function getServerSideProps(context) {
     if (!data.error) {
       return {
         props: {
-          profile: data.profile,
-          following: data.following,
+          profile: data.value.profile,
+          following: data.value.following,
         },
       }
     }

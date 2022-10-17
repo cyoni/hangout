@@ -1,5 +1,5 @@
 interface localStorageRes {
-  data: {}
+  data: any
   ttl: number
 }
 

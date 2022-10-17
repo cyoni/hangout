@@ -9,7 +9,7 @@ import { POST_NEW_ITINERARY } from "../../lib/consts/consts"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 
 interface Itinerary {
-  place: Place
+  place: Partial<Place>
   endDate: Date
   startDate: Date
   description: string
@@ -50,7 +50,7 @@ function usePublishHangout(autoCompleteRef) {
     console.log("use effect", place)
     const fullName = !isNullOrEmpty(place?.city) ? getFullPlaceName(place) : ""
     autoCompleteRef?.current?.setAutoCompleteValue(fullName)
-  }, [currentIndex])
+  }, [currentIndex]) // eslint-disable-line react-hooks/exhaustive-deps
 
   console.log("itineraries", itineraries)
 
@@ -98,9 +98,10 @@ function usePublishHangout(autoCompleteRef) {
     setItineraries([
       ...itineraries,
       {
-        startDate: "",
-        endDate: "",
-        place: { city: "", province: "", country: "" },
+        startDate: null,
+        endDate: null,
+        place: { city: "", state: "", country: "" },
+        description: "",
       },
     ])
     autoCompleteRef?.current?.setAutoCompleteValue("")

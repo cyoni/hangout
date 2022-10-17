@@ -1,9 +1,8 @@
 import { signOut } from "next-auth/react"
-import React, { useState } from "react"
+import { useState } from "react"
 import toast from "react-hot-toast"
 import { UPDATE_PROFILE_METHOD } from "../../../lib/consts/consts"
 import { post } from "../../../lib/postman"
-import { sleep } from "../../../lib/scripts/general"
 import { getFullPlaceName } from "../../../lib/consts/place"
 
 interface Props {
@@ -12,7 +11,7 @@ interface Props {
 }
 function useEditProfile({ profile, toggleOnFinishCallback }: Props) {
   const [name, setName] = useState<string>(profile?.name)
-  const [placeId, setPlaceId] = useState<number>(profile?.placeId)
+  const [placeId, setPlaceId] = useState<string>(profile?.placeId)
   const [aboutMe, setAboutMe] = useState<string>(profile?.aboutMe)
   const [openEditProfile, setOpenEditProfile] = useState<boolean>(false)
   const [showDeleteAccountDialog, setShowDeleteAccountDialog] =

@@ -1,6 +1,4 @@
-import { Place } from "../../pages/typings/typings"
-
-export function getFullPlaceName(place: Place) {
+export function getFullPlaceName(place: Partial<Place>) {
   if (!place) return ""
   const answer = `${place.city}, ${place.state}${
     place.country ? `, ${place.country}` : ""

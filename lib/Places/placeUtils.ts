@@ -1,4 +1,3 @@
-import { Place } from "../../pages/typings/typings"
 import { getFullPlaceName } from "../consts/place"
 
 // export async function getPlaceDetails(placeId: number) {

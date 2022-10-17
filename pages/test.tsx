@@ -1,4 +1,3 @@
-
 const x = require("/autoComplete.json")
 
 // You can also use refs in function components using closures.
@@ -30,5 +29,6 @@ export default function Test() {
   // }, [])
   const fullPlace = "tel aviv, israel"
   const x = fullPlace.replaceAll(/(, | )/g, "-")
-  return <> {x}</>
+  const abc = undefined
+  return <> {abc && <div>whats up</div>}</>
 }

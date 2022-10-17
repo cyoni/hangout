@@ -38,7 +38,7 @@ function ModalWrapper({
         },
       }}
       isOpen={isOpen}
-      className={`fixed p-3 outline-none border rounded-md shadow-xl
+      className={`fixed rounded-md border p-3 shadow-xl outline-none
                ${height ? height : "h-[90%]"}
                ${width ? width : "w-[50%]"}
                top-1/2 left-1/2
@@ -49,8 +49,8 @@ function ModalWrapper({
     >
       {!hideCloseButton && (
         <XMarkIcon
-          className="h-5 sticky top-1 cursor-pointer text-gray-400 hover:text-gray-300  "
-          onClick={onRequestClose}
+          className="sticky top-1 h-5 cursor-pointer text-gray-400 hover:text-gray-300  "
+          onClick={() => onRequestClose()}
         />
       )}
 

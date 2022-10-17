@@ -33,7 +33,7 @@ function useConversation({
         setMessages(updatedData)
       } catch (e) {}
     })
-  }, [sentMessages])
+  }, [sentMessages])// eslint-disable-line react-hooks/exhaustive-deps
 
   const messageFetcherQuery = useQuery(
     ["chat-messages-query"],

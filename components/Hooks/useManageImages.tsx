@@ -52,7 +52,7 @@ function useManageImages() {
       action()
       triggerImage(null)
     }
-  }, [imageMetadata])
+  }, [imageMetadata])// eslint-disable-line react-hooks/exhaustive-deps
 
   return { imageMetadata, triggerImage, imageMutation }
 }

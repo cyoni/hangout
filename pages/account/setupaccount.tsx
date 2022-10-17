@@ -70,7 +70,7 @@ export default SetUpAccount
 
 export async function getServerSideProps(context) {
   const user = await getToken(context)
-  if (user.place.placeId > 0) {
+  if (user.place.placeId) {
     return {
       redirect: {
         permanent: false,
