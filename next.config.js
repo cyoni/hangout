@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
-    //ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
     PICTURES_SERVICE_ENDPOINT: process.env.PICTURES_SERVICE_ENDPOINT,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   },
