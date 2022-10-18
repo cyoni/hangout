@@ -46,7 +46,7 @@ export default function Signup() {
           <label htmlFor="name">Name</label>
           <input
             type="text"
-            className="text-default my-2 rounded-full border text-gray-400"
+            className="text-default my-2 rounded-full border "
             name="name"
             id="name"
           />
@@ -54,7 +54,7 @@ export default function Signup() {
           <label htmlFor="email">Email</label>
           <input
             type="text"
-            className="text-default my-2 rounded-full border text-gray-400"
+            className="text-default my-2 rounded-full border "
             name="email"
             id="email"
           />
@@ -62,7 +62,7 @@ export default function Signup() {
           <label htmlFor="dates">Password</label>
           <input
             type="password"
-            className="text-default my-2 rounded-full border text-gray-400"
+            className="text-default my-2 rounded-full border "
             name="password"
             id="password"
           />
