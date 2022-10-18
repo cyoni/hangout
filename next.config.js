@@ -3,6 +3,7 @@ const nextConfig = {
   env: {
     PICTURES_SERVICE_ENDPOINT: process.env.PICTURES_SERVICE_ENDPOINT,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    DOMAIN_URL: process.env.DOMAIN_URL
   },
   reactStrictMode: true,
   images: {
