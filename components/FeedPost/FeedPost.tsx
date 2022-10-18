@@ -25,7 +25,7 @@ interface Props {
 function FeedPost({ post }: Props) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [isModalMessageOpen, setIsModalMessageOpen] = useState<boolean>(false)
-
+  console.log("posterfgewfge", post)
   const { getFirstPlace } = usePlace([post.profile[0].placeId])
   const place = getFirstPlace()
 

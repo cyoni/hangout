@@ -41,8 +41,6 @@ export async function queryPlaces(
         cityId: curr._id,
         placeId: curr.placeId,
         countryCode: curr.countryCode,
-        province_id: "NA3",
-        province_short: "NA4",
         city: curr.city,
         state: curr.state,
         country: curr.country,

@@ -258,8 +258,8 @@ export default async function handler(
         break
     }
 
-    if (!result || result.error) res.status(400).json({ error: result.error })
-    res.status(200).json(result)
+    if (!result || result.error) return res.status(400).json({ error: result.error })
+    return res.status(200).json(result)
   } catch (e) {
     console.log("ERROR@@@@", e.message)
     res.status(500).json({ error: e.message })
