@@ -1,6 +1,9 @@
 import { useState } from "react"
 import HeaderImage from "../components/Header/HeaderImage"
 import toast from "react-hot-toast"
+import { getToken } from "next-auth/jwt"
+import { checkUser } from "../lib/scripts/session"
+import { getSession } from "next-auth/react"
 export default function SendMessagePage({ receiverId, receiverName }) {
   const [message, setMessage] = useState("")
 
@@ -71,10 +74,12 @@ export default function SendMessagePage({ receiverId, receiverName }) {
 }
 
 export async function getServerSideProps(context) {
+  const session = await getSession(context)
+  const checkUserRes = checkUser(context, session)
+  if (checkUserRes.redirect) return checkUserRes
+
   const receiverId = context.query.id
   const receiverName = context.query.name
- // const token = await getToken(context)
-
 
   console.log("receiverId", receiverId)
   if (receiverId && receiverName) {
@@ -82,8 +87,6 @@ export async function getServerSideProps(context) {
       props: { receiverId, receiverName },
     }
   } else {
-    return {
-      props: { receiverId: null },
-    }
+    return { props: { receiverId: null } }
   }
 }
