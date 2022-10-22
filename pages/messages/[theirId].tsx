@@ -1,12 +1,14 @@
 import { Button, Menu, MenuItem } from "@mui/material"
 import Head from "next/head"
 import React, { useEffect, useRef, useState } from "react"
-import CustomAvatar from "../../../components/Avatar/CustomAvatar"
-import HeaderImage from "../../../components/Header/HeaderImage"
-import { getProfiles } from "../../api/profileApi"
-import useConversation from "../../../components/Hooks/useConversation"
-import Spinner from "../../../components/Loaders/Spinner"
-import Message from "../../../components/Chat/Message"
+import CustomAvatar from "../../components/Avatar/CustomAvatar"
+import HeaderImage from "../../components/Header/HeaderImage"
+import { getProfiles } from "../api/profileApi"
+import useConversation from "../../components/Hooks/useConversation"
+import Spinner from "../../components/Loaders/Spinner"
+import Message from "../../components/Chat/Message"
+import { getSession } from "next-auth/react"
+import { checkUser } from "../../lib/scripts/session"
 
 function Messages({ theirId, profile, session }) {
   console.log("msgs session", session)
@@ -123,14 +125,14 @@ function Messages({ theirId, profile, session }) {
 export default Messages
 
 export async function getServerSideProps(context) {
-  const { theirId } = context.params
+  const session = await getSession(context)
+  const checkUserRes = checkUser(context, session)
+  if (checkUserRes.redirect) return checkUserRes
 
+  const { theirId } = context.params
   const profile = (await getProfiles({ userIds: [theirId] }))?.[0]
 
   return {
-    props: {
-      theirId: theirId,
-      profile,
-    },
+    props: { theirId, profile, session },
   }
 }

@@ -1,3 +1,5 @@
+import { getToken } from "next-auth/jwt"
+
 const x = require("/autoComplete.json")
 
 // You can also use refs in function components using closures.
@@ -31,4 +33,19 @@ export default function Test() {
   const x = fullPlace.replaceAll(/(, | )/g, "-")
   const abc = undefined
   return <> {abc && <div>whats up</div>}</>
+}
+
+export async function getServerSideProps(context) {
+  const token = await getToken(context)
+  if (token) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/",
+      },
+    }
+  }
+  return {
+    props: {},
+  }
 }
