@@ -13,4 +13,7 @@ This app was built with React and Next.js. The goal of the app is to connect tra
 8. React Forward Ref
 9. Dynamic Routing
 10. Mui
+11. Google Sign-up
 
+
+**Demo: https://hangout-jad2.vercel.app**
