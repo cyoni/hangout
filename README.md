@@ -15,5 +15,7 @@ This app was built with React and Next.js. The goal of the app is to connect tra
 10. Mui
 11. Google Sign-up
 
+*Responsive Web Design is not supported yet. 
+
 
 **Demo: https://hangout-jad2.vercel.app**
