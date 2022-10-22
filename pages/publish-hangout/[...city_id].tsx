@@ -1,5 +1,7 @@
+import { getSession } from "next-auth/react"
 import { useRouter } from "next/router"
 import PublishHangout from "../../components/PublishHangout/PublishHangout"
+import { checkUser } from "../../lib/scripts/session"
 import { queryPlace } from "../api/queryPlacesApi"
 
 interface Props {
@@ -15,6 +17,11 @@ export default function Travelling({ place }: Props) {
 
 export async function getServerSideProps(context) {
   try {
+
+    const session = await getSession(context)
+    const checkUserRes = checkUser(context, session)
+    if (checkUserRes.redirect) return checkUserRes
+
     const placeId = context.query.placeId[1] || null
     if (!placeId) {
       return {

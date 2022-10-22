@@ -70,15 +70,10 @@ export default SetUpAccount
 
 export async function getServerSideProps(context) {
   const user = await getToken(context)
-  if (user.place.placeId) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/",
-      },
-    }
+  if (!user) {
+    return { redirect: { permanent: false, destination: "/login" } }
+  } else if (user.place.placeId) {
+    return { redirect: { permanent: false, destination: "/" } }
   }
-  return {
-    props: {},
-  }
+  return { props: {} }
 }

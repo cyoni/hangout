@@ -1,4 +1,3 @@
-import { getToken } from "next-auth/jwt"
 import React, { useEffect, useRef } from "react"
 import HeaderImage from "../../components/Header/HeaderImage"
 import { getProfile } from "../../lib/ApiUtils/profileApiUtils"
@@ -14,6 +13,8 @@ import Loader from "../../components/Loaders/Loader"
 import { Menu, MenuItem } from "@mui/material"
 import toast from "react-hot-toast"
 import { Session } from "next-auth"
+import { getSession } from "next-auth/react"
+import { checkUser } from "../../lib/scripts/session"
 
 interface Props {
   profile: Profile
@@ -131,24 +132,24 @@ export default function Profile({ profile, following, session }: Props) {
 }
 
 export async function getServerSideProps(context) {
-  const userId = context.params.profile_user_id
-  const token = getToken(context)
+  console.log("AAAAAAA")
+  const session = await getSession(context)
+  const checkUserRes = checkUser(context, session)
+  if (checkUserRes.redirect) return checkUserRes
+  console.log("GGGGG")
 
-  if (userId && token) {
+  const userId = context.params.profile_user_id
+
+  if (userId) {
     const data = await getProfile(userId)
     if (!data.error) {
       return {
-        props: {
-          profile: data.value.profile,
-          following: data.value.following,
-        },
+        props: { profile: data.value.profile, following: data.value.following },
       }
     }
   }
 
   return {
-    props: {
-      profile: null,
-    },
+    props: { profile: null },
   }
 }

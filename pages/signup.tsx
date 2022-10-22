@@ -97,12 +97,7 @@ export default function Signup() {
 export async function getServerSideProps(context) {
   const token = await getToken(context)
   if (token) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/",
-      },
-    }
+    return { redirect: { permanent: false, destination: "/" } }
   }
   return {
     props: {},

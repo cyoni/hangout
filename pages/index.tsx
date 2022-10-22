@@ -8,6 +8,8 @@ import MiddleBlock from "../components/Layout/MiddleBlock"
 import RightBlock from "../components/Layout/RightBlock"
 import LeftBlock from "../components/Layout/LeftBlock"
 import { getCityItineraries } from "./api/travelApi"
+import { getSession } from "next-auth/react"
+import { checkUser } from "../lib/scripts/session"
 
 export default function Home({ session, followData, recentTravelers }) {
   console.log("My session", session)
@@ -56,19 +58,16 @@ export default function Home({ session, followData, recentTravelers }) {
 }
 
 export async function getServerSideProps(context) {
-  const user = await getToken(context)
+  const session = await getSession(context)
+  const checkUserRes = checkUser(context, session)
+  if (checkUserRes.redirect) return checkUserRes
 
-  if (!user) {
-    return {
-      props: {
-        following: null,
-      },
-    }
+  if (!session) {
+    return { props: { following: null } }
   }
 
-  const placeId = user.place?.placeId
-
-  const followData = await getFollowing(user.userId)
+  const placeId = session.place?.placeId
+  const followData = await getFollowing(session.userId)
   const recentTravelers = await getCityItineraries({
     placeIds: [placeId],
     showAll: true,

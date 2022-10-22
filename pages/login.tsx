@@ -107,14 +107,8 @@ export default function Login({ callbackUrl, session }) {
 export async function getServerSideProps(context) {
   const token = await getToken(context)
   if (token) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/",
-      },
-    }
+    return { redirect: { permanent: false, destination: "/" } }
   }
-  ///const callbackUrl = context.query.callbackUrl || "/"
   return {
     props: {},
   }

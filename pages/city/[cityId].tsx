@@ -9,6 +9,8 @@ import useFollow from "../../components/Hooks/useFollow"
 import { CITY } from "../../lib/consts/consts"
 import Link from "next/link"
 import { queryPlace } from "../api/queryPlacesApi"
+import { getSession } from "next-auth/react"
+import { checkUser } from "../../lib/scripts/session"
 
 interface Props {
   travels
@@ -83,15 +85,19 @@ export default function Home({ place, myFollowing, user }: Props) {
 
 export async function getServerSideProps(context) {
   try {
-    const user = await getToken(context)
+    const session = await getSession(context)
+    const checkUserRes = checkUser(context, session)
+    if (checkUserRes.redirect) return checkUserRes
+
+    const userId = { session }
     const cityId = context.query.cityId
     console.log("cityQueryCode", cityId)
     const place = await queryPlace(cityId)
     console.log("drjngvewsiowoeoi", place)
-    const myFollowing = await getFollowing(user.userId)
+    const myFollowing = await getFollowing(userId)
     console.log("myFollowing", myFollowing)
     return {
-      props: { place, myFollowing, user },
+      props: { place, myFollowing, user: session.place },
     }
   } catch (e) {
     console.error(e)

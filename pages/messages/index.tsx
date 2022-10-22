@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react"
+import { getSession, useSession } from "next-auth/react"
 import Head from "next/head"
 import React, { useEffect, useState } from "react"
 import HeaderImage from "../../components/Header/HeaderImage"
@@ -9,7 +9,7 @@ import { GET_PREVIEW_MESSAGES_METHOD } from "../../lib/consts/consts"
 import { MESSAGES_API } from "../../lib/consts/apis"
 import { queryPlacesFromClient } from "../../lib/dbClient"
 import { post } from "../../lib/postman"
-import { isAuthenticated } from "../../lib/scripts/session"
+import { checkUser, isAuthenticated } from "../../lib/scripts/session"
 
 interface PreviewMessage {
   _id: string
@@ -20,7 +20,7 @@ interface PreviewMessage {
   senderId: string
   profile: [{ name: string; place: Place }]
 }
-function Inbox() {
+export default function Inbox() {
   const session = useSession()
   const [messages, setMessages] = useState<MessageObj[]>(null)
   const [unreadMsgs, setUnreadMsgs] = useState<string[]>(null)
@@ -90,4 +90,10 @@ function Inbox() {
   )
 }
 
-export default Inbox
+export async function getServerSideProps(context) {
+  const session = await getSession(context)
+  console.log("session",session)
+  const checkUserRes = checkUser(context, session)
+  if (checkUserRes.redirect) return checkUserRes
+  return { props: {} }
+}

@@ -1,12 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { PLACES_COLLECTION } from "../../lib/consts/collections"
-import { dbFind, dbInsertMany } from "../../lib/mongoApiUtils"
+import {  dbInsertMany } from "../../lib/mongoApiUtils"
 import {
   convertPlaceToQuery,
   convertRawPlaceToObject,
 } from "../../lib/Places/placeUtils"
 import { get } from "../../lib/postman"
-import { unique } from "../../lib/scripts/arrays"
 import { initializeDuplicateCities } from "./queryPlacesApi"
 
 type Response = {
