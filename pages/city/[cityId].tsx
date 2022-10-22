@@ -97,7 +97,7 @@ export async function getServerSideProps(context) {
     const myFollowing = await getFollowing(userId)
     console.log("myFollowing", myFollowing)
     return {
-      props: { place, myFollowing, user: session.place },
+      props: { place, myFollowing, user: { place: session.place } },
     }
   } catch (e) {
     console.error(e)
