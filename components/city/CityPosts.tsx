@@ -61,7 +61,7 @@ function CityPosts({ place }) {
         ) : (
           pages && (
             <>
-              <div className="relative">
+              <div className="relative mb-5">
                 {postsQuery.isFetching ? (
                   <Loader />
                 ) : (
@@ -78,7 +78,8 @@ function CityPosts({ place }) {
                 })}
               </div>
               <Pagination
-                className="mx-auto my-5 mt-auto w-fit"
+                className="mx-auto my-5 mt-auto w-fit "
+
                 count={totalPages}
                 page={page}
                 onChange={handlePageChange}

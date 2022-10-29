@@ -25,21 +25,25 @@ export const updateSessionData = async (body) => {
   return result
 }
 
-export function checkUser(context: NextPageContext, session: Session) {
+export function checkUser(context, session: Session) {
   const redirect = (destination: string) => {
     console.log("destination", destination)
     return { redirect: { permanent: false, destination } }
   }
 
-  const referrer = getReferer(context.req)
+  console.log("context.resolvedUrl", context.resolvedUrl)
+  const resolvedUrl = context.resolvedUrl
 
   if (!session) {
-    if (!referrer.startsWith("/login") && !referrer.startsWith("/signup")) {
+    if (
+      !resolvedUrl.startsWith("/login") &&
+      !resolvedUrl.startsWith("/signup")
+    ) {
       return redirect("/login")
     }
   } else if (
     isNullOrEmpty(session.place?.placeId) &&
-    !referrer.startsWith("/account/setupaccount")
+    !resolvedUrl.startsWith("/account/setupaccount")
   ) {
     // if so, user should configure their place
     return redirect("/account/setupaccount")
