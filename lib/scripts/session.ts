@@ -1,7 +1,6 @@
 import { NextPageContext } from "next"
 import { Session } from "next-auth"
 import { get } from "../postman"
-import { getReferer } from "./server/getReferrer"
 import { isNullOrEmpty } from "./strings"
 
 export const isAuthenticated = (session) => {
