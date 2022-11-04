@@ -1,9 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
-import  { useState } from "react"
+import { useState } from "react"
 import toast from "react-hot-toast"
 import { GET_MESSAGES, POST_MESSAGE } from "../../lib/consts/consts"
 import { CITY_API } from "../../lib/consts/apis"
-import {  get, post } from "../../lib/postman"
+import { get, post } from "../../lib/postman"
 import { isNullOrEmpty } from "../../lib/scripts/strings"
 
 interface Props {
@@ -62,10 +62,9 @@ function usePosts({ placeId, followingPosts, take }: Props) {
       toast.error("Post can't be empty")
       return
     }
-    const refreshToast = toast.loading("Posting...")
     await sendPostMutation.mutateAsync()
     setMessageInput("")
-    toast.success("Your post is live!", { id: refreshToast })
+    toast.success("Your post is live!")
     postsQuery.refetch()
   }
 

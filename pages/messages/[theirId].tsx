@@ -17,8 +17,8 @@ function Messages({ theirId, profile, session }) {
   const messagesEndRef = useRef(null)
   const inputRef = useRef()
   const { name, picture } = profile
-  const myProfilePic = session?.user?.image
-  const myName = session?.user?.name
+  const myProfilePic = session?.data?.user?.image
+  const myName = session?.data?.user?.name
   const { messages, handleMessage, scrollToBottom, handleRefresh } =
     useConversation({
       theirId,

@@ -11,12 +11,12 @@ import FeedPost from "../FeedPost/FeedPost"
 import Spinner from "../Loaders/Spinner"
 
 function MiddleBlock({ session, recentTravelers, getPlaceFromObject }) {
-  const userPlaceId = session?.place?.placeId
+  const userPlaceId = session?.data?.place?.placeId
   const userPlace = getPlaceFromObject(userPlaceId)
   const userCityId = userPlace?.cityId
   const cityName = getPartsOfPlace(userPlace, true)
   const router = useRouter()
-  const user = session?.user
+  const user = session?.data?.user
   const { sendPost, postsQuery, messageInput, setMessageInput } = usePosts({
     placeId: userPlaceId,
     take: 5,

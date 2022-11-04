@@ -10,6 +10,8 @@ import { MESSAGES_API } from "../../lib/consts/apis"
 import { queryPlacesFromClient } from "../../lib/dbClient"
 import { post } from "../../lib/postman"
 import { checkUser, isAuthenticated } from "../../lib/scripts/session"
+import { IconButton } from "@mui/material"
+import RefreshIcon from "@mui/icons-material/Refresh"
 
 interface PreviewMessage {
   _id: string
@@ -62,24 +64,24 @@ export default function Inbox() {
       <div className="mx-auto mt-6 min-h-[500px] xl:max-w-[1300px]">
         <>
           {messages && (
-            <Refresh
-              className="mt-5 ml-5 mb-10 h-10 w-10 cursor-pointer rounded-full p-2
-          text-gray-400 transition duration-150 hover:rotate-180
-           hover:bg-gray-100"
-              onClick={handleRefresh}
-            />
+            <IconButton>
+              <RefreshIcon
+                className="h-10 w-10 text-gray-400"
+                onClick={handleRefresh}
+              />
+            </IconButton>
           )}
           {console.log("messages", messages)}
           {!messages && <Spinner className="mt-20 flex justify-center" />}
 
           {Array.isArray(messages) && (
-            <>
+            <div className="mt-5">
               {messages.map((msg) => (
                 <div key={msg._id}>
                   <PreviewMessage {...msg} places={places} />
                 </div>
               ))}
-            </>
+            </div>
           )}
           {messages?.length === 0 && (
             <div className="text-center text-3xl">No messages</div>
@@ -92,7 +94,7 @@ export default function Inbox() {
 
 export async function getServerSideProps(context) {
   const session = await getSession(context)
-  console.log("session",session)
+  console.log("session", session)
   const checkUserRes = checkUser(context, session)
   if (checkUserRes.redirect) return checkUserRes
   return { props: {} }

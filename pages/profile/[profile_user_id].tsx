@@ -132,11 +132,9 @@ export default function Profile({ profile, following, session }: Props) {
 }
 
 export async function getServerSideProps(context) {
-  console.log("AAAAAAA")
   const session = await getSession(context)
   const checkUserRes = checkUser(context, session)
   if (checkUserRes.redirect) return checkUserRes
-  console.log("GGGGG")
 
   const userId = context.params.profile_user_id
 

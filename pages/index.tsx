@@ -15,7 +15,7 @@ export default function Home({ session, followData, recentTravelers }) {
   console.log("My session", session)
   const { followQuery } = useFollow(followData)
 
-  const connectedUserPlaceId = session?.place?.placeId
+  const connectedUserPlaceId = session?.data?.place?.placeId
   const placeIds = followQuery.data?.cities?.[0]?.placeIds || []
 
   console.log("recentTravelers", recentTravelers)
