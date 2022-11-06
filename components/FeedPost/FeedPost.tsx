@@ -8,16 +8,12 @@ import { getPastTime } from "../../lib/scripts/general"
 import ModalWrapper from "../Modal/ModalWrapper"
 import useFollow from "../Hooks/useFollow"
 import usePlace from "../Hooks/usePlace"
-import DeleteIcon from "@mui/icons-material/Delete"
-import ChatRoundedIcon from "@mui/icons-material/ChatRounded"
 import CircularButton from "../Buttons/CircularButton"
-import Spinner from "../Loaders/Spinner"
 import { FOLLOW } from "../../lib/consts/consts"
-import SendMessage from "../Chat/SendMessage"
-import PostModal from "./PostModal"
 import ChatModal from "../Modal/ChatModal"
 import CustomAvatar from "../Avatar/CustomAvatar"
 import { IconButton, Tooltip } from "@mui/material"
+import PostModal from "./PostModal"
 
 interface Props {
   post: Post
@@ -25,21 +21,10 @@ interface Props {
 function FeedPost({ post }: Props) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [isModalMessageOpen, setIsModalMessageOpen] = useState<boolean>(false)
-
   const { getFirstPlace } = usePlace([post.profile[0].placeId])
   const place = getFirstPlace()
-
-  const [input, setInput] = useState<string>("")
   const userId = post?.userId
-
-  const {
-    follow,
-    unFollow,
-    followMutation,
-    followQuery,
-    isFollowing,
-    getMyFollowingList,
-  } = useFollow()
+  const { follow, unFollow, isFollowing, getMyFollowingList } = useFollow()
 
   const handleMessageModal = () => {
     setIsModalMessageOpen(true)
@@ -79,7 +64,6 @@ function FeedPost({ post }: Props) {
       </div>
     )
   }
-  const moreButtonsStyle = "p-3 hover:bg-slate-100 rounded-full"
 
   const following = isFollowing(post.userId)
   const name = post.profile[0].name
@@ -93,6 +77,8 @@ function FeedPost({ post }: Props) {
             name={name?.toUpperCase()}
             userId={userId}
             picture={picture}
+            width="50px"
+            height="50px"
             className="h-11 w-11"
           />
           <div className="flex flex-col">

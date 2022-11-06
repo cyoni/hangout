@@ -29,6 +29,8 @@ function TravelItem({ item, getPlaceFromObject }) {
                 disabled
                 name={item.profile[0].name}
                 picture={item.profile[0].picture}
+                width="150px"
+                height="150px"
                 className="h-36 w-36"
               />
             </div>
