@@ -53,10 +53,7 @@ function Header({ session }) {
           </div>
           <div
             className="
-            w-[300px] rounded-md bg-slate-200
-            px-3 py-1 transition-width
-            duration-500 focus-within:w-[450px] 
-            focus-within:outline hover:w-[450px] hover:outline"
+            w-[300px] rounded-md bg-slate-200 px-3 py-1 transition-width duration-500 focus-within:w-[450px] focus-within:outline hover:w-[450px] hover:outline"
           >
             <AutoComplete
               placeholder="Where are you going?"
