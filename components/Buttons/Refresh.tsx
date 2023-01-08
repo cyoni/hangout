@@ -6,7 +6,7 @@ interface Props {
   onClick: Function
 }
 function Refresh({ className, onClick }: Props) {
-  return <RefreshIcon onClick={() => onClick()} className={className} />
+  return <RefreshIcon onClick={() => onClick()} className={className} sx={{height: "40px", width: "40px"}} />
 }
 
 export default Refresh

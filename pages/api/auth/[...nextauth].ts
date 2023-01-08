@@ -75,6 +75,7 @@ export const authOptions = (req) => {
             req.query
           if (placeId) token.place = { placeId: placeId }
           token.picture = picture === "REMOVE" ? null : picture || token.picture
+          token.test = `placeId: ${placeId}, query: ${req.query}`
           console.log("NEW TOKEN", token)
           return token
         }

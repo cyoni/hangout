@@ -85,6 +85,8 @@ function PostModal({ renderOptions, post, place }) {
             name={name}
             picture={picture}
             userId={post.userId}
+            width="120px"
+            height="120px"
             overrideLetterIfNoPicture
             className="h-24 w-24"
           />
@@ -176,7 +178,7 @@ function PostModal({ renderOptions, post, place }) {
             </div>
             {!commentQuery.isLoading && hasData && (
               <ButtonIntegration
-                externalClass={`btn w-fit mx-auto mt-10 ${
+                externalClass={`btn w-fit mx-auto mt-10 block ${
                   !commentQuery.hasNextPage ? "disabled" : ""
                 }`}
                 disabled={!commentQuery.hasNextPage}

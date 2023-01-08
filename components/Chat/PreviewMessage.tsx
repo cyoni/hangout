@@ -41,7 +41,7 @@ function PreviewMessage({
     >
       <div className="flex">
         <div className="flex flex-[0.3] gap-2">
-          <CustomAvatar {...profile[0]} className="h-14 w-14" />
+          <CustomAvatar {...profile[0]} width="56px" height="56px" />
           <div>
             <div className="font-bold capitalize">{name}</div>
             <div className="text-sm">{renderPlace()}</div>

@@ -221,7 +221,9 @@ const ProfileContent = ({
             picture={picture}
             overrideLetterIfNoPicture
             disabled
-            className="relative bottom-12 h-36 w-36  ring-4"
+            height="150px"
+            width="150px"
+            className="relative bottom-12 ring-4"
           />
 
           {picture ? (
@@ -264,7 +266,7 @@ const ProfileContent = ({
           style={{ display: "none" }}
         />
 
-        <div className="flex-1">
+        <div className="flex-1 pl-2">
           <p className="text-3xl font-medium capitalize tracking-wide">
             {profile.name}
           </p>

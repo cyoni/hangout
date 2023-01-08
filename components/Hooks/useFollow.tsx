@@ -29,9 +29,8 @@ function useFollow(initialData = null) {
   console.log("initialData", initialData)
 
   const getOptions = () => {
-    const options: { enabled: boolean; staleTime: number; initialData?: {} } = {
-      enabled: true,
-      staleTime: 900000,
+    const options: { enabled: boolean; initialData?: {} } = {
+      enabled: true
     }
     if (initialData) options.initialData = initialData
     return options

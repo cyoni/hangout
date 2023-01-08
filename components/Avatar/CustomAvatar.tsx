@@ -8,6 +8,8 @@ interface Props {
   userId?: string
   onClick?: Function
   disabled?: boolean
+  height?: string
+  width?: string
   overrideLetterIfNoPicture?: boolean
 }
 function CustomAvatar({
@@ -17,21 +19,22 @@ function CustomAvatar({
   className,
   overrideLetterIfNoPicture,
   onClick,
+  height,
+  width,
   disabled,
 }: Props) {
-
   const profilePictureUrl = picture
     ? picture.startsWith("http")
       ? picture
       : `${process.env.PICTURES_SERVICE_ENDPOINT}/${picture}`
     : null
 
-
   return (
     <Avatar
       className={`${disabled ? "" : "cursor-pointer"} shadow-xl  ${
         className ? className : ""
       }`}
+      sx={{ height, width }}
       alt={name}
       src={profilePictureUrl}
       onClick={

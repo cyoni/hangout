@@ -11,12 +11,13 @@ import FeedPost from "../FeedPost/FeedPost"
 import Spinner from "../Loaders/Spinner"
 
 function MiddleBlock({ session, recentTravelers, getPlaceFromObject }) {
-  const userPlaceId = session?.place?.placeId
+  const userPlaceId = session?.data?.place?.placeId
   const userPlace = getPlaceFromObject(userPlaceId)
   const userCityId = userPlace?.cityId
   const cityName = getPartsOfPlace(userPlace, true)
   const router = useRouter()
-  const user = session?.user
+  const numOfRecentTravelers = recentTravelers.travelers?.length
+  const user = session?.data?.user
   const { sendPost, postsQuery, messageInput, setMessageInput } = usePosts({
     placeId: userPlaceId,
     take: 5,
@@ -29,7 +30,7 @@ function MiddleBlock({ session, recentTravelers, getPlaceFromObject }) {
 
   const renderRecentTravelers = () => {
     return (
-      Array.isArray(recentTravelers?.travelers) &&
+      Array.isArray(recentTravelers.travelers) &&
       recentTravelers.travelers.map((item) => {
         const profile: Profile = item.profile[0]
         return (
@@ -45,28 +46,34 @@ function MiddleBlock({ session, recentTravelers, getPlaceFromObject }) {
   }
 
   return (
-    <div className="col-span-2 min-h-[400px] ">
+    <div className="col-span-2 min-h-[400px]">
       <div className="text-xl ">Recent Travelers to {cityName}</div>
-      <div className="mt-3 flex flex-col rounded-sm  p-3 pb-2">
-        <div className="mt-2 flex justify-center space-x-3">
-          <AvatarGroup
-            total={recentTravelers?.length}
-            sx={{
-              "& .MuiAvatar-root": {
-                width: 80,
-                height: 80,
-              },
-            }}
-          >
-            {renderRecentTravelers()}
-          </AvatarGroup>
-        </div>
-        <button
-          className=" btn-outline ml-auto mt-4 w-fit py-1 px-4 text-right"
-          onClick={() => router.push(`city/${userCityId}?view=${TRAVEL}`)}
-        >
-          Show all
-        </button>
+      <div className="mt-3 flex flex-col rounded-sm p-3 pb-2">
+        {numOfRecentTravelers == 0 ? (
+          <div className="mb-8">No recent travelers yet</div>
+        ) : (
+          <>
+            <div className="mt-2 flex justify-center space-x-3">
+              <AvatarGroup
+                total={numOfRecentTravelers}
+                sx={{
+                  "& .MuiAvatar-root": {
+                    width: 80,
+                    height: 80,
+                  },
+                }}
+              >
+                {renderRecentTravelers()}
+              </AvatarGroup>
+            </div>
+            <button
+              className=" btn-outline ml-auto mt-4 w-fit py-1 px-4 text-right"
+              onClick={() => router.push(`city/${userCityId}?view=${TRAVEL}`)}
+            >
+              Show all
+            </button>
+          </>
+        )}
       </div>
 
       <div className="">

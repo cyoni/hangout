@@ -11,24 +11,27 @@ function TravelItem({ item, getPlaceFromObject }) {
 
   return (
     <>
-      <div className="mt-5 flex max-w-[400px] flex-col rounded-md px-5 py-5 shadow-md hover:shadow-lg bg-white">
+      <div className="mt-5 flex max-w-[400px] flex-col rounded-md bg-white px-5 py-5 shadow-md hover:shadow-lg">
         <div className="flex items-center justify-between ">
           <div className="font-bold capitalize">{item.profile.name}</div>
           <IconButtonCustom>
             <ChatBubbleLeftEllipsisIcon
-              className="h-6 z-50"
+              className="z-50 h-6"
               onClick={() => setIsModalMessageOpen(true)}
             />
           </IconButtonCustom>
         </div>
         <div className="">
-          <a href={`/profile/${item.profile[0].userId}?tab=itinerary`}>
+          <a href={`/profile/${item.profile[0].userId}?view=trips`}>
             {/* profile image */}
-            <div className="w-fit mx-auto ">
+            <div className="mx-auto w-fit ">
               <CustomAvatar
+                disabled
                 name={item.profile[0].name}
                 picture={item.profile[0].picture}
-                className="w-36 h-36"
+                width="150px"
+                height="150px"
+                className="h-36 w-36"
               />
             </div>
             {/* info */}

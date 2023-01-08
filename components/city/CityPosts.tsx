@@ -48,43 +48,41 @@ function CityPosts({ place }) {
           </CircularButton>
         </div>
 
-        {postsQuery.isLoading && (
+        {postsQuery.isLoading ? (
           <div className="my-10 flex">
             <Spinner className="mx-auto" />
           </div>
-        )}
-
-        {noContent ? (
+        ) : noContent ? (
           <div className="my-16 text-center text-3xl ">
             No discussions found
           </div>
-        ) : (
-          pages && (
-            <>
-              <div className="relative">
-                {postsQuery.isFetching ? (
-                  <Loader />
-                ) : (
-                  <div className="mt-5 mb-10 border-t"></div>
-                )}
-                {pages.map((post, index) => {
-                  return (
-                    <Fragment key={index}>
-                      <div key={post._id}>
-                        <FeedPost post={post} />
-                      </div>
-                    </Fragment>
-                  )
-                })}
-              </div>
-              <Pagination
-                className="mx-auto my-5 mt-auto w-fit"
-                count={totalPages}
-                page={page}
-                onChange={handlePageChange}
-              />
-            </>
-          )
+        ) : null}
+
+        {pages && (
+          <>
+            <div className="relative mb-5">
+              {postsQuery.isFetching ? (
+                <Loader />
+              ) : (
+                <div className="mt-5 mb-10 border-t"></div>
+              )}
+              {pages.map((post, index) => {
+                return (
+                  <Fragment key={index}>
+                    <div key={post._id}>
+                      <FeedPost post={post} />
+                    </div>
+                  </Fragment>
+                )
+              })}
+            </div>
+            <Pagination
+              className="mx-auto my-5 mt-auto w-fit "
+              count={totalPages}
+              page={page}
+              onChange={handlePageChange}
+            />
+          </>
         )}
       </div>
     </div>

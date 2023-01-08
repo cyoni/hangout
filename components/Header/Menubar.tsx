@@ -6,17 +6,16 @@ import {
 } from "@heroicons/react/24/outline"
 import AvatarMenu from "./AvatarMenu"
 import { signIn, signOut, useSession } from "next-auth/react"
-import { isAuthenticated, isNotAuthenticated } from "../../lib/scripts/session"
+import { isAuthenticated } from "../../lib/scripts/session"
 import { useRouter } from "next/router"
 import { ListItemIcon, MenuItem } from "@mui/material"
 import Logout from "@mui/icons-material/Logout"
 import PersonIcon from "@mui/icons-material/Person"
-import SettingsIcon from "@mui/icons-material/Settings"
 
 function Menubar({ newMessages }) {
-  console.log("fgerwgferge", newMessages)
   const router = useRouter()
   const session = useSession()
+  const authenticated = isAuthenticated(session)
   const renderMyAvatar = () => {
     return (
       <AvatarMenu session={session}>
@@ -43,25 +42,29 @@ function Menubar({ newMessages }) {
       </AvatarMenu>
     )
   }
+
   return (
     <div className="col-span-2 border-gray-100">
       <div className="flex items-center space-x-1">
         {/* <MenubarRow title="Notifications" Icon={BellAlertIcon} link="/" /> */}
-        <MenubarRow
-          title="Messages"
-          Icon={ChatBubbleLeftRightIcon}
-          link="/messages"
-          notifications={newMessages}
-        />
-        <MenubarRow
-          title="Publish Trip"
-          Icon={GlobeEuropeAfricaIcon}
-          link={`/publish-hangout/${
-            router.query.placeId ? `city/${router.query.placeId}` : ""
-          }`}
-        />
-        {isAuthenticated(session) && renderMyAvatar()}
-        {isNotAuthenticated(session) && (
+        {authenticated ? (
+          <>
+            <MenubarRow
+              title="Messages"
+              Icon={ChatBubbleLeftRightIcon}
+              link="/messages"
+              notifications={newMessages}
+            />
+            <MenubarRow
+              title="Publish Trip"
+              Icon={GlobeEuropeAfricaIcon}
+              link={`/publish-hangout/${
+                router.query.placeId ? `city/${router.query.placeId}` : ""
+              }`}
+            />
+            {renderMyAvatar()}
+          </>
+        ) : (
           <>
             <MenubarRow
               title="Login"

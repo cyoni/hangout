@@ -43,9 +43,7 @@ export default function Home({ place, myFollowing, user }: Props) {
           {place && showFollowCityBtn && (
             <ButtonIntegration
               externalClass="absolute right-10 top-[40%]"
-              buttonClassName="btn text-white w-[200px]
-                            right-10 top-0 font-bold hover:bg-blue-700
-                             px-7"
+              buttonClassName="btn text-white w-[200px] right-10 top-0 font-bold hover:bg-blue-700 px-7"
               onClick={() =>
                 isFollowingCity
                   ? unFollow({
@@ -97,7 +95,7 @@ export async function getServerSideProps(context) {
     const myFollowing = await getFollowing(userId)
     console.log("myFollowing", myFollowing)
     return {
-      props: { place, myFollowing, user: session.place },
+      props: { place, myFollowing, user: { place: session.place } },
     }
   } catch (e) {
     console.error(e)
